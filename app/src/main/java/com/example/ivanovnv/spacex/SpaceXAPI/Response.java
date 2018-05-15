@@ -1,23 +1,23 @@
-package com.example.ivanovnv.spacex;
+package com.example.ivanovnv.spacex.SpaceXAPI;
 
 import java.util.List;
 
 public class Response {
 
+
     /**
-     * flight_number : 1
-     * launch_year : 2006
-     * launch_date_unix : 1143239400
-     * launch_date_utc : 2006-03-24T22:30:00Z
-     * launch_date_local : 2006-03-25T10:30:00+12:00
-     * rocket : {"rocket_id":"falcon1","rocket_name":"Falcon 1","rocket_type":"Merlin A","first_stage":{"cores":[{"core_serial":"Merlin1A","flight":1,"block":null,"reused":false,"land_success":false,"landing_type":null,"landing_vehicle":null}]},"second_stage":{"payloads":[{"payload_id":"FalconSAT-2","reused":false,"customers":["DARPA"],"payload_type":"Satellite","payload_mass_kg":20,"payload_mass_lbs":43,"orbit":"LEO"}]}}
-     * telemetry : {"flight_club":null}
-     * reuse : {"core":false,"side_core1":false,"side_core2":false,"fairings":false,"capsule":false}
-     * launch_site : {"site_id":"kwajalein_atoll","site_name":"Kwajalein Atoll","site_name_long":"Kwajalein Atoll Omelek Island"}
-     * launch_success : false
-     * links : {"mission_patch":"https://images2.imgbox.com/3f/53/avrsUsUg_o.png","mission_patch_small":"https://images2.imgbox.com/dd/27/hcl56EiI_o.png","article_link":"https://www.space.com/2196-spacex-inaugural-falcon-1-rocket-lost-launch.html","video_link":"https://www.youtube.com/watch?v=0a_00nJ_Y88"}
-     * details : Engine failure at 33 seconds and loss of vehicle
-     * mission_name : Bangabandhu-1
+     * flight_number : 58
+     * launch_year : 2018
+     * launch_date_unix : 1522419231
+     * launch_date_utc : 2018-03-30T14:13:51Z
+     * launch_date_local : 2018-03-30T07:13:51-08:00
+     * rocket : {"rocket_id":"falcon9","rocket_name":"Falcon 9","rocket_type":"FT","first_stage":{"cores":[{"core_serial":"B1041","flight":2,"block":4,"reused":true,"land_success":null,"landing_type":null,"landing_vehicle":null}]},"second_stage":{"payloads":[{"payload_id":"Iridium NEXT 5","reused":false,"customers":["Iridium Communications"],"payload_type":"Satellite","payload_mass_kg":9600,"payload_mass_lbs":21164.38,"orbit":"PO"}]}}
+     * telemetry : {"flight_club":"https://www.flightclub.io/results/?code=IRD5"}
+     * reuse : {"core":true,"side_core1":false,"side_core2":false,"fairings":false,"capsule":false}
+     * launch_site : {"site_id":"vafb_slc_4e","site_name":"VAFB SLC 4E","site_name_long":"Vandenberg Air Force Base Space Launch Complex 4E"}
+     * launch_success : true
+     * links : {"mission_patch":"https://i.imgur.com/QUSoLHy.png","reddit_campaign":"https://www.reddit.com/r/spacex/comments/82njj5/iridium_next_constellation_mission_5_launch/","reddit_launch":"https://www.reddit.com/r/spacex/comments/88184i/rspacex_iridium_next_5_official_launch_discussion/","reddit_recovery":null,"reddit_media":"https://www.reddit.com/r/spacex/comments/88114l/rspacex_iridium5_media_thread_videos_images_gifs/","presskit":"http://www.spacex.com/sites/spacex/files/iridium-5_press_kit.pdf","article_link":"https://spaceflightnow.com/2018/03/30/iridium-messaging-network-gets-another-boost-from-spacex/","video_link":"https://www.youtube.com/watch?v=mp0TW8vkCLg"}
+     * details : Fifth Iridium NEXT mission to deploy ten Iridium NEXT satellites. Reused booster from third Iridium flight, and although controlled descent was performed, the booster was expended into the ocean. SpaceX planned a second recovery attempt of one half of the fairing using the specially modified boat Mr. Steven. However, the fairing's parafoil twisted during the recovery, which led to water impact at high speed
      */
 
     private int flight_number;
@@ -32,7 +32,6 @@ public class Response {
     private boolean launch_success;
     private LinksBean links;
     private String details;
-    private String mission_name;
 
     public int getFlight_number() {
         return flight_number;
@@ -130,21 +129,13 @@ public class Response {
         this.details = details;
     }
 
-    public String getIssion_name() {
-        return mission_name;
-    }
-
-    public void setIssion_name(String ission_name) {
-        mission_name = ission_name;
-    }
-
     public static class RocketBean {
         /**
-         * rocket_id : falcon1
-         * rocket_name : Falcon 1
-         * rocket_type : Merlin A
-         * first_stage : {"cores":[{"core_serial":"Merlin1A","flight":1,"block":null,"reused":false,"land_success":false,"landing_type":null,"landing_vehicle":null}]}
-         * second_stage : {"payloads":[{"payload_id":"FalconSAT-2","reused":false,"customers":["DARPA"],"payload_type":"Satellite","payload_mass_kg":20,"payload_mass_lbs":43,"orbit":"LEO"}]}
+         * rocket_id : falcon9
+         * rocket_name : Falcon 9
+         * rocket_type : FT
+         * first_stage : {"cores":[{"core_serial":"B1041","flight":2,"block":4,"reused":true,"land_success":null,"landing_type":null,"landing_vehicle":null}]}
+         * second_stage : {"payloads":[{"payload_id":"Iridium NEXT 5","reused":false,"customers":["Iridium Communications"],"payload_type":"Satellite","payload_mass_kg":9600,"payload_mass_lbs":21164.38,"orbit":"PO"}]}
          */
 
         private String rocket_id;
@@ -206,20 +197,20 @@ public class Response {
 
             public static class CoresBean {
                 /**
-                 * core_serial : Merlin1A
-                 * flight : 1
-                 * block : null
-                 * reused : false
-                 * land_success : false
+                 * core_serial : B1041
+                 * flight : 2
+                 * block : 4
+                 * reused : true
+                 * land_success : null
                  * landing_type : null
                  * landing_vehicle : null
                  */
 
                 private String core_serial;
                 private int flight;
-                private Object block;
+                private int block;
                 private boolean reused;
-                private boolean land_success;
+                private Object land_success;
                 private Object landing_type;
                 private Object landing_vehicle;
 
@@ -239,11 +230,11 @@ public class Response {
                     this.flight = flight;
                 }
 
-                public Object getBlock() {
+                public int getBlock() {
                     return block;
                 }
 
-                public void setBlock(Object block) {
+                public void setBlock(int block) {
                     this.block = block;
                 }
 
@@ -255,11 +246,11 @@ public class Response {
                     this.reused = reused;
                 }
 
-                public boolean isLand_success() {
+                public Object getLand_success() {
                     return land_success;
                 }
 
-                public void setLand_success(boolean land_success) {
+                public void setLand_success(Object land_success) {
                     this.land_success = land_success;
                 }
 
@@ -294,20 +285,20 @@ public class Response {
 
             public static class PayloadsBean {
                 /**
-                 * payload_id : FalconSAT-2
+                 * payload_id : Iridium NEXT 5
                  * reused : false
-                 * customers : ["DARPA"]
+                 * customers : ["Iridium Communications"]
                  * payload_type : Satellite
-                 * payload_mass_kg : 20
-                 * payload_mass_lbs : 43
-                 * orbit : LEO
+                 * payload_mass_kg : 9600
+                 * payload_mass_lbs : 21164.38
+                 * orbit : PO
                  */
 
                 private String payload_id;
                 private boolean reused;
                 private String payload_type;
                 private int payload_mass_kg;
-                private int payload_mass_lbs;
+                private double payload_mass_lbs;
                 private String orbit;
                 private List<String> customers;
 
@@ -343,11 +334,11 @@ public class Response {
                     this.payload_mass_kg = payload_mass_kg;
                 }
 
-                public int getPayload_mass_lbs() {
+                public double getPayload_mass_lbs() {
                     return payload_mass_lbs;
                 }
 
-                public void setPayload_mass_lbs(int payload_mass_lbs) {
+                public void setPayload_mass_lbs(double payload_mass_lbs) {
                     this.payload_mass_lbs = payload_mass_lbs;
                 }
 
@@ -372,23 +363,23 @@ public class Response {
 
     public static class TelemetryBean {
         /**
-         * flight_club : null
+         * flight_club : https://www.flightclub.io/results/?code=IRD5
          */
 
-        private Object flight_club;
+        private String flight_club;
 
-        public Object getFlight_club() {
+        public String getFlight_club() {
             return flight_club;
         }
 
-        public void setFlight_club(Object flight_club) {
+        public void setFlight_club(String flight_club) {
             this.flight_club = flight_club;
         }
     }
 
     public static class ReuseBean {
         /**
-         * core : false
+         * core : true
          * side_core1 : false
          * side_core2 : false
          * fairings : false
@@ -444,9 +435,9 @@ public class Response {
 
     public static class LaunchSiteBean {
         /**
-         * site_id : kwajalein_atoll
-         * site_name : Kwajalein Atoll
-         * site_name_long : Kwajalein Atoll Omelek Island
+         * site_id : vafb_slc_4e
+         * site_name : VAFB SLC 4E
+         * site_name_long : Vandenberg Air Force Base Space Launch Complex 4E
          */
 
         private String site_id;
@@ -480,14 +471,23 @@ public class Response {
 
     public static class LinksBean {
         /**
-         * mission_patch : https://images2.imgbox.com/3f/53/avrsUsUg_o.png
-         * mission_patch_small : https://images2.imgbox.com/dd/27/hcl56EiI_o.png
-         * article_link : https://www.space.com/2196-spacex-inaugural-falcon-1-rocket-lost-launch.html
-         * video_link : https://www.youtube.com/watch?v=0a_00nJ_Y88
+         * mission_patch : https://i.imgur.com/QUSoLHy.png
+         * reddit_campaign : https://www.reddit.com/r/spacex/comments/82njj5/iridium_next_constellation_mission_5_launch/
+         * reddit_launch : https://www.reddit.com/r/spacex/comments/88184i/rspacex_iridium_next_5_official_launch_discussion/
+         * reddit_recovery : null
+         * reddit_media : https://www.reddit.com/r/spacex/comments/88114l/rspacex_iridium5_media_thread_videos_images_gifs/
+         * presskit : http://www.spacex.com/sites/spacex/files/iridium-5_press_kit.pdf
+         * article_link : https://spaceflightnow.com/2018/03/30/iridium-messaging-network-gets-another-boost-from-spacex/
+         * video_link : https://www.youtube.com/watch?v=mp0TW8vkCLg
          */
 
         private String mission_patch;
         private String mission_patch_small;
+        private String reddit_campaign;
+        private String reddit_launch;
+        private Object reddit_recovery;
+        private String reddit_media;
+        private String presskit;
         private String article_link;
         private String video_link;
 
@@ -499,12 +499,44 @@ public class Response {
             mission_patch = ission_patch;
         }
 
-        public String getIssion_patch_small() {
-            return mission_patch_small;
+        public String getReddit_campaign() {
+            return reddit_campaign;
         }
 
-        public void setIssion_patch_small(String ission_patch_small) {
-            mission_patch_small = ission_patch_small;
+        public void setReddit_campaign(String reddit_campaign) {
+            this.reddit_campaign = reddit_campaign;
+        }
+
+        public String getReddit_launch() {
+            return reddit_launch;
+        }
+
+        public void setReddit_launch(String reddit_launch) {
+            this.reddit_launch = reddit_launch;
+        }
+
+        public Object getReddit_recovery() {
+            return reddit_recovery;
+        }
+
+        public void setReddit_recovery(Object reddit_recovery) {
+            this.reddit_recovery = reddit_recovery;
+        }
+
+        public String getReddit_media() {
+            return reddit_media;
+        }
+
+        public void setReddit_media(String reddit_media) {
+            this.reddit_media = reddit_media;
+        }
+
+        public String getPresskit() {
+            return presskit;
+        }
+
+        public void setPresskit(String presskit) {
+            this.presskit = presskit;
         }
 
         public String getArticle_link() {
@@ -521,6 +553,14 @@ public class Response {
 
         public void setVideo_link(String video_link) {
             this.video_link = video_link;
+        }
+
+        public String getMission_patch_small() {
+            return mission_patch_small;
+        }
+
+        public void setMission_patch_small(String mission_patch_small) {
+            this.mission_patch_small = mission_patch_small;
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.ivanovnv.spacex.SpaceXAPI;
 
 import com.example.ivanovnv.spacex.BuildConfig;
+import com.example.ivanovnv.spacex.SpaceXAPI.converter.DataConverterFactory;
 import com.google.gson.Gson;
 
 import okhttp3.OkHttpClient;
@@ -37,6 +38,7 @@ public class APIutils {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BuildConfig.SERVER_URL)
                     .client(getOkHttpClient())
+                    .addConverterFactory(new DataConverterFactory())
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .build();
