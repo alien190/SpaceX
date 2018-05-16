@@ -20,6 +20,13 @@ public class Launch {
     @ColumnInfo(name = "mission_patch_small")
     private String mission_patch_small;
 
+    @ColumnInfo(name = "payload_mass_kg_sum")
+    private int payload_mass_kg_sum;
+
+    @ColumnInfo(name = "payload_mass_lbs_sum")
+    private double payload_mass_lbs_sum;
+
+
     public int getFlight_number() {
         return flight_number;
     }
@@ -52,6 +59,23 @@ public class Launch {
         this.mission_patch_small = mission_patch_small;
     }
 
+
+    public int getPayload_mass_kg_sum() {
+        return payload_mass_kg_sum;
+    }
+
+    public void setPayload_mass_kg_sum(int payload_mass_kg) {
+        this.payload_mass_kg_sum = payload_mass_kg;
+    }
+
+    public double getPayload_mass_lbs_sum() {
+        return payload_mass_lbs_sum;
+    }
+
+    public void setPayload_mass_lbs_sum(double payload_mass_lbs) {
+        this.payload_mass_lbs_sum = payload_mass_lbs;
+    }
+
     public Launch() {
     }
 
@@ -60,6 +84,14 @@ public class Launch {
         launch_year = response.getLaunch_year();
         launch_date_unix = response.getLaunch_date_unix();
         mission_patch_small = response.getLinks().getMission_patch_small();
+
+        payload_mass_kg_sum = 0;
+        payload_mass_lbs_sum = 0;
+        for (Response.RocketBean.SecondStageBean.PayloadsBean payloads : response.getRocket().getSecond_stage().getPayloads()) {
+            payload_mass_kg_sum = +payloads.getPayload_mass_kg();
+            payload_mass_lbs_sum = +payloads.getPayload_mass_lbs();
+        }
+
     }
 
     @Override

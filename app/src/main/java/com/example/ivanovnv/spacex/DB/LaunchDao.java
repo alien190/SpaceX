@@ -17,4 +17,10 @@ public interface LaunchDao {
 
     @Query("SELECT * FROM launch")
     List<Launch> getLaunches();
+
+    @Query("SELECT COUNT(launch_year) AS count, " +
+            "SUM(payload_mass_kg_sum) AS payload_mass_kg_sum, " +
+            "SUM(payload_mass_lbs_sum) AS payload_mass_lbs_sum, " +
+            "launch_year FROM launch GROUP BY launch_year")
+    List<LaunchYearStatistic> getLaunchYearStatistic();
 }

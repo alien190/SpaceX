@@ -1,13 +1,17 @@
 package com.example.ivanovnv.spacex;
 
 import android.app.Application;
+import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Room;
+import android.arch.persistence.room.migration.Migration;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.ivanovnv.spacex.DB.LaunchDataBase;
 import com.example.ivanovnv.spacex.SpaceXAPI.APIutils;
 import com.example.ivanovnv.spacex.SpaceXAPI.Launch;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -35,6 +39,7 @@ public class App extends Application {
         super.onCreate();
 
         mDataBase = Room.databaseBuilder(getApplicationContext(), LaunchDataBase.class, "launch_database")
+                .addMigrations(MIGRATION_1_2)
                 .build();
 
 
@@ -78,6 +83,19 @@ public class App extends Application {
     public Observable<List<Launch>> getRefreshObservable() {
         return mRefreshObservable;
     }
+
+    static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE launch ADD COLUMN payload_mass_kg_sum INTEGET NOT NULL DEFAULT 0");
+            database.execSQL("ALTER TABLE launch ADD COLUMN payload_mass_lbs_sum REAL NOT NULL DEFAULT 0");
+            try {
+                database.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    };
 }
 
 
