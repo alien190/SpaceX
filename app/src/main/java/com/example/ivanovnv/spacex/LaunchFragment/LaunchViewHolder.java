@@ -1,4 +1,4 @@
-package com.example.ivanovnv.spacex.MainFragment;
+package com.example.ivanovnv.spacex.LaunchFragment;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -7,11 +7,11 @@ import android.widget.TextView;
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.SpaceXAPI.Launch;
 
-public class MainViewHolder extends RecyclerView.ViewHolder {
+public class LaunchViewHolder extends RecyclerView.ViewHolder {
 
     TextView mFlightNumber;
 
-    public MainViewHolder(View itemView) {
+    public LaunchViewHolder(View itemView) {
         super(itemView);
         mFlightNumber = itemView.findViewById(R.id.tv_flight_number);
     }

@@ -1,4 +1,4 @@
-package com.example.ivanovnv.spacex.MainFragment;
+package com.example.ivanovnv.spacex.LaunchFragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -28,17 +28,17 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainFragment extends Fragment {
+public class LaunchFragment extends Fragment {
 
     SwipeRefreshLayout mSwipeRefreshLayout;
     RecyclerView mRecyclerView;
-    MainAdapter mMainAdapter;
+    LaunchAdapter mLaunchAdapter;
 
-    public static MainFragment newInstance() {
+    public static LaunchFragment newInstance() {
 
         Bundle args = new Bundle();
 
-        MainFragment fragment = new MainFragment();
+        LaunchFragment fragment = new LaunchFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -64,9 +64,9 @@ public class MainFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mMainAdapter = new MainAdapter();
+        mLaunchAdapter = new LaunchAdapter();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(mMainAdapter);
+        mRecyclerView.setAdapter(mLaunchAdapter);
         updateDatabaseFromServer();
     }
 
@@ -87,7 +87,7 @@ public class MainFragment extends Fragment {
     void updateAdapterFromDataBase() {
         Single.create((SingleOnSubscribe<List<Launch>>)
                 emitter -> emitter.onSuccess(getLaunchDao().getLaunches()))
-                .flatMap(mMainAdapter.updateFromDataBase)
+                .flatMap(mLaunchAdapter.updateFromDataBase)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(integer -> {

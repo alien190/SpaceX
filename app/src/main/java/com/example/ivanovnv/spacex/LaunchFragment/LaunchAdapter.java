@@ -1,4 +1,4 @@
-package com.example.ivanovnv.spacex.MainFragment;
+package com.example.ivanovnv.spacex.LaunchFragment;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -19,21 +19,21 @@ import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.functions.Function;
 
-public class MainAdapter extends RecyclerView.Adapter<MainViewHolder> {
+public class LaunchAdapter extends RecyclerView.Adapter<LaunchViewHolder> {
 
     private List<Launch> mLaunches = new ArrayList<>();
 
 
     @NonNull
     @Override
-    public MainViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public LaunchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.li_launch, parent, false);
-        return new MainViewHolder(view);
+        return new LaunchViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MainViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull LaunchViewHolder holder, int position) {
         holder.bind(mLaunches.get(position));
     }
 
