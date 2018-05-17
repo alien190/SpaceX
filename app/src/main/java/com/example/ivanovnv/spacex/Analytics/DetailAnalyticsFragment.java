@@ -11,12 +11,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.example.ivanovnv.spacex.App;
 import com.example.ivanovnv.spacex.DB.LaunchDao;
-import com.example.ivanovnv.spacex.DB.LaunchYearStatistic;
 import com.example.ivanovnv.spacex.R;
-import com.example.ivanovnv.spacex.SingleFragmentActivity;
 import com.example.ivanovnv.spacex.SpaceXAPI.Launch;
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -37,16 +36,15 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
-import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -55,6 +53,7 @@ public class DetailAnalyticsFragment extends Fragment {
     private static final String YEAR_KEY = "com.example.ivanovnv.spacex.Analytics.YEAR_KEY";
     private CombinedChart mChart;
     private int mYear;
+    private ProgressBar mProgressBar;
 
     public static DetailAnalyticsFragment newInstance(float year) {
 
@@ -74,6 +73,18 @@ public class DetailAnalyticsFragment extends Fragment {
         mYear = (int) getArguments().getFloat(YEAR_KEY, 0);
 
         mChart = v.findViewById(R.id.detail_chart);
+
+        mProgressBar = v.findViewById(R.id.progress_bar);
+
+        // setChartDataFromDb(mYear);
+
+        return v;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
         mChart.getDescription().setEnabled(false);
         mChart.setBackgroundColor(Color.WHITE);
         mChart.setDrawGridBackground(false);
@@ -116,16 +127,6 @@ public class DetailAnalyticsFragment extends Fragment {
             }
         });
 
-
-       // setChartDataFromDb(mYear);
-
-        return v;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
         setChartDataFromDb(mYear);
 
     }
@@ -142,15 +143,20 @@ public class DetailAnalyticsFragment extends Fragment {
     private void setChartDataFromDb(int year) {
 
         Single.create((SingleOnSubscribe<List<Launch>>) emitter -> {
-            //TimeUnit.SECONDS.sleep(5);
-            Log.d("TAG", "setChartDataFromDb: tread " + Thread.currentThread().getId() + " emitter:" + emitter.toString());
             emitter.onSuccess(getLaunchDao().getLaunchesInYear(String.valueOf((year))));
+
         })
                 .subscribeOn(Schedulers.io())
                 .flatMap(launches -> Single.just(convertLaunchesToBarData(launches)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(barData -> mChart.setData(barData), Throwable::printStackTrace);
+                .doOnSubscribe(disposable -> mProgressBar.setVisibility(View.VISIBLE))
+                .doOnSuccess(combinedData -> mProgressBar.setVisibility(View.GONE))
+                .doOnError(throwable -> mProgressBar.setVisibility(View.GONE))
+                .subscribe(barData -> {
+                    mChart.setData(barData);
+                    mChart.invalidate();
+                }, Throwable::printStackTrace);
         //disposable.dispose();
 
     }
