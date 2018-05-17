@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.example.ivanovnv.spacex.App;
 import com.example.ivanovnv.spacex.DB.LaunchDao;
 import com.example.ivanovnv.spacex.DB.LaunchYearStatistic;
 import com.example.ivanovnv.spacex.R;
+import com.example.ivanovnv.spacex.SingleFragmentActivity;
 import com.example.ivanovnv.spacex.SpaceXAPI.Launch;
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -29,7 +31,9 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -37,16 +41,20 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class DetailAnalyticsFragment extends Fragment {
 
     private static final String YEAR_KEY = "com.example.ivanovnv.spacex.Analytics.YEAR_KEY";
     private CombinedChart mChart;
+    private int mYear;
 
     public static DetailAnalyticsFragment newInstance(float year) {
 
@@ -63,7 +71,7 @@ public class DetailAnalyticsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fr_detail_analytics, container, false);
-        float year = getArguments().getFloat(YEAR_KEY, 0);
+        mYear = (int) getArguments().getFloat(YEAR_KEY, 0);
 
         mChart = v.findViewById(R.id.detail_chart);
         mChart.getDescription().setEnabled(false);
@@ -96,7 +104,7 @@ public class DetailAnalyticsFragment extends Fragment {
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTH_SIDED);
         //xAxis.setAxisMinimum(2005f);
-       // xAxis.setAxisMaximum(2019f);
+        // xAxis.setAxisMaximum(2019f);
         xAxis.setGranularity(1f);
         //xAxis.setValueFormatter((value, axis) -> "" + ((int) value));
         xAxis.setValueFormatter(new IAxisValueFormatter() {
@@ -108,24 +116,37 @@ public class DetailAnalyticsFragment extends Fragment {
             }
         });
 
-        setChartDataFromDb((int)year);
+
+       // setChartDataFromDb(mYear);
 
         return v;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        setChartDataFromDb(mYear);
+
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //setChartDataFromDb(mYear);
 
     }
 
     @SuppressLint("CheckResult")
     private void setChartDataFromDb(int year) {
 
-        Single.create((SingleOnSubscribe<List<Launch>>)
-                emitter -> emitter.onSuccess(getLaunchDao().getLaunchesInYear(String.valueOf((year)))))
+        Single.create((SingleOnSubscribe<List<Launch>>) emitter -> {
+            //TimeUnit.SECONDS.sleep(5);
+            Log.d("TAG", "setChartDataFromDb: tread " + Thread.currentThread().getId() + " emitter:" + emitter.toString());
+            emitter.onSuccess(getLaunchDao().getLaunchesInYear(String.valueOf((year))));
+        })
+                .subscribeOn(Schedulers.io())
                 .flatMap(launches -> Single.just(convertLaunchesToBarData(launches)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -133,6 +154,7 @@ public class DetailAnalyticsFragment extends Fragment {
         //disposable.dispose();
 
     }
+
     private LaunchDao getLaunchDao() {
         return ((App) getActivity().getApplication()).getLaunchDataBase().getLaunchDao();
     }
@@ -180,6 +202,12 @@ public class DetailAnalyticsFragment extends Fragment {
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
 
         LineData lineData = new LineData(set);
+        lineData.setValueFormatter(new IValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                return "d " + value;
+            }
+        });
 
 
         combinedData.setData(lineData);
