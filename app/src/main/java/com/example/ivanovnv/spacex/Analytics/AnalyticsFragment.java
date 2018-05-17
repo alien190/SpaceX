@@ -14,12 +14,14 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.CombinedChart.DrawOrder;
 import com.example.ivanovnv.spacex.App;
 import com.example.ivanovnv.spacex.DB.LaunchDao;
 import com.example.ivanovnv.spacex.DB.LaunchYearStatistic;
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.SpaceXAPI.Launch;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
@@ -29,6 +31,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.CandleData;
+import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -56,7 +59,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class AnalyticsFragment extends Fragment implements OnChartGestureListener {
 
-    private LineChart mChart;
+    private CombinedChart mChart;
 
     public static AnalyticsFragment newInstance() {
 
@@ -73,38 +76,73 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
         View v = inflater.inflate(R.layout.fr_analytics, container, false);
 
         // create a new chart object
-        mChart = new LineChart(getActivity());
+//        mChart = new BarChart(getActivity());
+//        mChart.getDescription().setEnabled(false);
+//        mChart.setOnChartGestureListener(this);
+//
+//
+//        mChart.setDrawGridBackground(false);
+//        mChart.setDrawBarShadow(false);
+//
+//        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Light.ttf");
+//
+//        //mChart.setData(generateBarData(1, 20000, 12));
+//
+//        Legend l = mChart.getLegend();
+//        l.setTypeface(tf);
+//
+//        YAxis leftAxis = mChart.getAxisLeft();
+//        leftAxis.setTypeface(tf);
+//        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+//
+//        mChart.getAxisRight().setEnabled(false);
+//
+//        XAxis xAxis = mChart.getXAxis();
+//        xAxis.setEnabled(true);
+//        xAxis.setValueFormatter((value, axis) -> "" + ((int)value));
+//
+//        // programatically add the chart
+//        FrameLayout parent = v.findViewById(R.id.parentLayout);
+//        parent.addView(mChart);
+
+        mChart = v.findViewById(R.id.chart1);
         mChart.getDescription().setEnabled(false);
-        mChart.setOnChartGestureListener(this);
-
-
+        mChart.setBackgroundColor(Color.WHITE);
         mChart.setDrawGridBackground(false);
-       // mChart.setDrawBarShadow(false);
+        mChart.setDrawBarShadow(false);
+        mChart.setHighlightFullBarEnabled(false);
 
-        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Light.ttf");
-
-        //mChart.setData(generateBarData(1, 20000, 12));
-
-        Legend l = mChart.getLegend();
-        l.setTypeface(tf);
-
-        YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setTypeface(tf);
-        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-
-        mChart.getAxisRight().setEnabled(false);
-
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setEnabled(true);
-        xAxis.setValueFormatter((value, axis) -> {
-            Date date = new Date((long) (value * 86400000));
-            DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
-            return df.format(date);
+        // draw bars behind lines
+        mChart.setDrawOrder(new DrawOrder[]{
+                DrawOrder.BAR, DrawOrder.BUBBLE, DrawOrder.CANDLE, DrawOrder.LINE, DrawOrder.SCATTER
         });
 
-        // programatically add the chart
-        FrameLayout parent = v.findViewById(R.id.parentLayout);
-        parent.addView(mChart);
+        Legend l = mChart.getLegend();
+        l.setWordWrapEnabled(true);
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        l.setDrawInside(false);
+
+        YAxis rightAxis = mChart.getAxisRight();
+        rightAxis.setDrawGridLines(false);
+        rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+        YAxis leftAxis = mChart.getAxisLeft();
+        leftAxis.setDrawGridLines(false);
+        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+        XAxis xAxis = mChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTH_SIDED);
+        xAxis.setAxisMinimum(2005f);
+        xAxis.setAxisMaximum(2019f);
+        xAxis.setGranularity(1f);
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return "" + ((int) value);
+            }
+        });
 
         setBarDataFromDb();
 
@@ -152,36 +190,71 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
     }
 
 
-
     private BarData setBarDataFromDb() {
         Single.create((SingleOnSubscribe<List<LaunchYearStatistic>>)
                 emitter -> emitter.onSuccess(getLaunchDao().getLaunchYearStatistic()))
                 .flatMap(launchYearStatistic -> Single.just(convertLaunchesToBarData(launchYearStatistic)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(lineData ->{}, Throwable::printStackTrace);
+                .subscribe(barData -> mChart.setData(barData), Throwable::printStackTrace);
         //disposable.dispose();
         return null;
     }
 
-    private BarData convertLaunchesToBarData(List<LaunchYearStatistic> launchYearStatistics) {
+    private CombinedData convertLaunchesToBarData(List<LaunchYearStatistic> launchYearStatistics) {
         Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
+        CombinedData combinedData = new CombinedData();
 
         ArrayList<IBarDataSet> sets = new ArrayList<>();
-        ArrayList<BarEntry> entries = new ArrayList<>();
+        ArrayList<BarEntry> entriesCount = new ArrayList<>();
+        ArrayList<Entry> entriesWeight = new ArrayList<>();
 
-//        for (LaunchYearStatistic launchYearStatistic : launchYearStatistics) {
-//            long year = launch.;
-//            entries.add(new BarEntry(days, launch.getPayload_mass_kg_sum(), launch));
-//        }
-//
-//        BarDataSet ds = new BarDataSet(entries, "label");
-//        ds.setColors(Color.rgb(0, 0, 0));
-//        sets.add(ds);
+        for (LaunchYearStatistic launchYearStatistic : launchYearStatistics) {
+            int year = Integer.valueOf(launchYearStatistic.getLaunch_year());
+            entriesCount.add(new BarEntry(year, launchYearStatistic.getCount()));
+            entriesWeight.add(new Entry(year, launchYearStatistic.getPayload_mass_kg_sum()));
+        }
+
+        BarDataSet dsCount = new BarDataSet(entriesCount, "count");
+        dsCount.setColors(Color.rgb(0, 0, 0));
+        dsCount.setAxisDependency(YAxis.AxisDependency.RIGHT);
+        sets.add(dsCount);
+
+//        BarDataSet dsWight = new BarDataSet(entriesWeight, "weight");
+//        dsWight.setColors(Color.rgb(0, 255, 0));
+//        sets.add(dsWight);
 //
 //        BarData d = new BarData(sets);
 //        d.setValueTypeface(tf);
-        return null;
+
+
+        BarData barData = new BarData(sets);
+        barData.setValueTypeface(tf);
+
+
+        combinedData.setData(barData);
+
+
+        LineDataSet set = new LineDataSet(entriesWeight, "Line DataSet");
+        int color = Color.rgb(240, 150, 40);
+        set.setColor(color);
+        set.setLineWidth(2.5f);
+        set.setCircleColor(color);
+        set.setCircleRadius(5f);
+        set.setFillColor(color);
+        set.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        set.setDrawValues(true);
+        set.setValueTextSize(10f);
+        set.setValueTextColor(color);
+
+        set.setAxisDependency(YAxis.AxisDependency.LEFT);
+
+        LineData lineData = new LineData(set);
+
+
+        combinedData.setData(lineData);
+
+        return combinedData;
 //
 //        ArrayList<Entry> entries = new ArrayList<>();
 //        for (Launch launch : launches)  {
@@ -194,38 +267,40 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
 //        return data;
     }
 
-    protected BarData generateBarData(int dataSets, float range, int count) {
-
-        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
-
-        ArrayList<IBarDataSet> sets = new ArrayList<IBarDataSet>();
-
-        for (int i = 0; i < dataSets; i++) {
-
-            ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
-
-//            entries = FileUtils.loadEntriesFromAssets(getActivity().getAssets(), "stacked_bars.txt");
-
-            for (int j = 0; j < count; j++) {
-                entries.add(new BarEntry(j, (float) (Math.random() * range) + range / 4));
-            }
-
-            BarDataSet ds = new BarDataSet(entries, getLabel(i));
-            ds.setColors(Color.rgb(0, 0, 0));
-            sets.add(ds);
-        }
-
-        BarData d = new BarData(sets);
-        d.setValueTypeface(tf);
-        return d;
-    }
-
-    private String[] mLabels = new String[]{"Company A", "Company B", "Company C", "Company D", "Company E", "Company F"};
-//    private String[] mXVals = new String[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec" };
-
-    private String getLabel(int i) {
-        return mLabels[i];
-    }
+//    protected CombinedData generateBarData(int dataSets, float range, int count) {
+//
+//        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
+//
+//        ArrayList<IBarDataSet> sets = new ArrayList<IBarDataSet>();
+//
+//        for (int i = 0; i < dataSets; i++) {
+//
+//            ArrayList<BarEntry> entries = new ArrayList<BarEntry>();
+//
+//            for (int j = 0; j < count; j++) {
+//                entries.add(new BarEntry(j, (float) (Math.random() * range) + range / 4));
+//            }
+//
+//            BarDataSet ds = new BarDataSet(entries, getLabel(i));
+//            ds.setColors(Color.rgb(0, 0, 0));
+//            sets.add(ds);
+//        }
+//
+//        BarData barData = new BarData(sets);
+//        barData.setValueTypeface(tf);
+//
+//        CombinedData combinedData = new CombinedData();
+//
+//        combinedData.setData(barData);
+//        return combinedData;
+//    }
+//
+//    private String[] mLabels = new String[]{"Company A", "Company B", "Company C", "Company D", "Company E", "Company F"};
+////    private String[] mXVals = new String[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec" };
+//
+//    private String getLabel(int i) {
+//        return mLabels[i];
+//    }
 
     private LaunchDao getLaunchDao() {
         return ((App) getActivity().getApplication()).getLaunchDataBase().getLaunchDao();
