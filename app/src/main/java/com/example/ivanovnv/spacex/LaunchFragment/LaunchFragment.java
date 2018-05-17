@@ -46,7 +46,7 @@ public class LaunchFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fr_main, container, false);
+        View view = inflater.inflate(R.layout.fr_launches_list, container, false);
         mSwipeRefreshLayout = view.findViewById(R.id.swipelayout);
         mRecyclerView = view.findViewById(R.id.rv_main);
 

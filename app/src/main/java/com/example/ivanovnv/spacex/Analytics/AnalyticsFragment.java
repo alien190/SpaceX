@@ -1,5 +1,7 @@
 package com.example.ivanovnv.spacex.Analytics;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -10,54 +12,38 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.CombinedChart.DrawOrder;
 import com.example.ivanovnv.spacex.App;
 import com.example.ivanovnv.spacex.DB.LaunchDao;
 import com.example.ivanovnv.spacex.DB.LaunchYearStatistic;
 import com.example.ivanovnv.spacex.R;
-import com.example.ivanovnv.spacex.SpaceXAPI.Launch;
-import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.CombinedChart;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.CandleData;
 import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Single;
 import io.reactivex.SingleOnSubscribe;
-import io.reactivex.SingleSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-public class AnalyticsFragment extends Fragment implements OnChartGestureListener {
+public class AnalyticsFragment extends Fragment implements OnChartGestureListener, OnChartValueSelectedListener{
 
     private CombinedChart mChart;
 
@@ -75,42 +61,13 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fr_analytics, container, false);
 
-        // create a new chart object
-//        mChart = new BarChart(getActivity());
-//        mChart.getDescription().setEnabled(false);
-//        mChart.setOnChartGestureListener(this);
-//
-//
-//        mChart.setDrawGridBackground(false);
-//        mChart.setDrawBarShadow(false);
-//
-//        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Light.ttf");
-//
-//        //mChart.setData(generateBarData(1, 20000, 12));
-//
-//        Legend l = mChart.getLegend();
-//        l.setTypeface(tf);
-//
-//        YAxis leftAxis = mChart.getAxisLeft();
-//        leftAxis.setTypeface(tf);
-//        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-//
-//        mChart.getAxisRight().setEnabled(false);
-//
-//        XAxis xAxis = mChart.getXAxis();
-//        xAxis.setEnabled(true);
-//        xAxis.setValueFormatter((value, axis) -> "" + ((int)value));
-//
-//        // programatically add the chart
-//        FrameLayout parent = v.findViewById(R.id.parentLayout);
-//        parent.addView(mChart);
-
         mChart = v.findViewById(R.id.chart1);
         mChart.getDescription().setEnabled(false);
         mChart.setBackgroundColor(Color.WHITE);
         mChart.setDrawGridBackground(false);
         mChart.setDrawBarShadow(false);
         mChart.setHighlightFullBarEnabled(false);
+        mChart.setOnChartValueSelectedListener(this);
 
         // draw bars behind lines
         mChart.setDrawOrder(new DrawOrder[]{
@@ -137,14 +94,9 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
         xAxis.setAxisMinimum(2005f);
         xAxis.setAxisMaximum(2019f);
         xAxis.setGranularity(1f);
-        xAxis.setValueFormatter(new IAxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                return "" + ((int) value);
-            }
-        });
+        xAxis.setValueFormatter((value, axis) -> "" + ((int) value));
 
-        setBarDataFromDb();
+        setChartDataFromDb();
 
         return v;
     }
@@ -171,6 +123,7 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
 
     @Override
     public void onChartSingleTapped(MotionEvent me) {
+        int i = 1;
 
     }
 
@@ -181,7 +134,7 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
 
     @Override
     public void onChartScale(MotionEvent me, float scaleX, float scaleY) {
-
+        int i = 1;
     }
 
     @Override
@@ -189,36 +142,91 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
 
     }
 
-
-    private BarData setBarDataFromDb() {
-        Single.create((SingleOnSubscribe<List<LaunchYearStatistic>>)
-                emitter -> emitter.onSuccess(getLaunchDao().getLaunchYearStatistic()))
-                .flatMap(launchYearStatistic -> Single.just(convertLaunchesToBarData(launchYearStatistic)))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(barData -> mChart.setData(barData), Throwable::printStackTrace);
-        //disposable.dispose();
-        return null;
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
+        try {
+            Intent intent = new Intent();
+            intent.setClass(getContext(), DetailAnalyticsActivity.class);
+            intent.putExtra(DetailAnalyticsActivity.YEAR_KEY, e.getX());
+            startActivity(intent);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
     }
 
-    private CombinedData convertLaunchesToBarData(List<LaunchYearStatistic> launchYearStatistics) {
+    @Override
+    public void onNothingSelected() {
+
+    }
+
+    @SuppressLint("CheckResult")
+    private void setChartDataFromDb() {
+
+        Single<List<LaunchYearStatistic>> allLaunches = Single.create((SingleOnSubscribe<List<LaunchYearStatistic>>)
+                emitter -> emitter.onSuccess(getLaunchDao().getLaunchYearStatistic()))
+                //.flatMap(launchYearStatistic -> Single.just(convertLaunchesToBarData(launchYearStatistic)))
+                .subscribeOn(Schedulers.io());
+
+        Single<List<LaunchYearStatistic>> failedLaunches = Single.create((SingleOnSubscribe<List<LaunchYearStatistic>>)
+                emitter -> emitter.onSuccess(getLaunchDao().getLaunchYearStatisticFailed()))
+                //.flatMap(launchYearStatistic -> Single.just(convertLaunchesToBarData(launchYearStatistic)))
+                .subscribeOn(Schedulers.io());
+
+        Single.zip(allLaunches, failedLaunches, this::convertLaunchesToBarData).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(combinedData -> mChart.setData(combinedData), Throwable::printStackTrace);
+
+//        Single.create((SingleOnSubscribe<List<LaunchYearStatistic>>)
+//                emitter -> emitter.onSuccess(getLaunchDao().getLaunchYearStatistic()))
+//                .flatMap(launchYearStatistic -> Single.just(convertLaunchesToBarData(launchYearStatistic)))
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(barData -> mChart.setData(barData), Throwable::printStackTrace);
+        //disposable.dispose();
+        //return null;
+    }
+
+    private CombinedData convertLaunchesToBarData(List<LaunchYearStatistic> launchYearStatisticsAll, List<LaunchYearStatistic> launchYearStatisticsFailed) {
         Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
         CombinedData combinedData = new CombinedData();
 
         ArrayList<IBarDataSet> sets = new ArrayList<>();
-        ArrayList<BarEntry> entriesCount = new ArrayList<>();
+        ArrayList<BarEntry> entriesCountAll = new ArrayList<>();
+        ArrayList<BarEntry> entriesCountFailed = new ArrayList<>();
         ArrayList<Entry> entriesWeight = new ArrayList<>();
 
-        for (LaunchYearStatistic launchYearStatistic : launchYearStatistics) {
+        for (LaunchYearStatistic launchYearStatistic : launchYearStatisticsAll) {
             int year = Integer.valueOf(launchYearStatistic.getLaunch_year());
-            entriesCount.add(new BarEntry(year, launchYearStatistic.getCount()));
-            entriesWeight.add(new Entry(year, launchYearStatistic.getPayload_mass_kg_sum()));
+            entriesCountAll.add(new BarEntry(year, launchYearStatistic.getCount()));
+            int payload_mass_kg_sum = launchYearStatistic.getPayload_mass_kg_sum();
+
+            for (LaunchYearStatistic launchYearStatisticFailed : launchYearStatisticsFailed) {
+                if (launchYearStatisticFailed.getLaunch_year().equals(launchYearStatistic.getLaunch_year())) {
+                    payload_mass_kg_sum = payload_mass_kg_sum - launchYearStatisticFailed.getPayload_mass_kg_sum();
+                }
+            }
+
+            entriesWeight.add(new Entry(year, payload_mass_kg_sum));
         }
 
-        BarDataSet dsCount = new BarDataSet(entriesCount, "count");
+        BarDataSet dsCount = new BarDataSet(entriesCountAll, "Count overall");
         dsCount.setColors(Color.rgb(0, 0, 0));
         dsCount.setAxisDependency(YAxis.AxisDependency.RIGHT);
+        dsCount.setValueTextSize(10f);
         sets.add(dsCount);
+
+
+        for (LaunchYearStatistic launchYearStatistic : launchYearStatisticsFailed) {
+            int year = Integer.valueOf(launchYearStatistic.getLaunch_year());
+            entriesCountFailed.add(new BarEntry(year, launchYearStatistic.getCount()));
+        }
+
+        BarDataSet dsCountFailed = new BarDataSet(entriesCountFailed, "Count failed");
+        dsCountFailed.setColors(Color.rgb(255, 0, 0));
+        dsCountFailed.setValueTextColor(Color.rgb(255, 0, 0));
+        dsCountFailed.setValueTextSize(10f);
+        dsCountFailed.setAxisDependency(YAxis.AxisDependency.RIGHT);
+        sets.add(dsCountFailed);
 
 //        BarDataSet dsWight = new BarDataSet(entriesWeight, "weight");
 //        dsWight.setColors(Color.rgb(0, 255, 0));
@@ -235,7 +243,7 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
         combinedData.setData(barData);
 
 
-        LineDataSet set = new LineDataSet(entriesWeight, "Line DataSet");
+        LineDataSet set = new LineDataSet(entriesWeight, "Weight");
         int color = Color.rgb(240, 150, 40);
         set.setColor(color);
         set.setLineWidth(2.5f);

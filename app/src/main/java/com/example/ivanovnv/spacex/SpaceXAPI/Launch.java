@@ -26,6 +26,8 @@ public class Launch {
     @ColumnInfo(name = "payload_mass_lbs_sum")
     private double payload_mass_lbs_sum;
 
+    @ColumnInfo(name = "launch_success")
+    private boolean launch_success;
 
     public int getFlight_number() {
         return flight_number;
@@ -76,6 +78,14 @@ public class Launch {
         this.payload_mass_lbs_sum = payload_mass_lbs;
     }
 
+    public boolean isLaunch_success() {
+        return launch_success;
+    }
+
+    public void setLaunch_success(boolean launch_success) {
+        this.launch_success = launch_success;
+    }
+
     public Launch() {
     }
 
@@ -84,6 +94,7 @@ public class Launch {
         launch_year = response.getLaunch_year();
         launch_date_unix = response.getLaunch_date_unix();
         mission_patch_small = response.getLinks().getMission_patch_small();
+        launch_success = response.isLaunch_success();
 
         payload_mass_kg_sum = 0;
         payload_mass_lbs_sum = 0;

@@ -39,7 +39,7 @@ public class App extends Application {
         super.onCreate();
 
         mDataBase = Room.databaseBuilder(getApplicationContext(), LaunchDataBase.class, "launch_database")
-                .addMigrations(MIGRATION_1_2)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                 .build();
 
 
@@ -87,13 +87,29 @@ public class App extends Application {
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE launch ADD COLUMN payload_mass_kg_sum INTEGET NOT NULL DEFAULT 0");
-            database.execSQL("ALTER TABLE launch ADD COLUMN payload_mass_lbs_sum REAL NOT NULL DEFAULT 0");
             try {
-                database.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+                database.execSQL("ALTER TABLE launch ADD COLUMN payload_mass_kg_sum INTEGET NOT NULL DEFAULT 0");
+                database.execSQL("ALTER TABLE launch ADD COLUMN payload_mass_lbs_sum REAL NOT NULL DEFAULT 0");
+            } catch (Throwable t) {
+                t.printStackTrace();
             }
+        }
+    };
+
+    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            try {
+                database.execSQL("ALTER TABLE launch ADD COLUMN launch_success INTEGER NOT NULL DEFAULT 0");
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+
+//            try {
+//                database.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
         }
     };
 }
