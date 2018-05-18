@@ -7,11 +7,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 
 import com.example.ivanovnv.spacex.App;
 import com.example.ivanovnv.spacex.DB.LaunchDao;
@@ -30,22 +31,17 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class DetailAnalyticsFragment extends Fragment {
@@ -54,6 +50,7 @@ public class DetailAnalyticsFragment extends Fragment {
     private CombinedChart mChart;
     private int mYear;
     private ProgressBar mProgressBar;
+    private Switch mSwitch;
 
     public static DetailAnalyticsFragment newInstance(float year) {
 
@@ -76,6 +73,10 @@ public class DetailAnalyticsFragment extends Fragment {
 
         mProgressBar = v.findViewById(R.id.progress_bar);
 
+        mSwitch = v.findViewById(R.id.type_switch);
+
+        mSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> setChartDataFromDb(mYear, isChecked));
+
         // setChartDataFromDb(mYear);
 
         return v;
@@ -84,6 +85,8 @@ public class DetailAnalyticsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        getActivity().setTitle("Статистика пусков за " + mYear + " год");
 
         mChart.getDescription().setEnabled(false);
         mChart.setBackgroundColor(Color.WHITE);
@@ -127,7 +130,10 @@ public class DetailAnalyticsFragment extends Fragment {
             }
         });
 
-        setChartDataFromDb(mYear);
+        CustomCombinedDataRenderer mCustomCombinedDataRenderer = new CustomCombinedDataRenderer(mChart, mChart.getAnimator(), mChart.getViewPortHandler());
+        mChart.setRenderer(mCustomCombinedDataRenderer);
+
+        setChartDataFromDb(mYear, mSwitch.isChecked());
 
     }
 
@@ -140,14 +146,14 @@ public class DetailAnalyticsFragment extends Fragment {
     }
 
     @SuppressLint("CheckResult")
-    private void setChartDataFromDb(int year) {
+    private void setChartDataFromDb(int year, boolean cumulative) {
 
         Single.create((SingleOnSubscribe<List<Launch>>) emitter -> {
             emitter.onSuccess(getLaunchDao().getLaunchesInYear(String.valueOf((year))));
 
         })
                 .subscribeOn(Schedulers.io())
-                .flatMap(launches -> Single.just(convertLaunchesToBarData(launches)))
+                .flatMap(launches -> Single.just(convertLaunchesToBarData(launches, cumulative)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> mProgressBar.setVisibility(View.VISIBLE))
@@ -165,32 +171,50 @@ public class DetailAnalyticsFragment extends Fragment {
         return ((App) getActivity().getApplication()).getLaunchDataBase().getLaunchDao();
     }
 
-    private CombinedData convertLaunchesToBarData(List<Launch> launches) {
+    private CombinedData convertLaunchesToBarData(List<Launch> launches, boolean cumulative) {
 
         Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
         CombinedData combinedData = new CombinedData();
 
         ArrayList<IBarDataSet> sets = new ArrayList<>();
-        ArrayList<BarEntry> entriesCount = new ArrayList<>();
+        //ArrayList<BarEntry> entriesCount = new ArrayList<>();
         ArrayList<Entry> entriesWeight = new ArrayList<>();
+
+        float prevValue = 0;
+        float newValue;
 
         for (Launch launch : launches) {
             int day = launch.getLaunch_date_unix() / 86400;
-            entriesCount.add(new BarEntry(day, 1));
-            entriesWeight.add(new Entry(day, launch.getPayload_mass_kg_sum()));
+
+            if (cumulative) {
+
+                if(launch.isLaunch_success()) newValue = launch.getPayload_mass_kg_sum();
+                else newValue = -launch.getPayload_mass_kg_sum();
+
+                entriesWeight.add(new Entry(day, prevValue + newValue));
+                prevValue = prevValue + newValue;
+
+            } else entriesWeight.add(new Entry(day, launch.getPayload_mass_kg_sum()));
+
         }
 
-        BarDataSet dsCount = new BarDataSet(entriesCount, "Launches");
-        dsCount.setColors(Color.rgb(0, 0, 0));
-        dsCount.setAxisDependency(YAxis.AxisDependency.RIGHT);
-        dsCount.setValueTextSize(10f);
-        sets.add(dsCount);
+//        BarDataSet dsCount = new BarDataSet(entriesCount, "Launches");
+//        dsCount.setColors(Color.rgb(0, 0, 0));
+//        dsCount.setAxisDependency(YAxis.AxisDependency.RIGHT);
+//        dsCount.setValueTextSize(10f);
+//
+//        sets.add(dsCount);
+//
+//        BarData barData = new BarData(sets);
+//        barData.setValueTypeface(tf);
+//        barData.setValueFormatter((value, entry, dataSetIndex, viewPortHandler) -> {
+//            Date date = new Date((long) entry.getX() * 86400000);
+//            DateFormat dateFormat = new SimpleDateFormat("dd.MM");
+//            return dateFormat.format(date);
+//        });
 
-        BarData barData = new BarData(sets);
-        barData.setValueTypeface(tf);
 
-
-        combinedData.setData(barData);
+        //       combinedData.setData(barData);
 
 
         LineDataSet set = new LineDataSet(entriesWeight, "Weight");
@@ -208,16 +232,17 @@ public class DetailAnalyticsFragment extends Fragment {
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
 
         LineData lineData = new LineData(set);
-        lineData.setValueFormatter(new IValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                return "d " + value;
-            }
-        });
+//        lineData.setValueFormatter(new IValueFormatter() {
+//            @Override
+//            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+//                return "d " + value;
+//            }
+//        });
 
 
         combinedData.setData(lineData);
 
         return combinedData;
     }
+
 }
