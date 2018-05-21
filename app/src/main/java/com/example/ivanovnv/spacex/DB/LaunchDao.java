@@ -15,7 +15,7 @@ public interface LaunchDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertLaunches(List<Launch> launches);
 
-    @Query("SELECT * FROM launch")
+    @Query("SELECT * FROM launch ORDER BY launch_date_unix DESC")
     List<Launch> getLaunches();
 
     @Query("SELECT COUNT(launch_year) AS count, " +

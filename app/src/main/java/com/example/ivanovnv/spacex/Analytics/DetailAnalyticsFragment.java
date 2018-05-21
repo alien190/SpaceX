@@ -31,7 +31,9 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -107,12 +109,13 @@ public class DetailAnalyticsFragment extends Fragment {
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         l.setDrawInside(false);
 
-        YAxis rightAxis = mChart.getAxisRight();
-        rightAxis.setDrawGridLines(false);
-        rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+//        YAxis rightAxis = mChart.getAxisRight();
+//        rightAxis.setDrawGridLines(false);
+//        rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
 
         YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setDrawGridLines(false);
+        leftAxis.setDrawGridLines(true);
         leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
         XAxis xAxis = mChart.getXAxis();
@@ -121,14 +124,7 @@ public class DetailAnalyticsFragment extends Fragment {
         // xAxis.setAxisMaximum(2019f);
         xAxis.setGranularity(1f);
         //xAxis.setValueFormatter((value, axis) -> "" + ((int) value));
-        xAxis.setValueFormatter(new IAxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                Date date = new Date((long) value * 86400000);
-                DateFormat dateFormat = new SimpleDateFormat("dd.MM");
-                return dateFormat.format(date);
-            }
-        });
+        xAxis.setValueFormatter((value, axis) -> formatValue((long) value * 86400000));
 
         CustomCombinedDataRenderer mCustomCombinedDataRenderer = new CustomCombinedDataRenderer(mChart, mChart.getAnimator(), mChart.getViewPortHandler());
         mChart.setRenderer(mCustomCombinedDataRenderer);
@@ -188,7 +184,7 @@ public class DetailAnalyticsFragment extends Fragment {
 
             if (cumulative) {
 
-                if(launch.isLaunch_success()) newValue = launch.getPayload_mass_kg_sum();
+                if (launch.isLaunch_success()) newValue = launch.getPayload_mass_kg_sum();
                 else newValue = -launch.getPayload_mass_kg_sum();
 
                 entriesWeight.add(new Entry(day, prevValue + newValue));
@@ -217,7 +213,7 @@ public class DetailAnalyticsFragment extends Fragment {
         //       combinedData.setData(barData);
 
 
-        LineDataSet set = new LineDataSet(entriesWeight, "Weight");
+        LineDataSet set = new LineDataSet(entriesWeight, getString(R.string.weight));
         int color = Color.rgb(240, 150, 40);
         set.setColor(color);
         set.setLineWidth(2.5f);
@@ -232,12 +228,7 @@ public class DetailAnalyticsFragment extends Fragment {
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
 
         LineData lineData = new LineData(set);
-//        lineData.setValueFormatter(new IValueFormatter() {
-//            @Override
-//            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-//                return "d " + value;
-//            }
-//        });
+        lineData.setValueFormatter((value, entry, dataSetIndex, viewPortHandler) -> formatValue((long) entry.getX() * 86400000));
 
 
         combinedData.setData(lineData);
@@ -245,4 +236,9 @@ public class DetailAnalyticsFragment extends Fragment {
         return combinedData;
     }
 
+    private String formatValue(long value) {
+        Date date = new Date(value);
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM");
+        return dateFormat.format(date);
+    }
 }

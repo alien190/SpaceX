@@ -79,8 +79,8 @@ public class LaunchFragment extends Fragment {
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(launches -> {
-                    updateAdapterFromDataBase();}, Throwable::printStackTrace);
+                .subscribe(launches ->
+                    updateAdapterFromDataBase(), Throwable::printStackTrace);
     }
 
     @SuppressLint("CheckResult")
@@ -91,7 +91,7 @@ public class LaunchFragment extends Fragment {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(integer -> {
-                    Toast.makeText(getActivity(), "" + integer, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "" + integer, Toast.LENGTH_SHORT).show();
                 }, Throwable::printStackTrace);
 
 

@@ -32,6 +32,7 @@ public class Response {
     private boolean launch_success;
     private LinksBean links;
     private String details;
+    private String mission_name;
 
     public int getFlight_number() {
         return flight_number;
@@ -127,6 +128,14 @@ public class Response {
 
     public void setDetails(String details) {
         this.details = details;
+    }
+
+    public String getMission_name() {
+        return mission_name;
+    }
+
+    public void setMission_name(String mission_name) {
+        this.mission_name = mission_name;
     }
 
     public static class RocketBean {

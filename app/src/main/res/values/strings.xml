@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">SpaceX</string>
+    <string name="weight">Вес полезной нагрузки, кг</string>
+    <string name="launch_count">Общее количество запусков</string>
+    <string name="launch_failed">Количество аварийных запусков</string>
+    <string name="launches">Список запусков</string>
+    <string name="analytics">Аналитика</string>
+    <string name="flight_number">Номер полета: </string>
+    <string name="mission_name">Название миссии: </string>
+    <string name="rocket_name">Название рокеты: </string>
+    <string name="launch_date_utc">Дата запуска (UTC): </string>
 </resources>

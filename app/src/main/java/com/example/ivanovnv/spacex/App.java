@@ -39,7 +39,7 @@ public class App extends Application {
         super.onCreate();
 
         mDataBase = Room.databaseBuilder(getApplicationContext(), LaunchDataBase.class, "launch_database")
-                .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
                 .build();
 
 
@@ -105,34 +105,44 @@ public class App extends Application {
                 t.printStackTrace();
             }
 
-//            try {
-//                database.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
         }
     };
+
+    static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            try {
+                database.execSQL("ALTER TABLE launch ADD COLUMN mission_name TEXT");
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+
+        }
+    };
+
+    static final Migration MIGRATION_4_5 = new Migration(4, 5) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            try {
+                database.execSQL("ALTER TABLE launch ADD COLUMN details TEXT");
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+
+        }
+    };
+
+    static final Migration MIGRATION_5_6 = new Migration(5, 6) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            try {
+                database.execSQL("ALTER TABLE launch ADD COLUMN rocket_name TEXT");
+                database.execSQL("ALTER TABLE launch ADD COLUMN launch_date_utc TEXT");
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+
+        }
+    };
+
 }
-
-
-//new SingleObserver<List<Launch>>() {
-//@Override
-//public void onSubscribe(Disposable d) {
-//        }
-//
-//@Override
-//public void onSuccess(List<Launch> launches) {
-//        try {
-//        TimeUnit.SECONDS.sleep(5);
-//        } catch (Throwable t) {
-//        t.printStackTrace();
-//        }
-//        mDataBase.getLaunchDao().insertLaunches(launches);
-//        Log.d("TAG", "onSuccess: insertLaunches");
-//        }
-//
-//@Override
-//public void onError(Throwable e) {
-//        e.printStackTrace();
-//        }
-//        }

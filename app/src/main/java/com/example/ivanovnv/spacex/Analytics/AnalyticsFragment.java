@@ -209,7 +209,7 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
             entriesWeight.add(new Entry(year, payload_mass_kg_sum));
         }
 
-        BarDataSet dsCount = new BarDataSet(entriesCountAll, "Count overall");
+        BarDataSet dsCount = new BarDataSet(entriesCountAll, getString(R.string.launch_count));
         dsCount.setColors(Color.rgb(0, 0, 0));
         dsCount.setAxisDependency(YAxis.AxisDependency.RIGHT);
         dsCount.setValueTextSize(10f);
@@ -221,7 +221,7 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
             entriesCountFailed.add(new BarEntry(year, launchYearStatistic.getCount()));
         }
 
-        BarDataSet dsCountFailed = new BarDataSet(entriesCountFailed, "Count failed");
+        BarDataSet dsCountFailed = new BarDataSet(entriesCountFailed, getString(R.string.launch_failed));
         dsCountFailed.setColors(Color.rgb(255, 0, 0));
         dsCountFailed.setValueTextColor(Color.rgb(255, 0, 0));
         dsCountFailed.setValueTextSize(10f);
@@ -243,7 +243,7 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
         combinedData.setData(barData);
 
 
-        LineDataSet set = new LineDataSet(entriesWeight, "Weight");
+        LineDataSet set = new LineDataSet(entriesWeight, getString(R.string.weight));
         int color = Color.rgb(240, 150, 40);
         set.setColor(color);
         set.setLineWidth(2.5f);
