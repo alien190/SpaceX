@@ -43,6 +43,7 @@ public class LaunchFragment extends Fragment {
     RecyclerView mRecyclerView;
     LaunchAdapter mLaunchAdapter;
     Subscription mSubscription;
+    Flowable mDataBaseFlowable;
 
     public static LaunchFragment newInstance() {
 
@@ -76,10 +77,33 @@ public class LaunchFragment extends Fragment {
         mLaunchAdapter = new LaunchAdapter();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mLaunchAdapter);
-        //updateDatabaseFromServer();
+
+        updateDatabaseFromServer();
 
         int i = 1;
         //mSubscription.request(1);
+
+        mDataBaseFlowable.subscribe(new Subscriber() {
+            @Override
+            public void onSubscribe(Subscription s) {
+
+            }
+
+            @Override
+            public void onNext(Object o) {
+
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
     }
 
     @SuppressLint("CheckResult")
@@ -111,34 +135,34 @@ public class LaunchFragment extends Fragment {
 
     @SuppressLint("CheckResult")
     private void updateAdapterFromDataBaseFlowable() {
-        Flowable.defer((Callable<Publisher<List<Launch>>>) ()
+        mDataBaseFlowable = Flowable.defer((Callable<Publisher<List<Launch>>>) ()
                 -> Flowable.just(getLaunchDao().getLaunchesInRange(mLaunchAdapter.getLastLoadedFlightNumber(), 5)))
                 .flatMap(mLaunchAdapter.updateFromDataBaseFlowable)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Integer>() {
-                    @Override
-                    public void onSubscribe(Subscription s) {
-                        mSubscription = s;
-                        //s.request(1);
-                    }
-
-                    @Override
-                    public void onNext(Integer integer) {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable t) {
-                        t.printStackTrace();
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
+                .observeOn(AndroidSchedulers.mainThread());
+//                .subscribe(new Subscriber<Integer>() {
+//                    @Override
+//                    public void onSubscribe(Subscription s) {
+//                        mSubscription = s;
+//                        //s.request(1);
+//                    }
+//
+//                    @Override
+//                    public void onNext(Integer integer) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable t) {
+//                        t.printStackTrace();
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//
+//                    }
+//    });
+}
 
     private LaunchDao getLaunchDao() {
         return ((App) getActivity().getApplication()).getLaunchDataBase().getLaunchDao();
