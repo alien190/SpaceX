@@ -12,9 +12,12 @@ import android.view.ViewGroup;
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.SpaceXAPI.Launch;
 
+import org.reactivestreams.Publisher;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.functions.Function;
@@ -22,6 +25,7 @@ import io.reactivex.functions.Function;
 public class LaunchAdapter extends RecyclerView.Adapter<LaunchViewHolder> {
 
     private List<Launch> mLaunches = new ArrayList<>();
+    private int mLastLoadedFlightNumber = Integer.MAX_VALUE;
 
 
     @NonNull
@@ -53,6 +57,7 @@ public class LaunchAdapter extends RecyclerView.Adapter<LaunchViewHolder> {
             if (mLaunches.indexOf(launch) == -1) {
                 mLaunches.add(launch);
                 newCount[0]++;
+                mLastLoadedFlightNumber = launch.getFlight_number();
             }
         }
 
@@ -67,4 +72,32 @@ public class LaunchAdapter extends RecyclerView.Adapter<LaunchViewHolder> {
         return Single.just(newCount[0]);
     };
 
+    public Function<List<Launch>, Publisher<Integer>> updateFromDataBaseFlowable = launches -> {
+        final int newCount[] = new int[1];
+
+        int lastCommentPosition = mLaunches.size() - 1;
+
+
+        for (Launch launch : launches) {
+            if (mLaunches.indexOf(launch) == -1) {
+                mLaunches.add(launch);
+                newCount[0]++;
+                mLastLoadedFlightNumber = launch.getFlight_number();
+            }
+        }
+
+        if (newCount[0] != 0) {
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(() ->
+                    this.notifyItemRangeInserted(lastCommentPosition + 1, newCount[0])
+            );
+        }
+
+        Log.d("TAG", "apply: thread id" + Thread.currentThread().getId());
+        return Flowable.just(newCount[0]);
+    };
+
+    public int getLastLoadedFlightNumber() {
+        return mLastLoadedFlightNumber;
+    }
 }

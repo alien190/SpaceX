@@ -19,8 +19,17 @@ import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.SpaceXAPI.APIutils;
 import com.example.ivanovnv.spacex.SpaceXAPI.Launch;
 
-import java.util.List;
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
+import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.Single;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.SingleSource;
@@ -33,6 +42,7 @@ public class LaunchFragment extends Fragment {
     SwipeRefreshLayout mSwipeRefreshLayout;
     RecyclerView mRecyclerView;
     LaunchAdapter mLaunchAdapter;
+    Subscription mSubscription;
 
     public static LaunchFragment newInstance() {
 
@@ -56,7 +66,7 @@ public class LaunchFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        updateAdapterFromDataBaseFlowable();
 
     }
 
@@ -67,11 +77,14 @@ public class LaunchFragment extends Fragment {
         mLaunchAdapter = new LaunchAdapter();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mLaunchAdapter);
-        updateDatabaseFromServer();
+        //updateDatabaseFromServer();
+
+        int i = 1;
+        //mSubscription.request(1);
     }
 
     @SuppressLint("CheckResult")
-    void updateDatabaseFromServer() {
+    private void updateDatabaseFromServer() {
         APIutils.getApi().getAllPastLaunches()
                 .flatMap((Function<List<Launch>, SingleSource<?>>) launches -> {
                     getLaunchDao().insertLaunches(launches);
@@ -80,11 +93,11 @@ public class LaunchFragment extends Fragment {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(launches ->
-                    updateAdapterFromDataBase(), Throwable::printStackTrace);
+                        updateAdapterFromDataBase(), Throwable::printStackTrace);
     }
 
     @SuppressLint("CheckResult")
-    void updateAdapterFromDataBase() {
+    private void updateAdapterFromDataBase() {
         Single.create((SingleOnSubscribe<List<Launch>>)
                 emitter -> emitter.onSuccess(getLaunchDao().getLaunches()))
                 .flatMap(mLaunchAdapter.updateFromDataBase)
@@ -95,6 +108,37 @@ public class LaunchFragment extends Fragment {
                 }, Throwable::printStackTrace);
 
 
+    }
+
+    @SuppressLint("CheckResult")
+    private void updateAdapterFromDataBaseFlowable() {
+        Flowable.defer((Callable<Publisher<List<Launch>>>) ()
+                -> Flowable.just(getLaunchDao().getLaunchesInRange(mLaunchAdapter.getLastLoadedFlightNumber(), 5)))
+                .flatMap(mLaunchAdapter.updateFromDataBaseFlowable)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onSubscribe(Subscription s) {
+                        mSubscription = s;
+                        //s.request(1);
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        t.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     private LaunchDao getLaunchDao() {

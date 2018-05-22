@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.AsyncLayoutInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -39,6 +40,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.Inflater;
 
 import io.reactivex.Single;
 import io.reactivex.SingleOnSubscribe;
@@ -47,6 +49,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class AnalyticsFragment extends Fragment implements OnChartGestureListener, OnChartValueSelectedListener{
 
+    private String TAG = this.getClass().getSimpleName();
     private CombinedChart mChart;
 
     public static AnalyticsFragment newInstance() {
@@ -102,6 +105,17 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
         setChartDataFromDb();
 
         return v;
+
+//        Log.d(TAG, "onCreateView: ");
+//        AsyncLayoutInflater asyncInflater = new AsyncLayoutInflater(getContext());
+//        asyncInflater.inflate(R.layout.fr_analytics, container, new AsyncLayoutInflater.OnInflateFinishedListener() {
+//            @Override
+//            public void onInflateFinished(@NonNull View view, int resid, @Nullable ViewGroup parent) {
+//                Log.d(TAG, "onInflateFinished: ");
+//            }
+//        });
+//        View v = inflater.inflate(R.layout.fr_analytics_stub, container, false);
+//        return v;
     }
 
     @Override

@@ -15,8 +15,11 @@ public interface LaunchDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertLaunches(List<Launch> launches);
 
-    @Query("SELECT * FROM launch ORDER BY launch_date_unix DESC")
+    @Query("SELECT * FROM launch ORDER BY launch_date_unix DESC LIMIT 10")
     List<Launch> getLaunches();
+
+    @Query("SELECT * FROM launch WHERE flight_number < :lastFlightNumber ORDER BY launch_date_unix DESC LIMIT :returnCount")
+    List<Launch> getLaunchesInRange(int lastFlightNumber, int returnCount);
 
     @Query("SELECT COUNT(launch_year) AS count, " +
             "SUM(payload_mass_kg_sum) AS payload_mass_kg_sum, " +
