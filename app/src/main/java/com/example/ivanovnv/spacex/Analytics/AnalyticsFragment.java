@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -68,7 +69,8 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
         mChart.setDrawGridBackground(false);
         mChart.setDrawBarShadow(false);
         mChart.setHighlightFullBarEnabled(false);
-        mChart.setOnChartValueSelectedListener(this);
+       // mChart.setOnChartValueSelectedListener(this);
+
 
         // draw bars behind lines
         mChart.setDrawOrder(new DrawOrder[]{
@@ -124,8 +126,13 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
 
     @Override
     public void onChartSingleTapped(MotionEvent me) {
-        int i = 1;
 
+        Highlight highlight = mChart.getHighlightByTouchPoint(me.getX(), me.getY());
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, DetailAnalyticsFragment.newInstance(highlight.getX()))
+                .addToBackStack(DetailAnalyticsFragment.class.getSimpleName())
+                .commit();
     }
 
     @Override
@@ -154,11 +161,11 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
 //            t.printStackTrace();
 //        }
 
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, DetailAnalyticsFragment.newInstance(e.getX()))
-                .addToBackStack(DetailAnalyticsFragment.class.getSimpleName())
-                .commit();
+//        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//        fragmentManager.beginTransaction()
+//                .replace(R.id.fragment_container, DetailAnalyticsFragment.newInstance(e.getX()))
+//                .addToBackStack(DetailAnalyticsFragment.class.getSimpleName())
+//                .commit();
     }
 
     @Override
@@ -319,5 +326,18 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
 
     private LaunchDao getLaunchDao() {
         return ((App) getActivity().getApplication()).getLaunchDataBase().getLaunchDao();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mChart.setOnChartGestureListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mChart.setOnChartGestureListener(null);
+        Log.d("TAG", "AnalyticsFragment onPause: ");
     }
 }

@@ -47,7 +47,7 @@ public class MainFragment extends Fragment {
     }
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
-        adapter.addFragment(LaunchFragment.newInstance(), getString(R.string.launches));
+       // adapter.addFragment(LaunchFragment.newInstance(), getString(R.string.launches));
         adapter.addFragment(AnalyticsFragment.newInstance(), getString(R.string.analytics));
         viewPager.setAdapter(adapter);
     }
