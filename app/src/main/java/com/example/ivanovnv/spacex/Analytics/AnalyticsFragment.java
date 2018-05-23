@@ -47,10 +47,11 @@ import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class AnalyticsFragment extends Fragment implements OnChartGestureListener, OnChartValueSelectedListener{
+public class AnalyticsFragment extends Fragment implements OnChartGestureListener, OnChartValueSelectedListener {
 
     private String TAG = this.getClass().getSimpleName();
     private CombinedChart mChart;
+    private View view;
 
     public static AnalyticsFragment newInstance() {
 
@@ -58,53 +59,58 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
 
         AnalyticsFragment fragment = new AnalyticsFragment();
         fragment.setArguments(args);
+        fragment.setRetainInstance(true);
         return fragment;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fr_analytics, container, false);
 
-        mChart = v.findViewById(R.id.chart1);
-        mChart.getDescription().setEnabled(false);
-        mChart.setBackgroundColor(Color.WHITE);
-        mChart.setDrawGridBackground(false);
-        mChart.setDrawBarShadow(false);
-        mChart.setHighlightFullBarEnabled(false);
-       // mChart.setOnChartValueSelectedListener(this);
+        if (view == null) {
+
+            view = inflater.inflate(R.layout.fr_analytics, container, false);
+
+            mChart = view.findViewById(R.id.chart1);
+            mChart.getDescription().setEnabled(false);
+            mChart.setBackgroundColor(Color.WHITE);
+            mChart.setDrawGridBackground(false);
+            mChart.setDrawBarShadow(false);
+            mChart.setHighlightFullBarEnabled(false);
+            // mChart.setOnChartValueSelectedListener(this);
 
 
-        // draw bars behind lines
-        mChart.setDrawOrder(new DrawOrder[]{
-                DrawOrder.BAR, DrawOrder.BUBBLE, DrawOrder.CANDLE, DrawOrder.LINE, DrawOrder.SCATTER
-        });
+            // draw bars behind lines
+            mChart.setDrawOrder(new DrawOrder[]{
+                    DrawOrder.BAR, DrawOrder.BUBBLE, DrawOrder.CANDLE, DrawOrder.LINE, DrawOrder.SCATTER
+            });
 
-        Legend l = mChart.getLegend();
-        l.setWordWrapEnabled(true);
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
-        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(false);
+            Legend l = mChart.getLegend();
+            l.setWordWrapEnabled(true);
+            l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+            l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+            l.setDrawInside(false);
 
-        YAxis rightAxis = mChart.getAxisRight();
-        rightAxis.setDrawGridLines(false);
-        rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+            YAxis rightAxis = mChart.getAxisRight();
+            rightAxis.setDrawGridLines(false);
+            rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
-        YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setDrawGridLines(false);
-        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+            YAxis leftAxis = mChart.getAxisLeft();
+            leftAxis.setDrawGridLines(false);
+            leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTH_SIDED);
-        xAxis.setAxisMinimum(2005f);
-        xAxis.setAxisMaximum(2019f);
-        xAxis.setGranularity(1f);
-        xAxis.setValueFormatter((value, axis) -> "" + ((int) value));
+            XAxis xAxis = mChart.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTH_SIDED);
+            xAxis.setAxisMinimum(2005f);
+            xAxis.setAxisMaximum(2019f);
+            xAxis.setGranularity(1f);
+            xAxis.setValueFormatter((value, axis) -> "" + ((int) value));
 
-        setChartDataFromDb();
+            setChartDataFromDb();
+        }
 
-        return v;
+        return view;
 
 //        Log.d(TAG, "onCreateView: ");
 //        AsyncLayoutInflater asyncInflater = new AsyncLayoutInflater(getContext());

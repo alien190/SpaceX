@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,76 +35,96 @@ import io.reactivex.Single;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.SingleSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class LaunchFragment extends Fragment {
 
+    private static String TAG = LaunchFragment.class.getSimpleName();
     SwipeRefreshLayout mSwipeRefreshLayout;
     RecyclerView mRecyclerView;
     LaunchAdapter mLaunchAdapter;
     Subscription mSubscription;
-    Flowable mDataBaseFlowable;
+    Flowable<List<Launch>> mFlowable;
+    View view;
+
 
     public static LaunchFragment newInstance() {
-
         Bundle args = new Bundle();
 
         LaunchFragment fragment = new LaunchFragment();
         fragment.setArguments(args);
+        fragment.setRetainInstance(true);
         return fragment;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fr_launches_list, container, false);
-        mSwipeRefreshLayout = view.findViewById(R.id.swipelayout);
-        mRecyclerView = view.findViewById(R.id.rv_main);
 
+        getActivity().setTitle(getString(R.string.app_name));
+
+        if (view == null) {
+            view = inflater.inflate(R.layout.fr_launches_list, container, false);
+            mSwipeRefreshLayout = view.findViewById(R.id.swipelayout);
+            mRecyclerView = view.findViewById(R.id.rv_main);
+            mLaunchAdapter = new LaunchAdapter();
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            mRecyclerView.setAdapter(mLaunchAdapter);
+
+            mFlowable = updateAdapterFromDataBaseFlowable();
+
+            mFlowable.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<List<Launch>>() {
+                        @Override
+                        public void onSubscribe(Subscription s) {
+                            mSubscription = s;
+                            s.request(1);
+                            Log.d(TAG, "onSubscribe: ");
+                        }
+
+                        @Override
+                        public void onNext(List<Launch> launches) {
+                            Log.d(TAG, "onNext: launches.size: " + launches.size());
+                            mLaunchAdapter.addLaunches(launches);
+                        }
+
+                        @Override
+                        public void onError(Throwable t) {
+                            t.printStackTrace();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            Log.d(TAG, "onComplete: ");
+                        }
+                    });
+        }
         return view;
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+    public void onStart() {
+        super.onStart();
+        mSwipeRefreshLayout.setOnRefreshListener(() -> {
+            if (mSubscription != null) mSubscription.request(1);
+            mSwipeRefreshLayout.setRefreshing(false);
+        });
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onStop() {
+        super.onStop();
+       // if (mSubscription != null) mSubscription.cancel();
+        mSwipeRefreshLayout.setOnRefreshListener(null);
+    }
 
-        mLaunchAdapter = new LaunchAdapter();
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(mLaunchAdapter);
-
-        updateDatabaseFromServer();
-
-        int i = 1;
-        //mSubscription.request(1);
-
-        mDataBaseFlowable.subscribe(new Subscriber() {
-            @Override
-            public void onSubscribe(Subscription s) {
-
-            }
-
-            @Override
-            public void onNext(Object o) {
-
-            }
-
-            @Override
-            public void onError(Throwable t) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: ");
     }
 
     @SuppressLint("CheckResult")
@@ -134,35 +155,29 @@ public class LaunchFragment extends Fragment {
     }
 
     @SuppressLint("CheckResult")
-    private void updateAdapterFromDataBaseFlowable() {
-        mDataBaseFlowable = Flowable.defer((Callable<Publisher<List<Launch>>>) ()
-                -> Flowable.just(getLaunchDao().getLaunchesInRange(mLaunchAdapter.getLastLoadedFlightNumber(), 5)))
-                .flatMap(mLaunchAdapter.updateFromDataBaseFlowable)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-//                .subscribe(new Subscriber<Integer>() {
-//                    @Override
-//                    public void onSubscribe(Subscription s) {
-//                        mSubscription = s;
-//                        //s.request(1);
-//                    }
-//
-//                    @Override
-//                    public void onNext(Integer integer) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable t) {
-//                        t.printStackTrace();
-//                    }
-//
-//                    @Override
-//                    public void onComplete() {
-//
-//                    }
-//    });
-}
+    private Flowable<List<Launch>> updateAdapterFromDataBaseFlowable() {
+        return Flowable.create(emitter -> {
+            int lastFlightNumber = Integer.MAX_VALUE;
+            List<Launch> launches;
+
+            for (launches = getLaunchDao().getLaunchesInRange(lastFlightNumber, 1);
+                 !launches.isEmpty();
+                 launches = getLaunchDao().getLaunchesInRange(lastFlightNumber, 1)) {
+                lastFlightNumber = launches.get(0).getFlight_number();
+                Log.d(TAG, "updateAdapterFromDataBaseFlowable: flightNumber: " + lastFlightNumber);
+                emitter.onNext(launches);
+            }
+            emitter.onComplete();
+        }, BackpressureStrategy.BUFFER);
+
+//        return Flowable.defer((Callable<Publisher<List<Launch>>>) ()
+//                -> {
+//            Log.d(TAG, "updateAdapterFromDataBaseFlowable: ");
+//            return Flowable.just(getLaunchDao().getLaunchesInRange(mLaunchAdapter.getLastLoadedFlightNumber(), 2));
+//        }).flatMap((Function<List<Launch>, Publisher<Launch>>) launches -> Flowable.fromIterable(launches))
+//                //.flatMap(mLaunchAdapter.updateFromDataBaseFlowable)
+//                .buffer(1);
+    }
 
     private LaunchDao getLaunchDao() {
         return ((App) getActivity().getApplication()).getLaunchDataBase().getLaunchDao();
