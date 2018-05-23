@@ -7,7 +7,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -16,6 +19,7 @@ import android.widget.Switch;
 
 import com.example.ivanovnv.spacex.App;
 import com.example.ivanovnv.spacex.DB.LaunchDao;
+import com.example.ivanovnv.spacex.DetailLaunchFragment.DetailLaunchFragment;
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.SpaceXAPI.Launch;
 import com.github.mikephil.charting.charts.CombinedChart;
@@ -32,7 +36,10 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.listener.ChartTouchListener;
+import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.text.DateFormat;
@@ -46,7 +53,7 @@ import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class DetailAnalyticsFragment extends Fragment {
+public class DetailAnalyticsFragment extends Fragment implements OnChartGestureListener {
 
     private static final String YEAR_KEY = "com.example.ivanovnv.spacex.Analytics.YEAR_KEY";
     private CombinedChart mChart;
@@ -240,5 +247,63 @@ public class DetailAnalyticsFragment extends Fragment {
         Date date = new Date(value);
         DateFormat dateFormat = new SimpleDateFormat("dd.MM");
         return dateFormat.format(date);
+    }
+
+    @Override
+    public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+
+    }
+
+    @Override
+    public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+
+    }
+
+    @Override
+    public void onChartLongPressed(MotionEvent me) {
+
+    }
+
+    @Override
+    public void onChartDoubleTapped(MotionEvent me) {
+
+    }
+
+    @Override
+    public void onChartSingleTapped(MotionEvent me) {
+        Highlight highlight = mChart.getHighlightByTouchPoint(me.getX(), me.getY());
+//        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//        fragmentManager.beginTransaction()
+//                .replace(R.id.fragment_container, DetailLaunchFragment.newInstance(highlight.getX()))
+//                .addToBackStack(DetailAnalyticsFragment.class.getSimpleName())
+//                .commit();
+    }
+
+    @Override
+    public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
+
+    }
+
+    @Override
+    public void onChartScale(MotionEvent me, float scaleX, float scaleY) {
+
+    }
+
+    @Override
+    public void onChartTranslate(MotionEvent me, float dX, float dY) {
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mChart.setOnChartGestureListener(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mChart.setOnChartGestureListener(null);
+        Log.d("TAG", "AnalyticsFragment onPause: ");
     }
 }

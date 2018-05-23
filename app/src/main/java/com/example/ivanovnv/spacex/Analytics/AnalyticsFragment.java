@@ -47,7 +47,7 @@ import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class AnalyticsFragment extends Fragment implements OnChartGestureListener, OnChartValueSelectedListener {
+public class AnalyticsFragment extends Fragment implements OnChartGestureListener {
 
     private String TAG = this.getClass().getSimpleName();
     private CombinedChart mChart;
@@ -170,28 +170,6 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
 
     }
 
-    @Override
-    public void onValueSelected(Entry e, Highlight h) {
-//        try {
-//            Intent intent = new Intent();
-//            intent.setClass(getContext(), DetailAnalyticsActivity.class);
-//            intent.putExtra(DetailAnalyticsActivity.YEAR_KEY, e.getX());
-//            startActivity(intent);
-//        } catch (Throwable t) {
-//            t.printStackTrace();
-//        }
-
-//        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//        fragmentManager.beginTransaction()
-//                .replace(R.id.fragment_container, DetailAnalyticsFragment.newInstance(e.getX()))
-//                .addToBackStack(DetailAnalyticsFragment.class.getSimpleName())
-//                .commit();
-    }
-
-    @Override
-    public void onNothingSelected() {
-
-    }
 
     @SuppressLint("CheckResult")
     private void setChartDataFromDb() {
@@ -355,8 +333,8 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onStop() {
+        super.onStop();
         mChart.setOnChartGestureListener(null);
         Log.d("TAG", "AnalyticsFragment onPause: ");
     }

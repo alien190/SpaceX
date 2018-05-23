@@ -16,6 +16,7 @@ public class LaunchViewHolder extends RecyclerView.ViewHolder {
     private TextView mMissionName;
     private TextView mRocketName;
     private TextView mLaunchDate;
+    private int mFlightNumberInt;
 
     public LaunchViewHolder(View itemView) {
         super(itemView);
@@ -24,10 +25,12 @@ public class LaunchViewHolder extends RecyclerView.ViewHolder {
         mImageView = itemView.findViewById(R.id.iv_item);
         mRocketName = itemView.findViewById(R.id.tv_rocket_name);
         mLaunchDate = itemView.findViewById(R.id.tv_launch_date);
+
     }
 
     public void bind(Launch launch) {
 
+        mFlightNumberInt = launch.getFlight_number();
         mFlightNumber.setText("" + launch.getFlight_number());
         mMissionName.setText(launch.getMission_name());
         mRocketName.setText(launch.getRocket_name());
@@ -37,4 +40,11 @@ public class LaunchViewHolder extends RecyclerView.ViewHolder {
                 .load(launch.getMission_patch_small())
                 .into(mImageView);
     }
+
+    public void setItemClickListener(final LaunchAdapter.OnItemClickListener listener) {
+        if (listener != null) {
+            itemView.setOnClickListener(view -> listener.onItemClick(mFlightNumberInt));
+        }
+    }
+
 }

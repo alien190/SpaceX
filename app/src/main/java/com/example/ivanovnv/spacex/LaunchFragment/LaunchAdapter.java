@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.SpaceXAPI.Launch;
@@ -29,6 +30,8 @@ public class LaunchAdapter extends RecyclerView.Adapter<LaunchViewHolder> {
     private List<Launch> mLaunches = new ArrayList<>();
     private int mLastLoadedFlightNumber = Integer.MAX_VALUE;
     private Lock mLaunchesLock = new ReentrantLock();
+    private AdapterView.OnItemClickListener mOnItemClickListener;
+    private OnItemClickListener mItemClickListener;
 
 
     @NonNull
@@ -36,12 +39,14 @@ public class LaunchAdapter extends RecyclerView.Adapter<LaunchViewHolder> {
     public LaunchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.li_launch, parent, false);
+
         return new LaunchViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull LaunchViewHolder holder, int position) {
         holder.bind(mLaunches.get(position));
+        holder.setItemClickListener(mItemClickListener);
     }
 
     @Override
@@ -142,5 +147,13 @@ public class LaunchAdapter extends RecyclerView.Adapter<LaunchViewHolder> {
                     this.notifyItemRangeInserted(lastCommentPosition + 1, newCount[0])
             );
         }
+    }
+
+    public interface OnItemClickListener{
+        void onItemClick(int flightNumber);
+    }
+
+    public void setItemClickListener(OnItemClickListener listener) {
+        mItemClickListener = listener;
     }
 }
