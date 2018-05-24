@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 
@@ -23,30 +22,25 @@ import com.example.ivanovnv.spacex.DetailLaunchFragment.DetailLaunchFragment;
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.SpaceXAPI.Launch;
 import com.github.mikephil.charting.charts.CombinedChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
-import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Single;
 import io.reactivex.SingleOnSubscribe;
@@ -60,6 +54,7 @@ public class DetailAnalyticsFragment extends Fragment implements OnChartGestureL
     private int mYear;
     private ProgressBar mProgressBar;
     private Switch mSwitch;
+    private Map mFlightNumbersMap;
 
     public static DetailAnalyticsFragment newInstance(float year) {
 
@@ -85,6 +80,8 @@ public class DetailAnalyticsFragment extends Fragment implements OnChartGestureL
         mSwitch = v.findViewById(R.id.type_switch);
 
         mSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> setChartDataFromDb(mYear, isChecked));
+
+        mFlightNumbersMap = new HashMap();
 
         // setChartDataFromDb(mYear);
 
@@ -176,6 +173,7 @@ public class DetailAnalyticsFragment extends Fragment implements OnChartGestureL
 
     private CombinedData convertLaunchesToBarData(List<Launch> launches, boolean cumulative) {
 
+
         Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
         CombinedData combinedData = new CombinedData();
 
@@ -186,8 +184,12 @@ public class DetailAnalyticsFragment extends Fragment implements OnChartGestureL
         float prevValue = 0;
         float newValue;
 
+        mFlightNumbersMap.clear();
+
         for (Launch launch : launches) {
             int day = launch.getLaunch_date_unix() / 86400;
+
+            mFlightNumbersMap.put(day, launch.getFlight_number());
 
             if (cumulative) {
 
@@ -272,11 +274,17 @@ public class DetailAnalyticsFragment extends Fragment implements OnChartGestureL
     @Override
     public void onChartSingleTapped(MotionEvent me) {
         Highlight highlight = mChart.getHighlightByTouchPoint(me.getX(), me.getY());
-//        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//        fragmentManager.beginTransaction()
-//                .replace(R.id.fragment_container, DetailLaunchFragment.newInstance(highlight.getX()))
-//                .addToBackStack(DetailAnalyticsFragment.class.getSimpleName())
-//                .commit();
+        try {
+            int flightNumber = (int) mFlightNumbersMap.get((int) highlight.getX());
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, DetailLaunchFragment.newInstance(flightNumber))
+                    .addToBackStack(DetailAnalyticsFragment.class.getSimpleName())
+                    .commit();
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+
     }
 
     @Override

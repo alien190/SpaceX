@@ -35,4 +35,7 @@ public interface LaunchDao {
 
     @Query("SELECT * FROM launch where launch_year = :year")
     List<Launch> getLaunchesInYear(String year);
+
+    @Query("SELECT * FROM launch where flight_number = :flightNumber")
+    Launch getLaunchByFlightNumber(int flightNumber);
 }

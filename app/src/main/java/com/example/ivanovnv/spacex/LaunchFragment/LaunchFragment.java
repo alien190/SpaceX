@@ -213,7 +213,7 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
 
     @Override
     public void onItemClick(int flightNumber) {
-        Toast.makeText(getActivity(), "" + flightNumber, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), "" + flightNumber, Toast.LENGTH_SHORT).show();
 
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         fragmentManager.beginTransaction()
