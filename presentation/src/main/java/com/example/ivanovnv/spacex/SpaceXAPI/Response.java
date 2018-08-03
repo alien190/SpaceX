@@ -14,7 +14,7 @@ public class Response {
      * rocket : {"rocket_id":"falcon9","rocket_name":"Falcon 9","rocket_type":"FT","first_stage":{"cores":[{"core_serial":"B1041","flight":2,"block":4,"reused":true,"land_success":null,"landing_type":null,"landing_vehicle":null}]},"second_stage":{"payloads":[{"payload_id":"Iridium NEXT 5","reused":false,"customers":["Iridium Communications"],"payload_type":"Satellite","payload_mass_kg":9600,"payload_mass_lbs":21164.38,"orbit":"PO"}]}}
      * telemetry : {"flight_club":"https://www.flightclub.io/results/?code=IRD5"}
      * reuse : {"core":true,"side_core1":false,"side_core2":false,"fairings":false,"capsule":false}
-     * launch_site : {"site_id":"vafb_slc_4e","site_name":"VAFB SLC 4E","site_name_long":"Vandenberg Air Force Base Space Launch Complex 4E"}
+     * launch_site : {"site_id":"vafb_slc_4e","site_name":"VAFB SLC 4E","site_name_long":"Vandenberg Air Force Base Space DomainLaunch Complex 4E"}
      * launch_success : true
      * links : {"mission_patch":"https://i.imgur.com/QUSoLHy.png","reddit_campaign":"https://www.reddit.com/r/spacex/comments/82njj5/iridium_next_constellation_mission_5_launch/","reddit_launch":"https://www.reddit.com/r/spacex/comments/88184i/rspacex_iridium_next_5_official_launch_discussion/","reddit_recovery":null,"reddit_media":"https://www.reddit.com/r/spacex/comments/88114l/rspacex_iridium5_media_thread_videos_images_gifs/","presskit":"http://www.spacex.com/sites/spacex/files/iridium-5_press_kit.pdf","article_link":"https://spaceflightnow.com/2018/03/30/iridium-messaging-network-gets-another-boost-from-spacex/","video_link":"https://www.youtube.com/watch?v=mp0TW8vkCLg"}
      * details : Fifth Iridium NEXT mission to deploy ten Iridium NEXT satellites. Reused booster from third Iridium flight, and although controlled descent was performed, the booster was expended into the ocean. SpaceX planned a second recovery attempt of one half of the fairing using the specially modified boat Mr. Steven. However, the fairing's parafoil twisted during the recovery, which led to water impact at high speed
@@ -446,7 +446,7 @@ public class Response {
         /**
          * site_id : vafb_slc_4e
          * site_name : VAFB SLC 4E
-         * site_name_long : Vandenberg Air Force Base Space Launch Complex 4E
+         * site_name_long : Vandenberg Air Force Base Space DomainLaunch Complex 4E
          */
 
         private String site_id;

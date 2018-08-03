@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.domain.model.launch.DomainLaunch;
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.SpaceXAPI.Launch;
 import com.squareup.picasso.Picasso;
@@ -28,7 +29,7 @@ public class LaunchViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    public void bind(Launch launch) {
+    public void bind(DomainLaunch launch) {
 
         mFlightNumberInt = launch.getFlight_number();
         mFlightNumber.setText("" + launch.getFlight_number());

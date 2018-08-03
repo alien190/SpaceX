@@ -1,50 +1,45 @@
 package com.example.ivanovnv.spacex.LaunchFragment;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.example.ivanovnv.spacex.Analytics.DetailAnalyticsFragment;
+import com.example.data.api.APIutils;
+import com.example.data.database.LaunchDao;
+import com.example.data.repository.LaunchLocalRepository;
+import com.example.data.repository.LaunchRemoteRepository;
+import com.example.domain.model.launch.DomainLaunch;
+import com.example.domain.service.LaunchServiceImpl;
 import com.example.ivanovnv.spacex.App;
-import com.example.ivanovnv.spacex.DB.LaunchDao;
 import com.example.ivanovnv.spacex.DetailLaunchFragment.DetailLaunchFragment;
 import com.example.ivanovnv.spacex.R;
-import com.example.ivanovnv.spacex.SpaceXAPI.APIutils;
-import com.example.ivanovnv.spacex.SpaceXAPI.Launch;
 
-import org.reactivestreams.Subscriber;
+
 import org.reactivestreams.Subscription;
 
 import java.util.List;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.Single;
-import io.reactivex.SingleOnSubscribe;
-import io.reactivex.SingleSource;
+import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.disposables.Disposable;
 
 public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClickListener {
 
     private static String TAG = LaunchFragment.class.getSimpleName();
-    // SwipeRefreshLayout mSwipeRefreshLayout;
+    SwipeRefreshLayout mSwipeRefreshLayout;
     RecyclerView mRecyclerView;
     LaunchAdapter mLaunchAdapter;
     Subscription mSubscription;
-    Flowable<List<Launch>> mFlowable;
+    //Flowable<List<Launch>> mFlowable;
     LinearLayoutManager mLinearLayoutManager;
     View view;
     RecyclerView.OnScrollListener mOnScrollListener;
@@ -76,7 +71,7 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
 
         if (view == null) {
             view = inflater.inflate(R.layout.fr_launches_list, container, false);
-            // mSwipeRefreshLayout = view.findViewById(R.id.swipelayout);
+            mSwipeRefreshLayout = view.findViewById(R.id.swipelayout);
             mRecyclerView = view.findViewById(R.id.rv_main);
             mLaunchAdapter = new LaunchAdapter();
             mLaunchAdapter.setItemClickListener(this);
@@ -84,49 +79,79 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
             mRecyclerView.setLayoutManager(mLinearLayoutManager);
             mRecyclerView.setAdapter(mLaunchAdapter);
 
-            mFlowable = updateAdapterFromDataBaseFlowable();
+            LaunchServiceImpl launchService = new LaunchServiceImpl(new LaunchLocalRepository(getLaunchDao()),
+                    new LaunchRemoteRepository(APIutils.getApi()));
 
-            mFlowable.subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<List<Launch>>() {
+            launchService.getLaunches().observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new SingleObserver<List<DomainLaunch>>() {
                         @Override
-                        public void onSubscribe(Subscription s) {
-                            mSubscription = s;
-                            s.request(1);
-                            Log.d(TAG, "onSubscribe: ");
+                        public void onSubscribe(Disposable d) {
+
                         }
 
                         @Override
-                        public void onNext(List<Launch> launches) {
-                            Log.d(TAG, "onNext: launches.flight_number: " + launches.get(0).getFlight_number());
-                            mLaunchAdapter.addLaunches(launches);
+                        public void onSuccess(List<DomainLaunch> domainLaunches) {
+                            mLaunchAdapter.addLaunches(domainLaunches);
                         }
 
                         @Override
-                        public void onError(Throwable t) {
-                            t.printStackTrace();
-                        }
+                        public void onError(Throwable e) {
 
-                        @Override
-                        public void onComplete() {
-                            Log.d(TAG, "onComplete: ");
                         }
                     });
-        }
 
-        mOnScrollListener = new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int position = mLinearLayoutManager.findLastVisibleItemPosition();
-                if ((position == RecyclerView.NO_POSITION
-                        || position == mLaunchAdapter.getItemCount() - 1)
-                        && mSubscription != null) {
-                    mSubscription.request(1);
+            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    launchService.refreshLaunches()
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe();
                 }
-            }
-        };
+            });
 
+//            mFlowable = updateAdapterFromDataBaseFlowable();
+//
+//            mFlowable.subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(new Subscriber<List<Launch>>() {
+//                        @Override
+//                        public void onSubscribe(Subscription s) {
+//                            mSubscription = s;
+//                            s.request(1);
+//                            Log.d(TAG, "onSubscribe: ");
+//                        }
+//
+//                        @Override
+//                        public void onNext(List<Launch> launches) {
+//                            Log.d(TAG, "onNext: launches.flight_number: " + launches.get(0).getFlight_number());
+//                            mLaunchAdapter.addLaunches(launches);
+//                        }
+//
+//                        @Override
+//                        public void onError(Throwable t) {
+//                            t.printStackTrace();
+//                        }
+//
+//                        @Override
+//                        public void onComplete() {
+//                            Log.d(TAG, "onComplete: ");
+//                        }
+//                    });
+//        }
+
+//        mOnScrollListener = new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                int position = mLinearLayoutManager.findLastVisibleItemPosition();
+//                if ((position == RecyclerView.NO_POSITION
+//                        || position == mLaunchAdapter.getItemCount() - 1)
+//                        && mSubscription != null) {
+//                    mSubscription.request(1);
+//                }
+//            }
+//        };
+        }
         return view;
     }
 
@@ -138,12 +163,12 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
 //            mSwipeRefreshLayout.setRefreshing(false);
 //        });
 
-        mRecyclerView.addOnScrollListener(mOnScrollListener);
+        // mRecyclerView.addOnScrollListener(mOnScrollListener);
     }
 
     @Override
     public void onStop() {
-        mRecyclerView.removeOnScrollListener(mOnScrollListener);
+        //  mRecyclerView.removeOnScrollListener(mOnScrollListener);
         super.onStop();
         // if (mSubscription != null) mSubscription.cancel();
         //  mSwipeRefreshLayout.setOnRefreshListener(null);
@@ -155,57 +180,57 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
         Log.d(TAG, "onDestroy: ");
     }
 
-    @SuppressLint("CheckResult")
-    private void updateDatabaseFromServer() {
-        APIutils.getApi().getAllPastLaunches()
-                .flatMap((Function<List<Launch>, SingleSource<?>>) launches -> {
-                    getLaunchDao().insertLaunches(launches);
-                    return Single.just(launches);
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(launches ->
-                        updateAdapterFromDataBase(), Throwable::printStackTrace);
-    }
-
-    @SuppressLint("CheckResult")
-    private void updateAdapterFromDataBase() {
-        Single.create((SingleOnSubscribe<List<Launch>>)
-                emitter -> emitter.onSuccess(getLaunchDao().getLaunches()))
-                .flatMap(mLaunchAdapter.updateFromDataBase)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(integer -> {
-                    //Toast.makeText(getActivity(), "" + integer, Toast.LENGTH_SHORT).show();
-                }, Throwable::printStackTrace);
-
-
-    }
-
-    @SuppressLint("CheckResult")
-    private Flowable<List<Launch>> updateAdapterFromDataBaseFlowable() {
-        return Flowable.create(emitter -> {
-            int lastFlightNumber = Integer.MAX_VALUE;
-            List<Launch> launches;
-
-            for (launches = getLaunchDao().getLaunchesInRange(lastFlightNumber, 1);
-                 !launches.isEmpty();
-                 launches = getLaunchDao().getLaunchesInRange(lastFlightNumber, 1)) {
-                lastFlightNumber = launches.get(0).getFlight_number();
-                Log.d(TAG, "updateAdapterFromDataBaseFlowable: flightNumber: " + lastFlightNumber);
-                emitter.onNext(launches);
-            }
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER);
-
-//        return Flowable.defer((Callable<Publisher<List<Launch>>>) ()
-//                -> {
-//            Log.d(TAG, "updateAdapterFromDataBaseFlowable: ");
-//            return Flowable.just(getLaunchDao().getLaunchesInRange(mLaunchAdapter.getLastLoadedFlightNumber(), 2));
-//        }).flatMap((Function<List<Launch>, Publisher<Launch>>) launches -> Flowable.fromIterable(launches))
-//                //.flatMap(mLaunchAdapter.updateFromDataBaseFlowable)
-//                .buffer(1);
-    }
+//    @SuppressLint("CheckResult")
+//    private void updateDatabaseFromServer() {
+//        APIutils.getApi().getAllPastLaunches()
+//                .flatMap((Function<List<Launch>, SingleSource<?>>) launches -> {
+//                    getLaunchDao().insertLaunches(launches);
+//                    return Single.just(launches);
+//                })
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(launches ->
+//                        updateAdapterFromDataBase(), Throwable::printStackTrace);
+//    }
+//
+//    @SuppressLint("CheckResult")
+//    private void updateAdapterFromDataBase() {
+//        Single.create((SingleOnSubscribe<List<Launch>>)
+//                emitter -> emitter.onSuccess(getLaunchDao().getLaunches()))
+//                .flatMap(mLaunchAdapter.updateFromDataBase)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(integer -> {
+//                    //Toast.makeText(getActivity(), "" + integer, Toast.LENGTH_SHORT).show();
+//                }, Throwable::printStackTrace);
+//
+//
+//    }
+//
+//    @SuppressLint("CheckResult")
+//    private Flowable<List<Launch>> updateAdapterFromDataBaseFlowable() {
+//        return Flowable.create(emitter -> {
+//            int lastFlightNumber = Integer.MAX_VALUE;
+//            List<Launch> launches;
+//
+//            for (launches = getLaunchDao().getLaunchesInRange(lastFlightNumber, 1);
+//                 !launches.isEmpty();
+//                 launches = getLaunchDao().getLaunchesInRange(lastFlightNumber, 1)) {
+//                lastFlightNumber = launches.get(0).getFlight_number();
+//                Log.d(TAG, "updateAdapterFromDataBaseFlowable: flightNumber: " + lastFlightNumber);
+//                emitter.onNext(launches);
+//            }
+//            emitter.onComplete();
+//        }, BackpressureStrategy.BUFFER);
+//
+////        return Flowable.defer((Callable<Publisher<List<DomainLaunch>>>) ()
+////                -> {
+////            Log.d(TAG, "updateAdapterFromDataBaseFlowable: ");
+////            return Flowable.just(getLaunchDao().getLaunchesInRange(mLaunchAdapter.getLastLoadedFlightNumber(), 2));
+////        }).flatMap((Function<List<DomainLaunch>, Publisher<DomainLaunch>>) launches -> Flowable.fromIterable(launches))
+////                //.flatMap(mLaunchAdapter.updateFromDataBaseFlowable)
+////                .buffer(1);
+//    }
 
     private LaunchDao getLaunchDao() {
         return ((App) getActivity().getApplication()).getLaunchDataBase().getLaunchDao();

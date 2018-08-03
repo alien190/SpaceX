@@ -5,29 +5,14 @@ import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.migration.Migration;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.example.ivanovnv.spacex.DB.LaunchDataBase;
-import com.example.ivanovnv.spacex.SpaceXAPI.APIutils;
+import com.example.data.database.LaunchDataBase;
 import com.example.ivanovnv.spacex.SpaceXAPI.Launch;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
-import io.reactivex.SingleObserver;
-import io.reactivex.SingleSource;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.observers.SafeObserver;
-import io.reactivex.schedulers.Schedulers;
 
 
 public class App extends Application {
@@ -58,7 +43,7 @@ public class App extends Application {
 //        Disposable disposable = Observable.create(emitter -> mEmitter = emitter)
 //                .subscribeOn(Schedulers.io())
 //                .observeOn(Schedulers.io())
-//                .flatMapSingle((Function<Object, SingleSource<List<Launch>>>) o -> APIutils.getApi().getAllPastLaunches())
+//                .flatMapSingle((Function<Object, SingleSource<List<DomainLaunch>>>) o -> APIutils.getApi().getAllPastLaunches())
 //                .subscribe(launches -> {
 //                    try {
 //                        TimeUnit.SECONDS.sleep(5);

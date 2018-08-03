@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.ivanovnv.spacex.Analytics.AnalyticsFragment;
 import com.example.ivanovnv.spacex.LaunchFragment.LaunchFragment;
 
 public class MainFragment extends Fragment {
@@ -72,7 +71,7 @@ public class MainFragment extends Fragment {
 //        if (launchFragment == null) launchFragment = LaunchFragment.newInstance();
 
         mViewPagerAdapter.addFragment(LaunchFragment.newInstance(), getString(R.string.launches));
-        mViewPagerAdapter.addFragment(AnalyticsFragment.newInstance(), getString(R.string.analytics));
+        // mViewPagerAdapter.addFragment(AnalyticsFragment.newInstance(), getString(R.string.analytics));
         viewPager.setAdapter(mViewPagerAdapter);
         //mViewPagerAdapter.notifyDataSetChanged();
     }

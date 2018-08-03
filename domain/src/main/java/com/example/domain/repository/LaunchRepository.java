@@ -1,6 +1,6 @@
 package com.example.domain.repository;
 
-import com.example.domain.model.launch.Launch;
+import com.example.domain.model.launch.DomainLaunch;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ public interface LaunchRepository {
     String REMOTE = "REMOTE";
     String LOCAL = "LOCAL";
 
-    Single<List<Launch>> getLaunches();
+    Single<List<DomainLaunch>> getLaunches();
 
-    void insertLaunches(List<Launch> launches);
+    void insertLaunches(List<DomainLaunch> domainLaunches);
 }

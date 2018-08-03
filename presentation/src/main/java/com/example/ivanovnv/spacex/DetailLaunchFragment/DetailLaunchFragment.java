@@ -70,7 +70,8 @@ public class DetailLaunchFragment extends Fragment {
     }
 
     private LaunchDao getLaunchDao() {
-        return ((App) getActivity().getApplication()).getLaunchDataBase().getLaunchDao();
+        return null;
+        // ((App) getActivity().getApplication()).getLaunchDataBase().getLaunchDao();
     }
 
     private void loadLaunchFromDataBase(int flightNumber) {

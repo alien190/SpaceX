@@ -1,7 +1,6 @@
 package com.example.ivanovnv.spacex.SpaceXAPI;
 
-import com.example.ivanovnv.spacex.BuildConfig;
-import com.example.ivanovnv.spacex.SpaceXAPI.converter.DataConverterFactory;
+import com.example.data.api.converter.DataConverterFactory;
 import com.google.gson.Gson;
 
 import okhttp3.OkHttpClient;

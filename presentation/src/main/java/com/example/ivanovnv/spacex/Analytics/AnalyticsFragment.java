@@ -277,7 +277,7 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
         return combinedData;
 //
 //        ArrayList<Entry> entries = new ArrayList<>();
-//        for (Launch launch : launches)  {
+//        for (DomainLaunch launch : launches)  {
 //            long x = launch.getLaunch_date_unix() / 86400;
 //            int y = launch.getPayload_mass_kg_sum();
 //            entries.add(new Entry(x, y));
@@ -323,7 +323,8 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
 //    }
 
     private LaunchDao getLaunchDao() {
-        return ((App) getActivity().getApplication()).getLaunchDataBase().getLaunchDao();
+        return null;
+        //((App) getActivity().getApplication()).getLaunchDataBase().getLaunchDao();
     }
 
     @Override

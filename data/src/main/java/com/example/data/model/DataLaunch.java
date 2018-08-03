@@ -5,7 +5,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
 @Entity
-public class Launch {
+public class DataLaunch {
 
     @ColumnInfo(name = "flight_number")
     @PrimaryKey
@@ -21,7 +21,7 @@ public class Launch {
     private String mission_patch_small;
 
     @ColumnInfo(name = "payload_mass_kg_sum")
-    private int payload_mass_kg_sum;
+    private double payload_mass_kg_sum;
 
     @ColumnInfo(name = "payload_mass_lbs_sum")
     private double payload_mass_lbs_sum;
@@ -74,11 +74,11 @@ public class Launch {
     }
 
 
-    public int getPayload_mass_kg_sum() {
+    public double getPayload_mass_kg_sum() {
         return payload_mass_kg_sum;
     }
 
-    public void setPayload_mass_kg_sum(int payload_mass_kg) {
+    public void setPayload_mass_kg_sum(double payload_mass_kg) {
         this.payload_mass_kg_sum = payload_mass_kg;
     }
 
@@ -130,10 +130,10 @@ public class Launch {
         this.launch_date_utc = launch_date_utc;
     }
 
-    public Launch() {
+    public DataLaunch() {
     }
 
-    public Launch(ServerResponse serverResponse) {
+    public DataLaunch(ServerResponse serverResponse) {
         flight_number = serverResponse.getFlight_number();
         launch_year = serverResponse.getLaunch_year();
         launch_date_unix = serverResponse.getLaunch_date_unix();
@@ -155,6 +155,6 @@ public class Launch {
 
     @Override
     public boolean equals(Object launch) {
-        return launch != null && ((Launch) launch).flight_number == flight_number;
+        return launch != null && ((DataLaunch) launch).flight_number == flight_number;
     }
 }

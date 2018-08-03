@@ -10,8 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
+import com.example.domain.model.launch.DomainLaunch;
 import com.example.ivanovnv.spacex.R;
-import com.example.ivanovnv.spacex.SpaceXAPI.Launch;
+
 
 import org.reactivestreams.Publisher;
 
@@ -27,7 +28,7 @@ import io.reactivex.functions.Function;
 
 public class LaunchAdapter extends RecyclerView.Adapter<LaunchViewHolder> {
 
-    private List<Launch> mLaunches = new ArrayList<>();
+    private List<DomainLaunch> mLaunches = new ArrayList<>();
     private int mLastLoadedFlightNumber = Integer.MAX_VALUE;
     private Lock mLaunchesLock = new ReentrantLock();
     private AdapterView.OnItemClickListener mOnItemClickListener;
@@ -66,13 +67,13 @@ public class LaunchAdapter extends RecyclerView.Adapter<LaunchViewHolder> {
         return size;
     }
 
-    public Function<List<Launch>, SingleSource<Integer>> updateFromDataBase = launches -> {
+    public Function<List<DomainLaunch>, SingleSource<Integer>> updateFromDataBase = launches -> {
         final int newCount[] = new int[1];
 
         int lastCommentPosition = mLaunches.size() - 1;
 
 
-        for (Launch launch : launches) {
+        for (DomainLaunch launch : launches) {
             if (mLaunches.indexOf(launch) == -1) {
                 mLaunches.add(launch);
                 newCount[0]++;
@@ -91,12 +92,12 @@ public class LaunchAdapter extends RecyclerView.Adapter<LaunchViewHolder> {
         return Single.just(newCount[0]);
     };
 
-    public Function<List<Launch>, Publisher<Integer>> updateFromDataBaseFlowable = launches -> {
+    public Function<List<DomainLaunch>, Publisher<Integer>> updateFromDataBaseFlowable = launches -> {
         final int newCount[] = new int[1];
 
         int lastCommentPosition = mLaunches.size() - 1;
 
-        for (Launch launch : launches) {
+        for (DomainLaunch launch : launches) {
             if (mLaunches.indexOf(launch) == -1) {
                 mLaunches.add(launch);
                 newCount[0]++;
@@ -119,13 +120,13 @@ public class LaunchAdapter extends RecyclerView.Adapter<LaunchViewHolder> {
         return mLastLoadedFlightNumber;
     }
 
-    public void addLaunches(List<Launch> launches) {
+    public void addLaunches(List<DomainLaunch> launches) {
         final int newCount[] = new int[1];
 
         int lastCommentPosition = mLaunches.size();
 
 
-        for (Launch launch : launches) {
+        for (DomainLaunch launch : launches) {
             if (mLaunches.indexOf(launch) == -1) {
                 mLaunchesLock.lock();
                 try {

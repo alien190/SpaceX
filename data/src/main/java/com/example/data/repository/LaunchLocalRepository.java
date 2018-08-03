@@ -1,11 +1,12 @@
 package com.example.data.repository;
 
+import com.example.data.api.converter.DataToDomainConverter;
+import com.example.data.api.converter.DomainToDataConverter;
 import com.example.data.database.LaunchDao;
-import com.example.domain.model.launch.Launch;
+import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.repository.LaunchRepository;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import io.reactivex.Single;
 
@@ -18,19 +19,13 @@ public class LaunchLocalRepository implements LaunchRepository {
     }
 
     @Override
-    public Single<List<Launch>> getLaunches() {
-        return Single.fromCallable(new Callable<List<Launch>>() {
-            @Override
-            public List<Launch> call() throws Exception {
-                return mLaunchDao.getLaunches();
-            }
-        })
+    public Single<List<DomainLaunch>> getLaunches() {
+        return Single.fromCallable(() -> DataToDomainConverter.converLaunch(mLaunchDao.getLaunches()));
     }
 
     @Override
-    public void insertLaunches(List<Launch> launches) {
-
+    public void insertLaunches(List<DomainLaunch> launches) {
+        mLaunchDao.insertLaunches(DomainToDataConverter.converLaunch(launches));
     }
 
-    private List<com>
 }

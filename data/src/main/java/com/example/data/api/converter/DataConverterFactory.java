@@ -2,7 +2,7 @@ package com.example.data.api.converter;
 
 import android.support.annotation.Nullable;
 
-import com.example.data.model.Launch;
+import com.example.data.model.DataLaunch;
 import com.example.data.model.ServerResponse;
 import com.google.gson.reflect.TypeToken;
 
@@ -25,12 +25,12 @@ public class DataConverterFactory extends Converter.Factory {
         final Converter<ResponseBody, List<ServerResponse>> converter = retrofit.nextResponseBodyConverter(this, launchTypeToken, annotations);
         return (Converter<ResponseBody, Object>) value -> {
             List<ServerResponse> serverResponseList = converter.convert(value);
-            List<Launch> launches = new ArrayList<>();
+            List<DataLaunch> dataLaunches = new ArrayList<>();
 
             for (ServerResponse serverResponse : serverResponseList) {
-                launches.add(new Launch(serverResponse));
+                dataLaunches.add(new DataLaunch(serverResponse));
             }
-            return launches;
+            return dataLaunches;
         };
     }
 }

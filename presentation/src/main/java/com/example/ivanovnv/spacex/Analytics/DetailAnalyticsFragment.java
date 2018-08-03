@@ -168,7 +168,8 @@ public class DetailAnalyticsFragment extends Fragment implements OnChartGestureL
     }
 
     private LaunchDao getLaunchDao() {
-        return ((App) getActivity().getApplication()).getLaunchDataBase().getLaunchDao();
+        return null;
+        //((App) getActivity().getApplication()).getLaunchDataBase().getLaunchDao();
     }
 
     private CombinedData convertLaunchesToBarData(List<Launch> launches, boolean cumulative) {
