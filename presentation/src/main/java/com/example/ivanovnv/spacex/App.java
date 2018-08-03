@@ -7,17 +7,16 @@ import android.arch.persistence.room.migration.Migration;
 import android.support.annotation.NonNull;
 
 import com.example.data.database.LaunchDataBase;
-import com.example.ivanovnv.spacex.SpaceXAPI.Launch;
+import com.example.data.model.DataLaunch;
 
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 
 
 public class App extends Application {
     private LaunchDataBase mDataBase;
-    private Observable<List<Launch>> mRefreshObservable;
+    private Observable<List<DataLaunch>> mRefreshObservable;
 
     @Override
     public void onCreate() {
@@ -28,12 +27,12 @@ public class App extends Application {
                 .build();
 
 
-        mRefreshObservable = new Observable<List<Launch>>() {
-            @Override
-            protected void subscribeActual(Observer<? super List<Launch>> observer) {
-
-            }
-        };
+//        mRefreshObservable = new Observable<List<Launch>>() {
+//            @Override
+//            protected void subscribeActual(Observer<? super List<Launch>> observer) {
+//
+//            }
+//        };
 //        mRefreshObservable = Observable.create(emitter -> APIutils.getApi().getAllPastLaunches()
 //                .observeOn(Schedulers.io())
 //                .subscribeOn(AndroidSchedulers.mainThread())
@@ -65,9 +64,9 @@ public class App extends Application {
 //        mEmitter.onNext(new Object());
 //    }
 
-    public Observable<List<Launch>> getRefreshObservable() {
-        return mRefreshObservable;
-    }
+//    public Observable<List<Launch>> getRefreshObservable() {
+//        return mRefreshObservable;
+//    }
 
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override

@@ -10,16 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
-import com.example.ivanovnv.spacex.App;
-import com.example.ivanovnv.spacex.DB.LaunchDao;
+import com.example.data.database.LaunchDao;
 import com.example.ivanovnv.spacex.R;
-import com.example.ivanovnv.spacex.SpaceXAPI.Launch;
 import com.squareup.picasso.Picasso;
-
 import io.reactivex.Single;
-import io.reactivex.SingleObserver;
-import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -62,8 +56,8 @@ public class DetailLaunchFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         Bundle args = getArguments();
         try {
-            mFlightNumberInt = args.getInt(FLIGHT_NUMBER_KEY);
-            loadLaunchFromDataBase(mFlightNumberInt);
+//            mFlightNumberInt = args.getInt(FLIGHT_NUMBER_KEY);
+//            loadLaunchFromDataBase(mFlightNumberInt);
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -74,37 +68,37 @@ public class DetailLaunchFragment extends Fragment {
         // ((App) getActivity().getApplication()).getLaunchDataBase().getLaunchDao();
     }
 
-    private void loadLaunchFromDataBase(int flightNumber) {
-        Single.create((SingleOnSubscribe<Launch>) emitter -> emitter.onSuccess(getLaunchDao().getLaunchByFlightNumber(flightNumber)))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<Launch>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(Launch launch) {
-                        setLaunchValues(launch);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-                });
-    }
-
-    private void setLaunchValues(Launch launch) {
-        mMissionName.setText(launch.getMission_name());
-        mRocketName.setText(launch.getRocket_name());
-        mLaunchDate.setText(launch.getLaunch_date_utc());
-        mDetails.setText(launch.getDetails());
-        mFlightNumber.setText("" + launch.getFlight_number());
-
-        Picasso.get()
-                .load(launch.getMission_patch_small())
-                .into(mImageView);
-    }
+//    private void loadLaunchFromDataBase(int flightNumber) {
+//        Single.create((SingleOnSubscribe<Launch>) emitter -> emitter.onSuccess(getLaunchDao().getLaunchByFlightNumber(flightNumber)))
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new SingleObserver<Launch>() {
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onSuccess(Launch launch) {
+//                        setLaunchValues(launch);
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+//    }
+//
+//    private void setLaunchValues(Launch launch) {
+//        mMissionName.setText(launch.getMission_name());
+//        mRocketName.setText(launch.getRocket_name());
+//        mLaunchDate.setText(launch.getLaunch_date_utc());
+//        mDetails.setText(launch.getDetails());
+//        mFlightNumber.setText("" + launch.getFlight_number());
+//
+//        Picasso.get()
+//                .load(launch.getMission_patch_small())
+//                .into(mImageView);
+//    }
 }

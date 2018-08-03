@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.AsyncLayoutInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -17,9 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.CombinedChart.DrawOrder;
-import com.example.ivanovnv.spacex.App;
-import com.example.ivanovnv.spacex.DB.LaunchDao;
-import com.example.ivanovnv.spacex.DB.LaunchYearStatistic;
 import com.example.ivanovnv.spacex.R;
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.Legend;
@@ -36,14 +32,10 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.zip.Inflater;
 
 import io.reactivex.Single;
-import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -174,19 +166,19 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
     @SuppressLint("CheckResult")
     private void setChartDataFromDb() {
 
-        Single<List<LaunchYearStatistic>> allLaunches = Single.create((SingleOnSubscribe<List<LaunchYearStatistic>>)
-                emitter -> emitter.onSuccess(getLaunchDao().getLaunchYearStatistic()))
-                //.flatMap(launchYearStatistic -> Single.just(convertLaunchesToBarData(launchYearStatistic)))
-                .subscribeOn(Schedulers.io());
-
-        Single<List<LaunchYearStatistic>> failedLaunches = Single.create((SingleOnSubscribe<List<LaunchYearStatistic>>)
-                emitter -> emitter.onSuccess(getLaunchDao().getLaunchYearStatisticFailed()))
-                //.flatMap(launchYearStatistic -> Single.just(convertLaunchesToBarData(launchYearStatistic)))
-                .subscribeOn(Schedulers.io());
-
-        Single.zip(allLaunches, failedLaunches, this::convertLaunchesToBarData).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(combinedData -> mChart.setData(combinedData), Throwable::printStackTrace);
+//        Single<List<LaunchYearStatistic>> allLaunches = Single.create((SingleOnSubscribe<List<LaunchYearStatistic>>)
+//                emitter -> emitter.onSuccess(getLaunchDao().getLaunchYearStatistic()))
+//                //.flatMap(launchYearStatistic -> Single.just(convertLaunchesToBarData(launchYearStatistic)))
+//                .subscribeOn(Schedulers.io());
+//
+//        Single<List<LaunchYearStatistic>> failedLaunches = Single.create((SingleOnSubscribe<List<LaunchYearStatistic>>)
+//                emitter -> emitter.onSuccess(getLaunchDao().getLaunchYearStatisticFailed()))
+//                //.flatMap(launchYearStatistic -> Single.just(convertLaunchesToBarData(launchYearStatistic)))
+//                .subscribeOn(Schedulers.io());
+//
+//        Single.zip(allLaunches, failedLaunches, this::convertLaunchesToBarData).subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(combinedData -> mChart.setData(combinedData), Throwable::printStackTrace);
 
 //        Single.create((SingleOnSubscribe<List<LaunchYearStatistic>>)
 //                emitter -> emitter.onSuccess(getLaunchDao().getLaunchYearStatistic()))
@@ -198,83 +190,83 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
         //return null;
     }
 
-    private CombinedData convertLaunchesToBarData(List<LaunchYearStatistic> launchYearStatisticsAll, List<LaunchYearStatistic> launchYearStatisticsFailed) {
-        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
-        CombinedData combinedData = new CombinedData();
-
-        ArrayList<IBarDataSet> sets = new ArrayList<>();
-        ArrayList<BarEntry> entriesCountAll = new ArrayList<>();
-        ArrayList<BarEntry> entriesCountFailed = new ArrayList<>();
-        ArrayList<Entry> entriesWeight = new ArrayList<>();
-
-        for (LaunchYearStatistic launchYearStatistic : launchYearStatisticsAll) {
-            int year = Integer.valueOf(launchYearStatistic.getLaunch_year());
-            entriesCountAll.add(new BarEntry(year, launchYearStatistic.getCount()));
-            int payload_mass_kg_sum = launchYearStatistic.getPayload_mass_kg_sum();
-
-            for (LaunchYearStatistic launchYearStatisticFailed : launchYearStatisticsFailed) {
-                if (launchYearStatisticFailed.getLaunch_year().equals(launchYearStatistic.getLaunch_year())) {
-                    payload_mass_kg_sum = payload_mass_kg_sum - launchYearStatisticFailed.getPayload_mass_kg_sum();
-                }
-            }
-
-            entriesWeight.add(new Entry(year, payload_mass_kg_sum));
-        }
-
-        BarDataSet dsCount = new BarDataSet(entriesCountAll, getString(R.string.launch_count));
-        dsCount.setColors(Color.rgb(0, 0, 0));
-        dsCount.setAxisDependency(YAxis.AxisDependency.RIGHT);
-        dsCount.setValueTextSize(10f);
-        sets.add(dsCount);
-
-
-        for (LaunchYearStatistic launchYearStatistic : launchYearStatisticsFailed) {
-            int year = Integer.valueOf(launchYearStatistic.getLaunch_year());
-            entriesCountFailed.add(new BarEntry(year, launchYearStatistic.getCount()));
-        }
-
-        BarDataSet dsCountFailed = new BarDataSet(entriesCountFailed, getString(R.string.launch_failed));
-        dsCountFailed.setColors(Color.rgb(255, 0, 0));
-        dsCountFailed.setValueTextColor(Color.rgb(255, 0, 0));
-        dsCountFailed.setValueTextSize(10f);
-        dsCountFailed.setAxisDependency(YAxis.AxisDependency.RIGHT);
-        sets.add(dsCountFailed);
-
-//        BarDataSet dsWight = new BarDataSet(entriesWeight, "weight");
-//        dsWight.setColors(Color.rgb(0, 255, 0));
-//        sets.add(dsWight);
+//    private CombinedData convertLaunchesToBarData(List<LaunchYearStatistic> launchYearStatisticsAll, List<LaunchYearStatistic> launchYearStatisticsFailed) {
+//        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
+//        CombinedData combinedData = new CombinedData();
 //
-//        BarData d = new BarData(sets);
-//        d.setValueTypeface(tf);
+//        ArrayList<IBarDataSet> sets = new ArrayList<>();
+//        ArrayList<BarEntry> entriesCountAll = new ArrayList<>();
+//        ArrayList<BarEntry> entriesCountFailed = new ArrayList<>();
+//        ArrayList<Entry> entriesWeight = new ArrayList<>();
+//
+//        for (LaunchYearStatistic launchYearStatistic : launchYearStatisticsAll) {
+//            int year = Integer.valueOf(launchYearStatistic.getLaunch_year());
+//            entriesCountAll.add(new BarEntry(year, launchYearStatistic.getCount()));
+//            int payload_mass_kg_sum = launchYearStatistic.getPayload_mass_kg_sum();
+//
+//            for (LaunchYearStatistic launchYearStatisticFailed : launchYearStatisticsFailed) {
+//                if (launchYearStatisticFailed.getLaunch_year().equals(launchYearStatistic.getLaunch_year())) {
+//                    payload_mass_kg_sum = payload_mass_kg_sum - launchYearStatisticFailed.getPayload_mass_kg_sum();
+//                }
+//            }
+//
+//            entriesWeight.add(new Entry(year, payload_mass_kg_sum));
+//        }
+//
+//        BarDataSet dsCount = new BarDataSet(entriesCountAll, getString(R.string.launch_count));
+//        dsCount.setColors(Color.rgb(0, 0, 0));
+//        dsCount.setAxisDependency(YAxis.AxisDependency.RIGHT);
+//        dsCount.setValueTextSize(10f);
+//        sets.add(dsCount);
+//
+//
+//        for (LaunchYearStatistic launchYearStatistic : launchYearStatisticsFailed) {
+//            int year = Integer.valueOf(launchYearStatistic.getLaunch_year());
+//            entriesCountFailed.add(new BarEntry(year, launchYearStatistic.getCount()));
+//        }
+//
+//        BarDataSet dsCountFailed = new BarDataSet(entriesCountFailed, getString(R.string.launch_failed));
+//        dsCountFailed.setColors(Color.rgb(255, 0, 0));
+//        dsCountFailed.setValueTextColor(Color.rgb(255, 0, 0));
+//        dsCountFailed.setValueTextSize(10f);
+//        dsCountFailed.setAxisDependency(YAxis.AxisDependency.RIGHT);
+//        sets.add(dsCountFailed);
+//
+////        BarDataSet dsWight = new BarDataSet(entriesWeight, "weight");
+////        dsWight.setColors(Color.rgb(0, 255, 0));
+////        sets.add(dsWight);
+////
+////        BarData d = new BarData(sets);
+////        d.setValueTypeface(tf);
+//
+//
+//        BarData barData = new BarData(sets);
+//        barData.setValueTypeface(tf);
+//
+//
+//        combinedData.setData(barData);
+//
+//
+//        LineDataSet set = new LineDataSet(entriesWeight, getString(R.string.weight));
+//        int color = Color.rgb(240, 150, 40);
+//        set.setColor(color);
+//        set.setLineWidth(2.5f);
+//        set.setCircleColor(color);
+//        set.setCircleRadius(5f);
+//        set.setFillColor(color);
+//        set.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+//        set.setDrawValues(true);
+//        set.setValueTextSize(10f);
+//        set.setValueTextColor(color);
+//
+//        set.setAxisDependency(YAxis.AxisDependency.LEFT);
+//
+//        LineData lineData = new LineData(set);
+//
+//
+//        combinedData.setData(lineData);
 
-
-        BarData barData = new BarData(sets);
-        barData.setValueTypeface(tf);
-
-
-        combinedData.setData(barData);
-
-
-        LineDataSet set = new LineDataSet(entriesWeight, getString(R.string.weight));
-        int color = Color.rgb(240, 150, 40);
-        set.setColor(color);
-        set.setLineWidth(2.5f);
-        set.setCircleColor(color);
-        set.setCircleRadius(5f);
-        set.setFillColor(color);
-        set.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-        set.setDrawValues(true);
-        set.setValueTextSize(10f);
-        set.setValueTextColor(color);
-
-        set.setAxisDependency(YAxis.AxisDependency.LEFT);
-
-        LineData lineData = new LineData(set);
-
-
-        combinedData.setData(lineData);
-
-        return combinedData;
+//        return combinedData;
 //
 //        ArrayList<Entry> entries = new ArrayList<>();
 //        for (DomainLaunch launch : launches)  {
@@ -285,7 +277,7 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
 //        LineDataSet dataSet = new LineDataSet(entries, "Time series");
 //        LineData data = new LineData(dataSet);
 //        return data;
-    }
+    //   }
 
 //    protected CombinedData generateBarData(int dataSets, float range, int count) {
 //
@@ -322,10 +314,10 @@ public class AnalyticsFragment extends Fragment implements OnChartGestureListene
 //        return mLabels[i];
 //    }
 
-    private LaunchDao getLaunchDao() {
-        return null;
-        //((App) getActivity().getApplication()).getLaunchDataBase().getLaunchDao();
-    }
+//    private LaunchDao getLaunchDao() {
+//        return null;
+//        //((App) getActivity().getApplication()).getLaunchDataBase().getLaunchDao();
+//    }
 
     @Override
     public void onStart() {

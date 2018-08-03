@@ -16,11 +16,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 
-import com.example.ivanovnv.spacex.App;
-import com.example.ivanovnv.spacex.DB.LaunchDao;
 import com.example.ivanovnv.spacex.DetailLaunchFragment.DetailLaunchFragment;
 import com.example.ivanovnv.spacex.R;
-import com.example.ivanovnv.spacex.SpaceXAPI.Launch;
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -39,11 +36,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Single;
-import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -79,7 +74,7 @@ public class DetailAnalyticsFragment extends Fragment implements OnChartGestureL
 
         mSwitch = v.findViewById(R.id.type_switch);
 
-        mSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> setChartDataFromDb(mYear, isChecked));
+        //  mSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> setChartDataFromDb(mYear, isChecked));
 
         mFlightNumbersMap = new HashMap();
 
@@ -133,7 +128,7 @@ public class DetailAnalyticsFragment extends Fragment implements OnChartGestureL
         CustomCombinedDataRenderer mCustomCombinedDataRenderer = new CustomCombinedDataRenderer(mChart, mChart.getAnimator(), mChart.getViewPortHandler());
         mChart.setRenderer(mCustomCombinedDataRenderer);
 
-        setChartDataFromDb(mYear, mSwitch.isChecked());
+        //  setChartDataFromDb(mYear, mSwitch.isChecked());
 
     }
 
@@ -145,64 +140,64 @@ public class DetailAnalyticsFragment extends Fragment implements OnChartGestureL
 
     }
 
-    @SuppressLint("CheckResult")
-    private void setChartDataFromDb(int year, boolean cumulative) {
+//    @SuppressLint("CheckResult")
+//    private void setChartDataFromDb(int year, boolean cumulative) {
+//
+//        Single.create((SingleOnSubscribe<List<Launch>>) emitter -> {
+//            emitter.onSuccess(getLaunchDao().getLaunchesInYear(String.valueOf((year))));
+//
+//        })
+//                .subscribeOn(Schedulers.io())
+//                .flatMap(launches -> Single.just(convertLaunchesToBarData(launches, cumulative)))
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .doOnSubscribe(disposable -> mProgressBar.setVisibility(View.VISIBLE))
+//                .doOnSuccess(combinedData -> mProgressBar.setVisibility(View.GONE))
+//                .doOnError(throwable -> mProgressBar.setVisibility(View.GONE))
+//                .subscribe(barData -> {
+//                    mChart.setData(barData);
+//                    mChart.invalidate();
+//                }, Throwable::printStackTrace);
+//        //disposable.dispose();
+//
+//    }
 
-        Single.create((SingleOnSubscribe<List<Launch>>) emitter -> {
-            emitter.onSuccess(getLaunchDao().getLaunchesInYear(String.valueOf((year))));
+//    private LaunchDao getLaunchDao() {
+//        return null;
+//        //((App) getActivity().getApplication()).getLaunchDataBase().getLaunchDao();
+//    }
 
-        })
-                .subscribeOn(Schedulers.io())
-                .flatMap(launches -> Single.just(convertLaunchesToBarData(launches, cumulative)))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(disposable -> mProgressBar.setVisibility(View.VISIBLE))
-                .doOnSuccess(combinedData -> mProgressBar.setVisibility(View.GONE))
-                .doOnError(throwable -> mProgressBar.setVisibility(View.GONE))
-                .subscribe(barData -> {
-                    mChart.setData(barData);
-                    mChart.invalidate();
-                }, Throwable::printStackTrace);
-        //disposable.dispose();
-
-    }
-
-    private LaunchDao getLaunchDao() {
-        return null;
-        //((App) getActivity().getApplication()).getLaunchDataBase().getLaunchDao();
-    }
-
-    private CombinedData convertLaunchesToBarData(List<Launch> launches, boolean cumulative) {
-
-
-        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
-        CombinedData combinedData = new CombinedData();
-
-        ArrayList<IBarDataSet> sets = new ArrayList<>();
-        //ArrayList<BarEntry> entriesCount = new ArrayList<>();
-        ArrayList<Entry> entriesWeight = new ArrayList<>();
-
-        float prevValue = 0;
-        float newValue;
-
-        mFlightNumbersMap.clear();
-
-        for (Launch launch : launches) {
-            int day = launch.getLaunch_date_unix() / 86400;
-
-            mFlightNumbersMap.put(day, launch.getFlight_number());
-
-            if (cumulative) {
-
-                if (launch.isLaunch_success()) newValue = launch.getPayload_mass_kg_sum();
-                else newValue = -launch.getPayload_mass_kg_sum();
-
-                entriesWeight.add(new Entry(day, prevValue + newValue));
-                prevValue = prevValue + newValue;
-
-            } else entriesWeight.add(new Entry(day, launch.getPayload_mass_kg_sum()));
-
-        }
+//    private CombinedData convertLaunchesToBarData(List<Launch> launches, boolean cumulative) {
+//
+//
+//        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "OpenSans-Regular.ttf");
+//        CombinedData combinedData = new CombinedData();
+//
+//        ArrayList<IBarDataSet> sets = new ArrayList<>();
+//        //ArrayList<BarEntry> entriesCount = new ArrayList<>();
+//        ArrayList<Entry> entriesWeight = new ArrayList<>();
+//
+//        float prevValue = 0;
+//        float newValue;
+//
+//        mFlightNumbersMap.clear();
+//
+//        for (Launch launch : launches) {
+//            int day = launch.getLaunch_date_unix() / 86400;
+//
+//            mFlightNumbersMap.put(day, launch.getFlight_number());
+//
+//            if (cumulative) {
+//
+//                if (launch.isLaunch_success()) newValue = launch.getPayload_mass_kg_sum();
+//                else newValue = -launch.getPayload_mass_kg_sum();
+//
+//                entriesWeight.add(new Entry(day, prevValue + newValue));
+//                prevValue = prevValue + newValue;
+//
+//            } else entriesWeight.add(new Entry(day, launch.getPayload_mass_kg_sum()));
+//
+//        }
 
 //        BarDataSet dsCount = new BarDataSet(entriesCount, "Launches");
 //        dsCount.setColors(Color.rgb(0, 0, 0));
@@ -223,28 +218,28 @@ public class DetailAnalyticsFragment extends Fragment implements OnChartGestureL
         //       combinedData.setData(barData);
 
 
-        LineDataSet set = new LineDataSet(entriesWeight, getString(R.string.weight));
-        int color = Color.rgb(240, 150, 40);
-        set.setColor(color);
-        set.setLineWidth(2.5f);
-        set.setCircleColor(color);
-        set.setCircleRadius(5f);
-        set.setFillColor(color);
-        set.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-        set.setDrawValues(true);
-        set.setValueTextSize(10f);
-        set.setValueTextColor(color);
-
-        set.setAxisDependency(YAxis.AxisDependency.LEFT);
-
-        LineData lineData = new LineData(set);
-        lineData.setValueFormatter((value, entry, dataSetIndex, viewPortHandler) -> formatValue((long) entry.getX() * 86400000));
-
-
-        combinedData.setData(lineData);
-
-        return combinedData;
-    }
+//        LineDataSet set = new LineDataSet(entriesWeight, getString(R.string.weight));
+//        int color = Color.rgb(240, 150, 40);
+//        set.setColor(color);
+//        set.setLineWidth(2.5f);
+//        set.setCircleColor(color);
+//        set.setCircleRadius(5f);
+//        set.setFillColor(color);
+//        set.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+//        set.setDrawValues(true);
+//        set.setValueTextSize(10f);
+//        set.setValueTextColor(color);
+//
+//        set.setAxisDependency(YAxis.AxisDependency.LEFT);
+//
+//        LineData lineData = new LineData(set);
+//        lineData.setValueFormatter((value, entry, dataSetIndex, viewPortHandler) -> formatValue((long) entry.getX() * 86400000));
+//
+//
+//        combinedData.setData(lineData);
+//
+//        return combinedData;
+//    }
 
     private String formatValue(long value) {
         Date date = new Date(value);

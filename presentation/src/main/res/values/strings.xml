@@ -7,6 +7,6 @@
     <string name="analytics">Аналитика</string>
     <string name="flight_number">Номер полета: </string>
     <string name="mission_name">Название миссии: </string>
-    <string name="rocket_name">Название рокеты: </string>
+    <string name="rocket_name">Название ракеты: </string>
     <string name="launch_date_utc">Дата запуска (UTC): </string>
 </resources>

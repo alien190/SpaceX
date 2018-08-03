@@ -103,9 +103,9 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
             mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    launchService.refreshLaunches()
+                    Disposable disposable = launchService.refreshLaunches()
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe();
+                            .subscribe((success, error) -> mSwipeRefreshLayout.setRefreshing(false));
                 }
             });
 

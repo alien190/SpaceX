@@ -306,7 +306,7 @@ public class ServerResponse {
                 private String payload_id;
                 private boolean reused;
                 private String payload_type;
-                private int payload_mass_kg;
+                private double payload_mass_kg;
                 private double payload_mass_lbs;
                 private String orbit;
                 private List<String> customers;
@@ -335,11 +335,11 @@ public class ServerResponse {
                     this.payload_type = payload_type;
                 }
 
-                public int getPayload_mass_kg() {
+                public double getPayload_mass_kg() {
                     return payload_mass_kg;
                 }
 
-                public void setPayload_mass_kg(int payload_mass_kg) {
+                public void setPayload_mass_kg(double payload_mass_kg) {
                     this.payload_mass_kg = payload_mass_kg;
                 }
 
