@@ -12,6 +12,11 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [toothpick_registry_package_name: 'com.ivanovnv.spacex.data']
+            }
+        }
     }
 
     buildTypes {
@@ -20,7 +25,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
 }
 
 dependencies {
@@ -32,4 +36,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    //toothpick
+    implementation 'com.github.stephanenicolas.toothpick:toothpick-runtime:1.1.3'
+    implementation 'com.github.stephanenicolas.toothpick:smoothie:1.1.3'
+    annotationProcessor 'com.github.stephanenicolas.toothpick:toothpick-compiler:1.1.3'
 }
