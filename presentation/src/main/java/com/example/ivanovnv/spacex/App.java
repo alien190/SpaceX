@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 
 import com.example.data.database.LaunchDataBase;
 import com.example.data.model.DataLaunch;
+import com.facebook.stetho.Stetho;
 
 import java.util.List;
 
@@ -21,6 +22,8 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Stetho.initializeWithDefaults(this);
 
         mDataBase = Room.databaseBuilder(getApplicationContext(), LaunchDataBase.class, "launch_database")
                 .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)

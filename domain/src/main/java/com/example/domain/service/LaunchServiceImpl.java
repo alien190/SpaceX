@@ -7,6 +7,7 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
+import io.reactivex.Flowable;
 import io.reactivex.Scheduler;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
@@ -41,5 +42,10 @@ public class LaunchServiceImpl implements LaunchService {
                 .doOnSuccess(this::insertLaunches)
                 .map(domainLaunches -> true);
 
+    }
+
+    @Override
+    public Flowable<List<DomainLaunch>> getLaunchesLive() {
+        return mLocalRepository.getLaunchesLive().subscribeOn(Schedulers.io());
     }
 }

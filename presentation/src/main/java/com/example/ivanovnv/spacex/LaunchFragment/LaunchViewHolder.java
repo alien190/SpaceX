@@ -9,29 +9,33 @@ import com.example.domain.model.launch.DomainLaunch;
 import com.example.ivanovnv.spacex.R;
 import com.squareup.picasso.Picasso;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class LaunchViewHolder extends RecyclerView.ViewHolder {
 
-    private TextView mFlightNumber;
-    private ImageView mImageView;
-    private TextView mMissionName;
-    private TextView mRocketName;
-    private TextView mLaunchDate;
+    @BindView(R.id.tv_flight_number)
+    public TextView mFlightNumber;
+    @BindView(R.id.iv_item)
+    public ImageView mImageView;
+    @BindView(R.id.tv_mission_name)
+    public TextView mMissionName;
+    @BindView(R.id.tv_rocket_name)
+    public TextView mRocketName;
+    @BindView(R.id.tv_launch_date)
+    public TextView mLaunchDate;
+
     private int mFlightNumberInt;
 
     public LaunchViewHolder(View itemView) {
         super(itemView);
-        mFlightNumber = itemView.findViewById(R.id.tv_flight_number);
-        mMissionName = itemView.findViewById(R.id.tv_mission_name);
-        mImageView = itemView.findViewById(R.id.iv_item);
-        mRocketName = itemView.findViewById(R.id.tv_rocket_name);
-        mLaunchDate = itemView.findViewById(R.id.tv_launch_date);
-
+        ButterKnife.bind(this, itemView);
     }
 
     public void bind(DomainLaunch launch) {
 
         mFlightNumberInt = launch.getFlight_number();
-        mFlightNumber.setText("" + launch.getFlight_number());
+        mFlightNumber.setText(String.valueOf(launch.getFlight_number()));
         mMissionName.setText(launch.getMission_name());
         mRocketName.setText(launch.getRocket_name());
         mLaunchDate.setText(launch.getLaunch_date_utc());

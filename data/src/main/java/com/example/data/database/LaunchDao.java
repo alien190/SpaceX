@@ -1,5 +1,6 @@
 package com.example.data.database;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
@@ -9,14 +10,20 @@ import com.example.data.model.DataLaunch;
 
 import java.util.List;
 
+import io.reactivex.Flowable;
+
 @Dao
 public interface LaunchDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertLaunches(List<DataLaunch> dataLaunches);
 
-    @Query("SELECT * FROM DataLaunch ORDER BY launch_date_unix DESC LIMIT 10")
+    @Query("SELECT * FROM DataLaunch ORDER BY launch_date_unix")
     List<DataLaunch> getLaunches();
+
+    @Query("SELECT * FROM DataLaunch ORDER BY launch_date_unix")
+    Flowable<List<DataLaunch>> getLaunchesLive();
+
 
     @Query("SELECT * FROM DataLaunch WHERE flight_number < :lastFlightNumber ORDER BY launch_date_unix DESC LIMIT :returnCount")
     List<DataLaunch> getLaunchesInRange(int lastFlightNumber, int returnCount);
