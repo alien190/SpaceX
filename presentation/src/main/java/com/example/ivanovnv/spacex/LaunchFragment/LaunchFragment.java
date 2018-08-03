@@ -82,31 +82,14 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
             LaunchServiceImpl launchService = new LaunchServiceImpl(new LaunchLocalRepository(getLaunchDao()),
                     new LaunchRemoteRepository(APIutils.getApi()));
 
-            launchService.getLaunches().observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new SingleObserver<List<DomainLaunch>>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
+            Disposable disposable = launchService.getLaunches()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(domainLaunches -> mLaunchAdapter.addLaunches(domainLaunches));
 
-                        }
-
-                        @Override
-                        public void onSuccess(List<DomainLaunch> domainLaunches) {
-                            mLaunchAdapter.addLaunches(domainLaunches);
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-                    });
-
-            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    Disposable disposable = launchService.refreshLaunches()
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe((success, error) -> mSwipeRefreshLayout.setRefreshing(false));
-                }
+            mSwipeRefreshLayout.setOnRefreshListener(() -> {
+                Disposable disposab1e = launchService.refreshLaunches()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe((success, error) -> mSwipeRefreshLayout.setRefreshing(false));
             });
 
 //            mFlowable = updateAdapterFromDataBaseFlowable();
