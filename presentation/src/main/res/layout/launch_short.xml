@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:bind="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.example.ivanovnv.spacex.LaunchFragment.LaunchItemViewModel" />
+    </data>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -10,7 +18,8 @@
         android:id="@+id/iv_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp" />
+        android:layout_margin="2dp"
+        bind:imageUrl="@{vm.imageUrl}" />
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="wrap_content"
@@ -29,7 +38,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/tv_flight_number_hint" />
+            app:layout_constraintStart_toEndOf="@id/tv_flight_number_hint"
+            android:text="@{vm.flightNumber}" />
 
 
         <TextView
@@ -45,7 +55,8 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/tv_mission_name_hint"
-            app:layout_constraintTop_toTopOf="@id/tv_mission_name_hint" />
+            app:layout_constraintTop_toTopOf="@id/tv_mission_name_hint"
+            android:text="@{vm.missionName}" />
 
         <TextView
             android:id="@+id/tv_rocket_name_hint"
@@ -60,7 +71,8 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/tv_rocket_name_hint"
-            app:layout_constraintTop_toTopOf="@id/tv_rocket_name_hint" />
+            app:layout_constraintTop_toTopOf="@id/tv_rocket_name_hint"
+            android:text="@{vm.rocketName}" />
 
         <TextView
             android:id="@+id/tv_launch_date_hint"
@@ -76,6 +88,8 @@
             app:layout_constraintStart_toEndOf="@id/tv_launch_date_hint"
             app:layout_constraintTop_toTopOf="@id/tv_launch_date_hint"
             android:textStyle="bold"
-            android:maxLines="2"/>
+            android:maxLines="2"
+            android:text="@{vm.launchDate}" />
     </android.support.constraint.ConstraintLayout>
 </LinearLayout>
+</layout>
