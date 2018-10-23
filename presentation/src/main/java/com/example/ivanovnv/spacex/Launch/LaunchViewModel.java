@@ -28,6 +28,8 @@ public class LaunchViewModel extends ViewModel {
         compositeDisposable.add(launchService.getLaunchesLive()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(launchAdapter::updateLaunches));
+
+        loadLaunches();
     }
 
     @Override
@@ -53,4 +55,6 @@ public class LaunchViewModel extends ViewModel {
     public MutableLiveData<Boolean> getIsLoadData() {
         return mIsLoadData;
     }
+
+
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 public final class DomainToDataConverter {
 
-    public static List<DataLaunch> converLaunch(List<DomainLaunch> domainLaunches) {
+    public static List<DataLaunch> convertLaunch(List<DomainLaunch> domainLaunches) {
         List<DataLaunch> dataLaunches = new ArrayList<>();
         for (DomainLaunch launch : domainLaunches) {
 

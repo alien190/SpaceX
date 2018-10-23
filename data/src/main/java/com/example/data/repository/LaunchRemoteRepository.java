@@ -8,7 +8,6 @@ import com.example.domain.repository.LaunchRepository;
 import java.util.List;
 
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 
 public class LaunchRemoteRepository implements LaunchRepository {
@@ -21,7 +20,7 @@ public class LaunchRemoteRepository implements LaunchRepository {
 
     @Override
     public Single<List<DomainLaunch>> getLaunches() {
-        return mApi.getAllPastLaunches().map(DataToDomainConverter::converLaunch);
+        return mApi.getAllPastLaunches().map(DataToDomainConverter::convertLaunch);
     }
 
     @Override
