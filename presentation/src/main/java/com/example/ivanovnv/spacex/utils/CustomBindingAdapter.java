@@ -9,6 +9,6 @@ public class CustomBindingAdapter {
 
     @BindingAdapter("bind:imageUrl")
     public static void loadImage(ImageView imageView, String imageUrl) {
-        Picasso.with(imageView.getContext()).load(imageUrl).into(imageView);
+        //Picasso.with(imageView.getContext()).load(imageUrl).into(imageView);
     }
 }

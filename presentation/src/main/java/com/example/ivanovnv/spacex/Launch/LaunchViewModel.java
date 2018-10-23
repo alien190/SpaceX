@@ -1,11 +1,10 @@
-package com.example.ivanovnv.spacex.LaunchFragment;
+package com.example.ivanovnv.spacex.Launch;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.support.v4.widget.SwipeRefreshLayout;
 
 import com.example.domain.service.LaunchService;
-import com.example.domain.service.LaunchServiceImpl;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;

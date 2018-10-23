@@ -1,4 +1,4 @@
-package com.example.ivanovnv.spacex.LaunchFragment;
+package com.example.ivanovnv.spacex.Launch;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.ivanovnv.spacex.R;
-import com.example.ivanovnv.spacex.databinding.LaunchListItemBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +24,12 @@ public class LaunchAdapter extends RecyclerView.Adapter<LaunchViewHolder> {
     @NonNull
     @Override
     public LaunchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        LaunchListItemBinding launchListItemBinding = LaunchListItemBinding.inflate(layoutInflater, parent, false);
-
-        return new LaunchViewHolder(launchListItemBinding);
+          LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+          View view = layoutInflater.inflate(R.layout.li_launch, parent, false);
+          return new LaunchViewHolder(view);
+//        LaunchListItemBinding launchListItemBinding = LaunchListItemBinding.inflate(layoutInflater, parent, false);
+//
+//        return new LaunchViewHolder(launchListItemBinding);
     }
 
     @Override

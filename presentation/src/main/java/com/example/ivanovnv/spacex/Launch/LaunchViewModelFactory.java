@@ -1,4 +1,4 @@
-package com.example.ivanovnv.spacex.LaunchFragment;
+package com.example.ivanovnv.spacex.Launch;
 
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
