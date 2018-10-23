@@ -21,7 +21,7 @@ public interface LaunchDao {
     @Query("SELECT * FROM DataLaunch ORDER BY launch_date_unix")
     List<DataLaunch> getLaunches();
 
-    @Query("SELECT * FROM DataLaunch ORDER BY launch_date_unix")
+    @Query("SELECT * FROM DataLaunch ORDER BY launch_date_unix LIMIT 5")
     Flowable<List<DataLaunch>> getLaunchesLive();
 
 

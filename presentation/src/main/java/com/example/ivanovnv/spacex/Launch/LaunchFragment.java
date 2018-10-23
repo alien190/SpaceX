@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.example.ivanovnv.spacex.DetailLaunchFragment.DetailLaunchFragment;
 import com.example.ivanovnv.spacex.R;
+import com.example.ivanovnv.spacex.common.LaunchLayoutManager;
 import com.example.ivanovnv.spacex.di.launchFragment.LaunchFragmentModule;
 
 import javax.inject.Inject;
@@ -38,6 +39,8 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
     LaunchViewModel viewModel;
     @Inject
     LaunchAdapter mAdapter;
+    @Inject
+    LaunchLayoutManager mLaunchLayoutManager;
 
     public static LaunchFragment newInstance() {
         Bundle args = new Bundle();
@@ -57,7 +60,8 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
         Scope scope = Toothpick.openScopes("Application", "LaunchFragment");
         scope.installModules(new LaunchFragmentModule(this));
         Toothpick.inject(this, scope);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setLayoutManager(mLaunchLayoutManager);
+        //mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setAdapter(mAdapter);
 
         viewModel.getLaunches().observe(this, mAdapter::updateLaunches);
@@ -78,4 +82,10 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
                 .commit();
     }
 
+    @Override
+    public void onDestroy() {
+        mRecyclerView.setAdapter(null);
+        mRecyclerView.setLayoutManager(null);
+        super.onDestroy();
+    }
 }
