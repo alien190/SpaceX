@@ -3,14 +3,14 @@ package com.example.data.repository;
 import com.example.data.api.SpaceXAPI;
 import com.example.data.api.converter.DataToDomainConverter;
 import com.example.domain.model.launch.DomainLaunch;
-import com.example.domain.repository.LaunchRepository;
+import com.example.domain.repository.ILaunchRepository;
 
 import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 
-public class LaunchRemoteRepository implements LaunchRepository {
+public class LaunchRemoteRepository implements ILaunchRepository {
 
     SpaceXAPI mApi;
 

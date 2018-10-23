@@ -4,30 +4,34 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.support.v4.widget.SwipeRefreshLayout;
 
-import com.example.domain.service.LaunchService;
+import com.example.domain.model.launch.DomainLaunch;
+import com.example.domain.service.ILaunchService;
+
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 
 public class LaunchViewModel extends ViewModel {
-    private MutableLiveData<LaunchAdapter> mLaunchAdapter = new MutableLiveData<>();
+    //private MutableLiveData<LaunchAdapter> mLaunchAdapter = new MutableLiveData<>();
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private MutableLiveData<Boolean> mIsLoadData = new MutableLiveData<>();
     private MutableLiveData<SwipeRefreshLayout.OnRefreshListener> mOnRefreshListener = new MutableLiveData<>();
-    private LaunchService mLaunchService;
+    private ILaunchService mLaunchService;
+    private MutableLiveData<List<DomainLaunch>> mLaunches = new MutableLiveData<>();
 
 
-    public LaunchViewModel(LaunchService launchService) {
+    public LaunchViewModel(ILaunchService launchService) {
 
         mLaunchService = launchService;
 
-        LaunchAdapter launchAdapter = new LaunchAdapter();
+        //LaunchAdapter launchAdapter = new LaunchAdapter();
 
         mOnRefreshListener.postValue(this::loadLaunches);
-        mLaunchAdapter.postValue(launchAdapter);
+      //  mLaunchAdapter.postValue(launchAdapter);
         compositeDisposable.add(launchService.getLaunchesLive()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(launchAdapter::updateLaunches));
+                .subscribe(mLaunches::postValue));
 
         loadLaunches();
     }
@@ -38,9 +42,9 @@ public class LaunchViewModel extends ViewModel {
         super.onCleared();
     }
 
-    public MutableLiveData<LaunchAdapter> getLaunchAdapter() {
-        return mLaunchAdapter;
-    }
+//    public MutableLiveData<LaunchAdapter> getLaunchAdapter() {
+//        return mLaunchAdapter;
+//    }
 
     private void loadLaunches() {
         mIsLoadData.postValue(true);
@@ -56,5 +60,7 @@ public class LaunchViewModel extends ViewModel {
         return mIsLoadData;
     }
 
-
+    public MutableLiveData<List<DomainLaunch>> getLaunches() {
+        return mLaunches;
+    }
 }

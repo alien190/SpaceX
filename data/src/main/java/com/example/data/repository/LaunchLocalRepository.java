@@ -4,14 +4,14 @@ import com.example.data.api.converter.DataToDomainConverter;
 import com.example.data.api.converter.DomainToDataConverter;
 import com.example.data.database.LaunchDao;
 import com.example.domain.model.launch.DomainLaunch;
-import com.example.domain.repository.LaunchRepository;
+import com.example.domain.repository.ILaunchRepository;
 
 import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 
-public class LaunchLocalRepository implements LaunchRepository {
+public class LaunchLocalRepository implements ILaunchRepository {
 
     LaunchDao mLaunchDao;
 

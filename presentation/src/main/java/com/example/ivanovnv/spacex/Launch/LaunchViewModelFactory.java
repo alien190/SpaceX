@@ -4,13 +4,13 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
-import com.example.domain.service.LaunchService;
+import com.example.domain.service.ILaunchService;
 
 public class LaunchViewModelFactory implements ViewModelProvider.Factory {
 
-    private LaunchService mLaunchService;
+    private ILaunchService mLaunchService;
 
-    public LaunchViewModelFactory(LaunchService launchService) {
+    public LaunchViewModelFactory(ILaunchService launchService) {
         mLaunchService = launchService;
     }
 

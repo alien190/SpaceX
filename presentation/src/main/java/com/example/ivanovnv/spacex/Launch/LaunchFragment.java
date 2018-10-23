@@ -1,7 +1,6 @@
 package com.example.ivanovnv.spacex.Launch;
 
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,19 +13,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.data.api.APIutils;
-import com.example.data.database.LaunchDao;
-import com.example.data.repository.LaunchLocalRepository;
-import com.example.data.repository.LaunchRemoteRepository;
-import com.example.domain.service.LaunchService;
-import com.example.domain.service.LaunchServiceImpl;
-import com.example.ivanovnv.spacex.App;
 import com.example.ivanovnv.spacex.DetailLaunchFragment.DetailLaunchFragment;
 import com.example.ivanovnv.spacex.R;
+import com.example.ivanovnv.spacex.di.launchFragment.LaunchFragmentModule;
 
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import toothpick.Scope;
+import toothpick.Toothpick;
 
 public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClickListener {
 
@@ -38,7 +34,10 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
     @BindView(R.id.rv_main)
     RecyclerView mRecyclerView;
 
+    @Inject
     LaunchViewModel viewModel;
+    @Inject
+    LaunchAdapter mAdapter;
 
     public static LaunchFragment newInstance() {
         Bundle args = new Bundle();
@@ -55,24 +54,17 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
         View view = inflater.inflate(R.layout.fr_launches_list, container, false);
         ButterKnife.bind(this, view);
 
+        Scope scope = Toothpick.openScopes("Application", "LaunchFragment");
+        scope.installModules(new LaunchFragmentModule(this));
+        Toothpick.inject(this, scope);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setAdapter(mAdapter);
 
-        LaunchService launchService = new LaunchServiceImpl(new LaunchLocalRepository(getLaunchDao()),
-                new LaunchRemoteRepository(APIutils.getApi()));
-
-        viewModel = ViewModelProviders.of(this, new LaunchViewModelFactory(launchService))
-                .get(LaunchViewModel.class);
-
-        viewModel.getLaunchAdapter().observe(this, mRecyclerView::setAdapter);
+        viewModel.getLaunches().observe(this, mAdapter::updateLaunches);
         viewModel.getOnRefreshListener().observe(this, mSwipeRefreshLayout::setOnRefreshListener);
         viewModel.getIsLoadData().observe(this, mSwipeRefreshLayout::setRefreshing);
 
         return view;
-    }
-
-
-    private LaunchDao getLaunchDao() {
-        return ((App) getActivity().getApplication()).getLaunchDataBase().getLaunchDao();
     }
 
     @Override
@@ -85,4 +77,5 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
                 .addToBackStack(DetailLaunchFragment.class.getSimpleName())
                 .commit();
     }
+
 }

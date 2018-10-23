@@ -1,26 +1,20 @@
 package com.example.domain.service;
 
 import com.example.domain.model.launch.DomainLaunch;
-import com.example.domain.repository.LaunchRepository;
+import com.example.domain.repository.ILaunchRepository;
 
 import java.util.List;
 
-import io.reactivex.Completable;
-import io.reactivex.CompletableObserver;
 import io.reactivex.Flowable;
-import io.reactivex.Scheduler;
 import io.reactivex.Single;
-import io.reactivex.SingleObserver;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-public class LaunchServiceImpl implements LaunchService {
+public class LaunchServiceImpl implements ILaunchService {
 
-    private LaunchRepository mLocalRepository;
-    private LaunchRepository mRemoteRepository;
+    private ILaunchRepository mLocalRepository;
+    private ILaunchRepository mRemoteRepository;
 
-    public LaunchServiceImpl(LaunchRepository mLocalRepository, LaunchRepository mRemoteRepository) {
+    public LaunchServiceImpl(ILaunchRepository mLocalRepository, ILaunchRepository mRemoteRepository) {
         this.mLocalRepository = mLocalRepository;
         this.mRemoteRepository = mRemoteRepository;
     }
