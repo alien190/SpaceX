@@ -17,7 +17,7 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
         detachAndScrapAttachedViews(recycler);
-        fillDown(recycler);
+        doLayoutChildren(recycler);
     }
 
     @Override
@@ -25,17 +25,12 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
         return true;
     }
 
-    private void fillDown(RecyclerView.Recycler recycler) {
+    private void doLayoutChildren(RecyclerView.Recycler recycler) {
         int pos;
         boolean fillDown = true;
         int height = getHeight();
         int viewTop = 0;
         int itemCount = getItemCount();
-        //int viewHeight = (int) (getHeight() * VIEW_HEIGHT_PERCENT);
-        //final int widthSpec = View.MeasureSpec.makeMeasureSpec(getWidth(), View.MeasureSpec.EXACTLY);
-        //final int heightSpec = View.MeasureSpec.makeMeasureSpec(getHeight(), View.MeasureSpec.EXACTLY);
-        //Rect viewBounds = new Rect();
-
 
         viewCache.clear();
         for (int i = 0, cnt = getChildCount(); i < cnt; i++) {
@@ -89,9 +84,8 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
     @Override
     public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
         int delta = getScrollDelta(dy);
-        //if (dy > 0) {
         offsetChildrenVertical(-delta);
-        fillDown(recycler);
+        doLayoutChildren(recycler);
         return delta;
     }
 
@@ -113,7 +107,6 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
                 return dy;
             } else {
                 int bottom = getDecoratedBottom(bottomView) + layoutParams.bottomMargin - getHeight();
-
                 return Math.min(bottom > 0 ? bottom : 0, dy);
             }
         }
