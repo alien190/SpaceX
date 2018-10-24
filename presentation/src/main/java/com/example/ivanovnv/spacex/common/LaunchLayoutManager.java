@@ -31,7 +31,10 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
         initializeCache();
         top = drawAnchorView(anchorView, recycler);
         fillDown(recycler, top, anchorView);
+        recyclerCache(recycler);
+    }
 
+    private void recyclerCache(RecyclerView.Recycler recycler) {
         for (int i = 0; i < viewCache.size(); i++) {
             recycler.recycleView(viewCache.valueAt(i));
         }
