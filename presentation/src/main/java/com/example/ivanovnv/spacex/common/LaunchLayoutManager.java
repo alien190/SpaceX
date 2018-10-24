@@ -27,10 +27,21 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
 
     private void doLayoutChildren(RecyclerView.Recycler recycler) {
         int pos;
+        int anchorViewPosition;
+        int anchorViewBottom;
         boolean fillDown = true;
         int height = getHeight();
         int viewTop = 0;
         int itemCount = getItemCount();
+
+
+        View anchorView = getAnchorView();
+        if (anchorView != null) {
+            anchorViewPosition = getPosition(anchorView);
+        } else {
+            anchorViewPosition = 0;
+        }
+
 
         viewCache.clear();
         for (int i = 0, cnt = getChildCount(); i < cnt; i++) {
@@ -43,17 +54,28 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
             detachView(viewCache.valueAt(i));
         }
 
-        View topView = getChildAt(0);
-        if (topView != null) {
-            pos = getPosition(topView);
-        } else {
-            pos = 0;
+        if (anchorView != null) {
+//            anchorView = viewCache.get(anchorViewPosition);
+//            if (anchorView instanceof LaunchItemView) {
+//                ((LaunchItemView) anchorView).setCollapsed(false);
+//                measureChildWithMargins(anchorView, 0, 0);
+//            }
+            viewCache.remove(anchorViewPosition);
+            anchorViewPosition++;
+            //viewCache.put(anchorViewPosition, anchorView);
         }
+
+        viewTop = drawAnchorView(anchorViewPosition, recycler);
+
+        pos = anchorViewPosition;
 
         while (fillDown && pos < itemCount) {
             View view = viewCache.get(pos);
             if (view == null) {
                 view = recycler.getViewForPosition(pos);
+                if (view instanceof LaunchItemView) {
+                    ((LaunchItemView) view).setCollapsed(true);
+                }
                 addView(view);
                 measureChildWithMargins(view, 0, 0);
                 int decoratedMeasuredWidth = getDecoratedMeasuredWidth(view);
@@ -79,6 +101,37 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
         for (int i = 0; i < viewCache.size(); i++) {
             recycler.recycleView(viewCache.valueAt(i));
         }
+    }
+
+    private int drawAnchorView(int anchorPos, RecyclerView.Recycler recycler) {
+        View view = recycler.getViewForPosition(anchorPos);
+        if (view instanceof LaunchItemView) {
+            ((LaunchItemView) view).setCollapsed(false);
+        }
+        addView(view);
+        measureChildWithMargins(view, 0, 0);
+        int decoratedMeasuredWidth = getDecoratedMeasuredWidth(view);
+        int decoratedMeasuredHeight = getDecoratedMeasuredHeight(view);
+        RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) view.getLayoutParams();
+        layoutDecorated(view,
+                layoutParams.leftMargin,
+                layoutParams.topMargin,
+                decoratedMeasuredWidth + layoutParams.rightMargin,
+                decoratedMeasuredHeight + layoutParams.bottomMargin + layoutParams.topMargin);
+        return decoratedMeasuredHeight + layoutParams.bottomMargin + layoutParams.topMargin;
+    }
+
+    private View getAnchorView() {
+        int childCount = getChildCount();
+        //View anchorView = null;
+        for (int i = 0; i < childCount; i++) {
+            View view = getChildAt(i);
+            RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) view.getLayoutParams();
+            if (getDecoratedTop(view) - layoutParams.topMargin > 0) {
+                return view;
+            }
+        }
+        return null;
     }
 
     @Override
