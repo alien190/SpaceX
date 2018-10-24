@@ -29,7 +29,6 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
     private void doLayoutChildren(RecyclerView.Recycler recycler) {
         int pos;
         int anchorViewPosition;
-        int anchorViewBottom;
         boolean fillDown = true;
         int height = getHeight();
         int viewTop = 0;
@@ -57,16 +56,9 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
         viewTop = drawAnchorView(anchorView, recycler);
 
         if (anchorView != null) {
-//            anchorView = viewCache.get(anchorViewPosition);
-//            if (anchorView instanceof LaunchItemView) {
-//                ((LaunchItemView) anchorView).setCollapsed(false);
-//                measureChildWithMargins(anchorView, 0, 0);
-//            }
             viewCache.remove(anchorViewPosition);
             anchorViewPosition++;
-            //viewCache.put(anchorViewPosition, anchorView);
         }
-
 
         pos = anchorViewPosition;
 
@@ -75,21 +67,13 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
             if (view == null) {
                 view = recycler.getViewForPosition(pos);
                 if (view instanceof LaunchItemView) {
-                    ((LaunchItemView) view).setCollapsed(true);
+                    if (anchorView == null && pos == 0) {
+                        ((LaunchItemView) view).setScale(100);
+                    } else {
+                        ((LaunchItemView) view).setScale(0);
+                    }
                 }
-//                addView(view);
-//                measureChildWithMargins(view, 0, 0);
-//                int decoratedMeasuredWidth = getDecoratedMeasuredWidth(view);
-//                int decoratedMeasuredHeight = getDecoratedMeasuredHeight(view);
-//                RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) view.getLayoutParams();
-//                layoutDecorated(view,
-//                        layoutParams.leftMargin,
-//                        viewTop + layoutParams.topMargin,
-//                        decoratedMeasuredWidth + layoutParams.rightMargin,
-//                        viewTop + decoratedMeasuredHeight + layoutParams.bottomMargin + layoutParams.topMargin);
-//                viewTop += decoratedMeasuredHeight + layoutParams.bottomMargin + layoutParams.topMargin;
                 viewTop = layoutView(view, viewTop);
-
             } else {
                 attachView(view);
                 viewCache.remove(pos);
