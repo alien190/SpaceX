@@ -64,13 +64,16 @@ public class LaunchItemView extends CardView {
         }
     }
 
-    public void setScale(int percent) {
-        if (percent >= 0 && percent <= 100) {
-            int height = mTitleHeightWithMargins + (mRootHeightWithMargins - mTitleHeightWithMargins) * percent / 100;
-            setViewSize(mView, height, -1);
-            height = mTitleHeight + (mRootHeight - mTitleHeight) * percent / 100;
-            setViewSize(mIvMissionIcon, height, height);
+    public void setScale(float percent) {
+        if (percent < 0) {
+            percent = 0;
+        } else if (percent > 100) {
+            percent = 100;
         }
+        int overallHeight = (int)(mTitleHeightWithMargins + (mRootHeightWithMargins - mTitleHeightWithMargins) * percent / 100);
+        setViewSize(mView, overallHeight, -1);
+        int iconHeight = (int) (mTitleHeight + (mRootHeight - mTitleHeight) * percent / 100);
+        setViewSize(mIvMissionIcon, iconHeight, iconHeight);
     }
 
     private void setViewSize(View view, int height, int width) {
@@ -82,5 +85,15 @@ public class LaunchItemView extends CardView {
             layoutParams.width = width;
         }
         view.setLayoutParams(layoutParams);
+    }
+
+    public int getRootHeightWithMargins() {
+        measureHeight();
+        return mRootHeightWithMargins;
+    }
+
+    public int getTitleHeightWithMargins() {
+        measureHeight();
+        return mTitleHeightWithMargins;
     }
 }

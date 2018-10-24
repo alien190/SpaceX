@@ -1,6 +1,7 @@
 package com.example.ivanovnv.spacex.common;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 
@@ -42,7 +43,6 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
             anchorViewPosition = 0;
         }
 
-
         viewCache.clear();
         for (int i = 0, cnt = getChildCount(); i < cnt; i++) {
             View view = getChildAt(i);
@@ -53,6 +53,8 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
         for (int i = 0; i < viewCache.size(); i++) {
             detachView(viewCache.valueAt(i));
         }
+
+        viewTop = drawAnchorView(anchorView, recycler);
 
         if (anchorView != null) {
 //            anchorView = viewCache.get(anchorViewPosition);
@@ -65,7 +67,6 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
             //viewCache.put(anchorViewPosition, anchorView);
         }
 
-        viewTop = drawAnchorView(anchorViewPosition, recycler);
 
         pos = anchorViewPosition;
 
@@ -76,17 +77,18 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
                 if (view instanceof LaunchItemView) {
                     ((LaunchItemView) view).setCollapsed(true);
                 }
-                addView(view);
-                measureChildWithMargins(view, 0, 0);
-                int decoratedMeasuredWidth = getDecoratedMeasuredWidth(view);
-                int decoratedMeasuredHeight = getDecoratedMeasuredHeight(view);
-                RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) view.getLayoutParams();
-                layoutDecorated(view,
-                        layoutParams.leftMargin,
-                        viewTop + layoutParams.topMargin,
-                        decoratedMeasuredWidth + layoutParams.rightMargin,
-                        viewTop + decoratedMeasuredHeight + layoutParams.bottomMargin + layoutParams.topMargin);
-                viewTop += decoratedMeasuredHeight + layoutParams.bottomMargin + layoutParams.topMargin;
+//                addView(view);
+//                measureChildWithMargins(view, 0, 0);
+//                int decoratedMeasuredWidth = getDecoratedMeasuredWidth(view);
+//                int decoratedMeasuredHeight = getDecoratedMeasuredHeight(view);
+//                RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) view.getLayoutParams();
+//                layoutDecorated(view,
+//                        layoutParams.leftMargin,
+//                        viewTop + layoutParams.topMargin,
+//                        decoratedMeasuredWidth + layoutParams.rightMargin,
+//                        viewTop + decoratedMeasuredHeight + layoutParams.bottomMargin + layoutParams.topMargin);
+//                viewTop += decoratedMeasuredHeight + layoutParams.bottomMargin + layoutParams.topMargin;
+                viewTop = layoutView(view, viewTop);
 
             } else {
                 attachView(view);
@@ -103,22 +105,58 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
         }
     }
 
-    private int drawAnchorView(int anchorPos, RecyclerView.Recycler recycler) {
-        View view = recycler.getViewForPosition(anchorPos);
-        if (view instanceof LaunchItemView) {
-            ((LaunchItemView) view).setCollapsed(false);
+    private int drawAnchorView(View anchorView, RecyclerView.Recycler recycler) {
+        if (anchorView != null) {
+            int anchorPos = getPosition(anchorView);
+
+            int newTop;
+
+            View view = recycler.getViewForPosition(anchorPos);
+            if (view instanceof LaunchItemView && anchorView instanceof LaunchItemView) {
+                LaunchItemView launchItemView = (LaunchItemView) view;
+                LaunchItemView launchItemAnchorView = (LaunchItemView) anchorView;
+
+                int anchorTop = anchorView.getTop();
+                float scale = ((float) launchItemView.getRootHeightWithMargins() +
+                        getTopAndBottomMargins(view) - anchorTop) /
+                        launchItemView.getRootHeightWithMargins() * 100;
+                Log.d("TAG", "drawAnchorView: scale: " + scale);
+                launchItemView.setScale(scale);
+
+                measureChildWithMargins(launchItemView, 0, 0);
+                measureChildWithMargins(launchItemAnchorView, 0, 0);
+
+                int itemHeight = getDecoratedMeasuredHeight(launchItemView);
+                int anchorHeight = getDecoratedMeasuredHeight(launchItemAnchorView);
+
+                newTop = anchorTop - getTopAndBottomMargins(launchItemView) -
+                        (itemHeight - anchorHeight);
+            } else {
+                newTop = view.getTop();
+            }
+            return layoutView(view, newTop);
         }
+        return 0;
+    }
+
+    private int layoutView(View view, int top) {
         addView(view);
         measureChildWithMargins(view, 0, 0);
         int decoratedMeasuredWidth = getDecoratedMeasuredWidth(view);
         int decoratedMeasuredHeight = getDecoratedMeasuredHeight(view);
         RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) view.getLayoutParams();
+
         layoutDecorated(view,
                 layoutParams.leftMargin,
-                layoutParams.topMargin,
+                top + layoutParams.topMargin,
                 decoratedMeasuredWidth + layoutParams.rightMargin,
-                decoratedMeasuredHeight + layoutParams.bottomMargin + layoutParams.topMargin);
-        return decoratedMeasuredHeight + layoutParams.bottomMargin + layoutParams.topMargin;
+                top + decoratedMeasuredHeight + layoutParams.bottomMargin + layoutParams.topMargin);
+        return top + decoratedMeasuredHeight + layoutParams.bottomMargin + layoutParams.topMargin;
+    }
+
+    int getTopAndBottomMargins(View view) {
+        RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) view.getLayoutParams();
+        return layoutParams.bottomMargin + layoutParams.topMargin;
     }
 
     private View getAnchorView() {
