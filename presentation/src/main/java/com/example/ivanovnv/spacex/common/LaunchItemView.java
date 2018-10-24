@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import com.example.ivanovnv.spacex.R;
 
 public class LaunchItemView extends CardView {
+    public static final int MIN_SCALE = 0;
+    public static final int MAX_SCALE = 100;
     private View mView;
     private ConstraintLayout mClTitle;
     private ConstraintLayout mClRoot;

@@ -1,12 +1,13 @@
 package com.example.ivanovnv.spacex.common;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 
 public class LaunchLayoutManager extends RecyclerView.LayoutManager {
 
-    private SparseArray<View> viewCache = new SparseArray<>();
+    private SparseArray<View> mViewCache = new SparseArray<>();
 
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
@@ -26,76 +27,95 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
     }
 
     private void doLayoutChildren(RecyclerView.Recycler recycler) {
-        int top;
         View anchorView = getAnchorView();
         initializeCache();
-        top = drawAnchorView(anchorView, recycler);
-        fillDown(recycler, top, anchorView);
+        drawAnchorView(anchorView, recycler);
+        fillDown(recycler, anchorView);
+        fillUp(recycler, anchorView);
         recyclerCache(recycler);
     }
 
     private void recyclerCache(RecyclerView.Recycler recycler) {
-        for (int i = 0; i < viewCache.size(); i++) {
-            recycler.recycleView(viewCache.valueAt(i));
+        for (int i = 0; i < mViewCache.size(); i++) {
+            recycler.recycleView(mViewCache.valueAt(i));
         }
     }
 
-    private void fillDown(RecyclerView.Recycler recycler, int viewTop, View anchorView) {
+    private void fillDown(RecyclerView.Recycler recycler, View anchorView) {
         int pos = 0;
         int height = getHeight();
         int itemCount = getItemCount();
         boolean fillDown = true;
+        int top = 0;
 
         if (anchorView != null) {
             int anchorViewPosition = getPosition(anchorView);
-            viewCache.remove(anchorViewPosition);
+            mViewCache.remove(anchorViewPosition);
             pos = getPosition(anchorView) + 1;
+            top = getDecoratedBottom(anchorView);
         }
 
         while (fillDown && pos < itemCount) {
-            View view = viewCache.get(pos);
+            View view = mViewCache.get(pos);
             if (view == null) {
                 view = recycler.getViewForPosition(pos);
                 if (view instanceof LaunchItemView) {
                     if (anchorView == null && pos == 0) {
-                        ((LaunchItemView) view).setScale(100);
+                        ((LaunchItemView) view).setScale(LaunchItemView.MAX_SCALE);
                     } else {
-                        ((LaunchItemView) view).setScale(0);
+                        ((LaunchItemView) view).setScale(LaunchItemView.MIN_SCALE);
                     }
                 }
-                viewTop = drawView(view, viewTop);
+                top = drawView(view, top, -1);
             } else {
                 attachView(view);
-                viewCache.remove(pos);
-                viewTop = getDecoratedBottom(view);
+                mViewCache.remove(pos);
+                top = getDecoratedBottom(view);
             }
 
-            fillDown = viewTop <= height;
+            fillDown = top <= height;
             pos++;
+        }
+    }
+
+    private void fillUp(RecyclerView.Recycler recycler, View anchorView) {
+        if (anchorView != null) {
+            int pos = getPosition(anchorView) - 1;
+            if (pos >= 0) {
+                mViewCache.remove(pos);
+                View view = recycler.getViewForPosition(pos);
+                if (view instanceof LaunchItemView) {
+                    ((LaunchItemView) view).setScale(LaunchItemView.MAX_SCALE);
+                }
+                int anchorTop = anchorView.getTop();
+                measureChildWithMargins(view, 0, 0);
+                int top = anchorTop - getDecoratedMeasuredHeight(view)
+                        - getTopAndBottomMargins(view) - getTopAndBottomMargins(anchorView);
+                drawView(view, top, 0);
+            }
         }
     }
 
     private void initializeCache() {
         int pos;
-        viewCache.clear();
+        mViewCache.clear();
         for (int i = 0, cnt = getChildCount(); i < cnt; i++) {
             View view = getChildAt(i);
             pos = getPosition(view);
-            viewCache.put(pos, view);
+            mViewCache.put(pos, view);
         }
 
-        for (int i = 0; i < viewCache.size(); i++) {
-            detachView(viewCache.valueAt(i));
+        for (int i = 0; i < mViewCache.size(); i++) {
+            detachView(mViewCache.valueAt(i));
         }
     }
 
     private int drawAnchorView(View anchorView, RecyclerView.Recycler recycler) {
         if (anchorView != null) {
             int anchorPos = getPosition(anchorView);
-
             int newTop;
-
             View view = recycler.getViewForPosition(anchorPos);
+
             if (view instanceof LaunchItemView && anchorView instanceof LaunchItemView) {
                 LaunchItemView launchItemView = (LaunchItemView) view;
                 LaunchItemView launchItemAnchorView = (LaunchItemView) anchorView;
@@ -118,13 +138,25 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
             } else {
                 newTop = view.getTop();
             }
-            return drawView(view, newTop);
+            return drawView(view, newTop, -1);
         }
         return 0;
     }
 
-    private int drawView(View view, int top) {
-        addView(view);
+    //    private int drawTopView(View view, int top) {
+//        addView(view, 0);
+//        return layoutView(view, top);
+//    }
+//    private int drawView(View view, int top) {
+//        addView(view);
+//        return layoutView(view, top);
+//    }
+    private int drawView(View view, int top, int index) {
+        if (index != -1) {
+            addView(view, index);
+        } else {
+            addView(view);
+        }
         measureChildWithMargins(view, 0, 0);
         int decoratedMeasuredWidth = getDecoratedMeasuredWidth(view);
         int decoratedMeasuredHeight = getDecoratedMeasuredHeight(view);
@@ -138,47 +170,73 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
         return top + decoratedMeasuredHeight + layoutParams.bottomMargin + layoutParams.topMargin;
     }
 
-    int getTopAndBottomMargins(View view) {
-        RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) view.getLayoutParams();
-        return layoutParams.bottomMargin + layoutParams.topMargin;
-    }
+
 
     private View getAnchorView() {
         int childCount = getChildCount();
-        //View anchorView = null;
+        int topMin = getHeight();
+        int top;
+        View retView = null;
         for (int i = 0; i < childCount; i++) {
             View view = getChildAt(i);
             RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) view.getLayoutParams();
-            if (getDecoratedTop(view) - layoutParams.topMargin > 0) {
-                return view;
+            top = getDecoratedTop(view) - layoutParams.topMargin;
+            if (top > 0 && top < topMin) {
+                topMin = top;
+                retView = view;
             }
         }
-        return null;
+        return retView;
     }
 
     @Override
     public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
         int delta = getScrollDelta(dy);
+        Log.d("TAG", "scrollVerticallyBy: delta: " + delta);
         offsetChildrenVertical(-delta);
         doLayoutChildren(recycler);
         return delta;
     }
 
     private int getScrollDelta(int dy) {
+        int childCount = getChildCount();
+        int itemCount = getItemCount();
+        if (childCount == 0) {
+            return 0;
+        }
+
+        final View topView = getChildAt(0);
+        final View bottomView = getChildAt(childCount - 1);
+//        int viewSpan = getDecoratedBottom(bottomView) - getDecoratedTop(topView);
+//        if (viewSpan <= getHeight()) {
+//            return 0;
+//        }
+
         if (dy < 0) {
-            View topView = getChildAt(0);
+            //    View topView = getChildAt(0);
             RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) topView.getLayoutParams();
             int topPosition = getPosition(topView);
+//            if (childCount > 1) {
+//                final View secondView = getChildAt(1);
+//                int secondPosition = getPosition(secondView);
+//                if (secondPosition == 0 && topPosition == 1) {
+//                    topPosition = 0;
+//                }
+//            }
+            Log.d("TAGgetScrollDelta", "topPosition: " + topPosition);
             if (topPosition > 0) {
                 return dy;
             } else {
-                return Math.max(getDecoratedTop(topView) - layoutParams.topMargin, dy);
+                int top = getDecoratedTop(topView) - layoutParams.topMargin;
+                int ret = Math.max(top < 0 ? top : 0, dy);
+                Log.d("TAGgetScrollDelta", "getScrollDelta: top: " + top + " ret:" + ret);
+                return Math.max(top < 0 ? top : 0, dy);
             }
         } else {
-            View bottomView = getChildAt(getChildCount() - 1);
+            //  View bottomView = getChildAt(getChildCount() - 1);
             RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) bottomView.getLayoutParams();
             int bottomPosition = getPosition(bottomView);
-            if (bottomPosition < getItemCount() - 1) {
+            if (bottomPosition < itemCount - 1) {
                 return dy;
             } else {
                 int bottom = getDecoratedBottom(bottomView) + layoutParams.bottomMargin - getHeight();
@@ -186,4 +244,52 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
             }
         }
     }
+
+    private int getViewHeightWithMargins(View view){
+        measureChildWithMargins(view, 0, 0);
+        return getDecoratedMeasuredHeight(view) + getTopAndBottomMargins(view);
+    }
+
+    int getTopAndBottomMargins(View view) {
+        RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) view.getLayoutParams();
+        return layoutParams.bottomMargin + layoutParams.topMargin;
+    }
+//    private int getScrollDelta(int dy) {
+//        int childCount = getChildCount();
+//        int itemCount = getItemCount();
+//        if (childCount == 0){
+//            return 0;
+//        }
+//
+//        final View topView = getChildAt(0);
+//        final View bottomView = getChildAt(childCount - 1);
+//
+//        int viewSpan = getDecoratedBottom(bottomView) - getDecoratedTop(topView);
+//        if (viewSpan <= getHeight()) {
+//            return 0;
+//        }
+//
+//        int delta = 0;
+//        if (dy < 0){
+//            View firstView = getChildAt(0);
+//            int firstViewAdapterPos = getPosition(firstView);
+//            if (firstViewAdapterPos > 0){
+//                delta = dy;
+//            } else {
+//                int viewTop = getDecoratedTop(firstView);
+//                delta = Math.max(viewTop, dy);
+//            }
+//        } else if (dy > 0){
+//            View lastView = getChildAt(childCount - 1);
+//            int lastViewAdapterPos = getPosition(lastView);
+//            if (lastViewAdapterPos < itemCount - 1){
+//                delta = dy;
+//            } else {
+//                int viewBottom = getDecoratedBottom(lastView);
+//                int parentBottom = getHeight();
+//                delta = Math.min(viewBottom - parentBottom, dy);
+//            }
+//        }
+//        return delta;
+//    }
 }
