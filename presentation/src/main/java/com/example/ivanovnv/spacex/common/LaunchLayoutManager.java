@@ -1,5 +1,6 @@
 package com.example.ivanovnv.spacex.common;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseArray;
@@ -23,6 +24,16 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
         detachAndScrapAttachedViews(recycler);
         doLayoutChildren(recycler);
+    }
+
+    @Override
+    public boolean isAutoMeasureEnabled() {
+        return true;
+    }
+
+    @Override
+    public void onMeasure(@NonNull RecyclerView.Recycler recycler, @NonNull RecyclerView.State state, int widthSpec, int heightSpec) {
+        super.onMeasure(recycler, state, widthSpec, heightSpec);
     }
 
     @Override
@@ -203,11 +214,14 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
 
     @Override
     public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
-        int delta = getScrollDelta(dy);
-        Log.d("TAG", "scrollVerticallyBy: delta: " + delta);
-        offsetChildrenVertical(-delta);
-        doLayoutChildren(recycler);
-        return delta;
+        if (!(state.isMeasuring() || state.isPreLayout())) {
+            int delta = getScrollDelta(dy);
+            Log.d("TAG", "scrollVerticallyBy: delta: " + delta);
+            offsetChildrenVertical(-delta);
+            doLayoutChildren(recycler);
+            return delta;
+        }
+        return 0;
     }
 
     private int getScrollDelta(int dy) {
@@ -221,19 +235,21 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
         final View bottomView = getChildAt(childCount - 1);
 
         if (dy < 0) {
-            mLock.lock();
+            //mLock.lock();
             RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) topView.getLayoutParams();
             int topPosition = getPosition(topView);
             Log.d("TAGgetScrollDelta", "topPosition: " + topPosition);
-//            if (topPosition > 0) {
-            //              return dy;
-            //          } else {
-            int top = getDecoratedTop(topView) - layoutParams.topMargin;
-            int ret = Math.max(top < 0 ? top : 0, dy);
-            Log.d("TAGgetScrollDelta", "getScrollDelta: top: " + top + " ret:" + ret);
-            mLock.unlock();
-            return Math.max(top < 0 ? top : 0, dy);
-            //        }
+            if (topPosition > 0) {
+                int top = getDecoratedTop(topView) - layoutParams.topMargin;
+                top = top - (topPosition - 1) * getViewHeightWithMargins(topView);
+                return Math.max(top, dy);
+            } else {
+                int top = getDecoratedTop(topView) - layoutParams.topMargin;
+                int ret = Math.max(top < 0 ? top : 0, dy);
+                Log.d("TAGgetScrollDelta", "getScrollDelta: top: " + top + " ret:" + ret);
+                // mLock.unlock();
+                return Math.max(top < 0 ? top : 0, dy);
+            }
         } else {
             RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) bottomView.getLayoutParams();
             int bottomPosition = getPosition(bottomView);
