@@ -1,9 +1,11 @@
 package com.example.ivanovnv.spacex.common;
 
+import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
+import android.view.ViewParent;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -33,10 +35,11 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
     private void doLayoutChildren(RecyclerView.Recycler recycler) {
         View anchorView = getAnchorView();
         initializeCache();
-        drawAnchorView(anchorView, recycler);
+        //drawAnchorView(anchorView, recycler);
         fillDown(recycler, anchorView);
-        fillUp(recycler, anchorView);
+        //fillUp(recycler, anchorView);
         recyclerCache(recycler);
+
     }
 
     private void recyclerCache(RecyclerView.Recycler recycler) {
@@ -51,24 +54,36 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
         int itemCount = getItemCount();
         boolean fillDown = true;
         int top = 0;
+        int anchorViewPosition = 0;
 
         if (anchorView != null) {
-            int anchorViewPosition = getPosition(anchorView);
-            View view = mViewCache.get(anchorViewPosition);
-            if (view != null) {
-                recycler.recycleView(view);
-                mViewCache.remove(anchorViewPosition);
-            }
-            pos = getPosition(anchorView) + 1;
-            top = getDecoratedBottom(anchorView);
+            anchorViewPosition = getPosition(anchorView);
         }
+//            View view = mViewCache.get(anchorViewPosition);
+//            if (view != null) {
+//                recycler.recycleView(view);
+//                mViewCache.remove(anchorViewPosition);
+//            }
+//            pos = getPosition(anchorView) + 1;
+//            top = getDecoratedBottom(anchorView);
+//        }
 
+        View firstView = mViewCache.get(0);
+        if (firstView != null) {
+            top = firstView.getTop() - getTopAndBottomMargins(firstView);
+        } else {
+            top = 0;
+        }
         while (fillDown && pos < itemCount) {
             View view = mViewCache.get(pos);
-            if (view == null) {
+            if (pos <= anchorViewPosition || view == null) {
+                if (view != null) {
+                    recycler.recycleView(view);
+                    mViewCache.remove(pos);
+                }
                 view = recycler.getViewForPosition(pos);
                 if (view instanceof LaunchItemView) {
-                    if (anchorView == null && pos == 0) {
+                    if (pos <= anchorViewPosition) {
                         ((LaunchItemView) view).setScale(LaunchItemView.MAX_SCALE);
                     } else {
                         ((LaunchItemView) view).setScale(LaunchItemView.MIN_SCALE);
@@ -76,14 +91,50 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
                 }
                 top = drawView(view, top, -1);
             } else {
+
                 attachView(view);
                 mViewCache.remove(pos);
+                if (view instanceof LaunchItemView) {
+                    if (pos <= anchorViewPosition) {
+                        ((LaunchItemView) view).setScale(LaunchItemView.MAX_SCALE);
+                    } else {
+                        int delta = top - view.getTop() + getTopAndBottomMargins(view);
+                         view.offsetTopAndBottom(delta);
+                        ((LaunchItemView) view).setScale(80);
+
+                        view.setBottom(view.getBottom() + 50);
+                        view.requestLayout();
+                        view.invalidate();
+
+//                        ViewParent viewParent= view.getParent();
+//                        Rect rect = new Rect();
+//                        rect.top = view.getTop();
+//                        rect.left = view.getLeft();
+//                        rect.right = view.getRight();
+//                        rect.bottom = view.getBottom();
+//                        viewParent.invalidateChild(view, rect);
+                    }
+                }
                 top = getDecoratedBottom(view);
             }
+
 
             fillDown = top <= height;
             pos++;
         }
+        //updateViewScale();
+    }
+
+    private void updateViewScale() {
+        View view = getChildAt(0);
+        if (view instanceof LaunchItemView) {
+            ((LaunchItemView) view).setScale(LaunchItemView.MAX_SCALE);
+        }
+//        int childCount = getChildCount();
+//        for (int i = 0; i < childCount; i++) {
+//            View view = getChildAt(i);
+//        }
+
     }
 
     private void fillUp(RecyclerView.Recycler recycler, View anchorView) {
