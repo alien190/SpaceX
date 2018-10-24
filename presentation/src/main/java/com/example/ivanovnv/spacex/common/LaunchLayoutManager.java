@@ -5,9 +5,13 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class LaunchLayoutManager extends RecyclerView.LayoutManager {
 
     private SparseArray<View> mViewCache = new SparseArray<>();
+    private Lock mLock = new ReentrantLock();
 
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
@@ -50,7 +54,11 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
 
         if (anchorView != null) {
             int anchorViewPosition = getPosition(anchorView);
-            mViewCache.remove(anchorViewPosition);
+            View view = mViewCache.get(anchorViewPosition);
+            if (view != null) {
+                recycler.recycleView(view);
+                mViewCache.remove(anchorViewPosition);
+            }
             pos = getPosition(anchorView) + 1;
             top = getDecoratedBottom(anchorView);
         }
@@ -82,8 +90,13 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
         if (anchorView != null) {
             int pos = getPosition(anchorView) - 1;
             if (pos >= 0) {
-                mViewCache.remove(pos);
-                View view = recycler.getViewForPosition(pos);
+                View view = mViewCache.get(pos);
+                if (view != null) {
+                    recycler.recycleView(view);
+                    mViewCache.remove(pos);
+                }
+
+                view = recycler.getViewForPosition(pos);
                 if (view instanceof LaunchItemView) {
                     ((LaunchItemView) view).setScale(LaunchItemView.MAX_SCALE);
                 }
@@ -171,7 +184,6 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
     }
 
 
-
     private View getAnchorView() {
         int childCount = getChildCount();
         int topMin = getHeight();
@@ -207,33 +219,22 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
 
         final View topView = getChildAt(0);
         final View bottomView = getChildAt(childCount - 1);
-//        int viewSpan = getDecoratedBottom(bottomView) - getDecoratedTop(topView);
-//        if (viewSpan <= getHeight()) {
-//            return 0;
-//        }
 
         if (dy < 0) {
-            //    View topView = getChildAt(0);
+            mLock.lock();
             RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) topView.getLayoutParams();
             int topPosition = getPosition(topView);
-//            if (childCount > 1) {
-//                final View secondView = getChildAt(1);
-//                int secondPosition = getPosition(secondView);
-//                if (secondPosition == 0 && topPosition == 1) {
-//                    topPosition = 0;
-//                }
-//            }
             Log.d("TAGgetScrollDelta", "topPosition: " + topPosition);
-            if (topPosition > 0) {
-                return dy;
-            } else {
-                int top = getDecoratedTop(topView) - layoutParams.topMargin;
-                int ret = Math.max(top < 0 ? top : 0, dy);
-                Log.d("TAGgetScrollDelta", "getScrollDelta: top: " + top + " ret:" + ret);
-                return Math.max(top < 0 ? top : 0, dy);
-            }
+//            if (topPosition > 0) {
+            //              return dy;
+            //          } else {
+            int top = getDecoratedTop(topView) - layoutParams.topMargin;
+            int ret = Math.max(top < 0 ? top : 0, dy);
+            Log.d("TAGgetScrollDelta", "getScrollDelta: top: " + top + " ret:" + ret);
+            mLock.unlock();
+            return Math.max(top < 0 ? top : 0, dy);
+            //        }
         } else {
-            //  View bottomView = getChildAt(getChildCount() - 1);
             RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) bottomView.getLayoutParams();
             int bottomPosition = getPosition(bottomView);
             if (bottomPosition < itemCount - 1) {
@@ -245,7 +246,7 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
         }
     }
 
-    private int getViewHeightWithMargins(View view){
+    private int getViewHeightWithMargins(View view) {
         measureChildWithMargins(view, 0, 0);
         return getDecoratedMeasuredHeight(view) + getTopAndBottomMargins(view);
     }

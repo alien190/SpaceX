@@ -29,8 +29,8 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
 
     private static String TAG = LaunchFragment.class.getSimpleName();
 
-    @BindView(R.id.swipelayout)
-    SwipeRefreshLayout mSwipeRefreshLayout;
+//    @BindView(R.id.swipelayout)
+//    SwipeRefreshLayout mSwipeRefreshLayout;
 
     @BindView(R.id.rv_main)
     RecyclerView mRecyclerView;
@@ -65,8 +65,8 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
         mRecyclerView.setAdapter(mAdapter);
 
         viewModel.getLaunches().observe(this, mAdapter::updateLaunches);
-        viewModel.getOnRefreshListener().observe(this, mSwipeRefreshLayout::setOnRefreshListener);
-        viewModel.getIsLoadData().observe(this, mSwipeRefreshLayout::setRefreshing);
+       // viewModel.getOnRefreshListener().observe(this, mSwipeRefreshLayout::setOnRefreshListener);
+       // viewModel.getIsLoadData().observe(this, mSwipeRefreshLayout::setRefreshing);
 
         return view;
     }
