@@ -41,6 +41,9 @@ public class DataLaunch {
     @ColumnInfo(name = "launch_date_utc")
     private String launch_date_utc;
 
+    @ColumnInfo(name = "image", typeAffinity = ColumnInfo.BLOB)
+    private byte[] image;
+
     public int getFlight_number() {
         return flight_number;
     }
@@ -131,6 +134,14 @@ public class DataLaunch {
     }
 
     public DataLaunch() {
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
     public DataLaunch(ServerResponse serverResponse) {

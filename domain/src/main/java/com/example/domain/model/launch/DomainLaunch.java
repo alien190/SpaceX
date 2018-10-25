@@ -13,6 +13,7 @@ public class DomainLaunch {
     private String details;
     private String rocket_name;
     private String launch_date_utc;
+    private byte[] image;
 
     public int getFlight_number() {
         return flight_number;
@@ -101,6 +102,14 @@ public class DomainLaunch {
 
     public void setLaunch_date_utc(String launch_date_utc) {
         this.launch_date_utc = launch_date_utc;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
     public DomainLaunch() {

@@ -1,6 +1,7 @@
 package com.example.ivanovnv.spacex.common;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
@@ -18,6 +19,8 @@ import android.widget.TextView;
 import com.example.ivanovnv.spacex.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+
+import timber.log.Timber;
 
 public class LaunchItemView extends CardView {
     public static final int MIN_SCALE = 0;
@@ -183,6 +186,14 @@ public class LaunchItemView extends CardView {
                         updateContentSize(mIconHeight);
                     }
                 });
+    }
+
+    public void setMissionIconBitmap(Bitmap bitmap) {
+        try {
+            mIvMissionIcon.setImageBitmap(bitmap);
+        } catch (Throwable throwable) {
+            Timber.d(throwable);
+        }
     }
 
 }

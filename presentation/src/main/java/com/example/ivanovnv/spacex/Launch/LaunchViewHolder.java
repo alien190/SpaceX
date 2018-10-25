@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.data.utils.DbBitmapUtility;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.common.LaunchItemView;
@@ -30,7 +31,8 @@ public class LaunchViewHolder extends RecyclerView.ViewHolder {
         // mTvFlightNumber.setText(String.valueOf(launch.getFlight_number()));
         if (mView instanceof LaunchItemView) {
             LaunchItemView launchItemView = (LaunchItemView) mView;
-            launchItemView.setMissionIconURL(launch.getMission_patch_small());
+            //launchItemView.setMissionIconURL(launch.getMission_patch_small());
+            launchItemView.setMissionIconBitmap(DbBitmapUtility.getImage(launch.getImage()));
             launchItemView.setMissionName(launch.getMission_name());
             launchItemView.setDetails(launch.getDetails());
             launchItemView.setLaunchDate(launch.getLaunch_date_utc());
