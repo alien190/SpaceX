@@ -18,10 +18,10 @@ public interface LaunchDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertLaunches(List<DataLaunch> dataLaunches);
 
-    @Query("SELECT * FROM DataLaunch ORDER BY launch_date_unix")
+    @Query("SELECT * FROM DataLaunch ORDER BY launch_date_unix DESC")
     List<DataLaunch> getLaunches();
 
-    @Query("SELECT * FROM DataLaunch ORDER BY launch_date_unix")
+    @Query("SELECT * FROM DataLaunch ORDER BY launch_date_unix DESC")
     Flowable<List<DataLaunch>> getLaunchesLive();
 
 
