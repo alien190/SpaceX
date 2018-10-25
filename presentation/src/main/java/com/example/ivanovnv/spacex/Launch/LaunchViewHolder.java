@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.ivanovnv.spacex.R;
+import com.example.ivanovnv.spacex.common.LaunchItemView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -14,18 +15,24 @@ import butterknife.ButterKnife;
 public class LaunchViewHolder extends RecyclerView.ViewHolder {
     View mView;
 
-    @BindView(R.id.tv_flight_number)
-    TextView mTvFlightNumber;
+
+//    @BindView(R.id.iv_mission_icon)
+//    ImageView mIvMissionIcon;
 
 
     public LaunchViewHolder(View view) {
         super(view);
         mView = view;
-        ButterKnife.bind(this, mView);
+        //ButterKnife.bind(this, mView);
     }
 
     public void bind(DomainLaunch launch, LaunchAdapter.OnItemClickListener clickListener) {
-        mTvFlightNumber.setText(String.valueOf(launch.getFlight_number()));
+       // mTvFlightNumber.setText(String.valueOf(launch.getFlight_number()));
+        if(mView instanceof LaunchItemView){
+            LaunchItemView launchItemView = (LaunchItemView) mView;
+            launchItemView.setMissionIconURL(launch.getMission_patch_small());
+            launchItemView.setMissionName(launch.getMission_name());
+        }
     }
 
 }
