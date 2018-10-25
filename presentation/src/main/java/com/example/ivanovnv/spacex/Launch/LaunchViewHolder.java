@@ -27,12 +27,13 @@ public class LaunchViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(DomainLaunch launch, LaunchAdapter.OnItemClickListener clickListener) {
-       // mTvFlightNumber.setText(String.valueOf(launch.getFlight_number()));
-        if(mView instanceof LaunchItemView){
+        // mTvFlightNumber.setText(String.valueOf(launch.getFlight_number()));
+        if (mView instanceof LaunchItemView) {
             LaunchItemView launchItemView = (LaunchItemView) mView;
             launchItemView.setMissionIconURL(launch.getMission_patch_small());
             launchItemView.setMissionName(launch.getMission_name());
             launchItemView.setDetails(launch.getDetails());
+            launchItemView.setLaunchDate(launch.getLaunch_date_utc());
         }
     }
 
