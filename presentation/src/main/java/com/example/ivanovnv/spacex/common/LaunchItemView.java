@@ -67,7 +67,7 @@ public class LaunchItemView extends CardView {
         mRootHeight = mClRoot.getMeasuredHeight();
         mRootHeightWithMargins = mRootHeight + rootLayoutParams.topMargin + rootLayoutParams.bottomMargin;
         mTopAndBottomMargins = rootLayoutParams.topMargin + rootLayoutParams.bottomMargin;
-        mGuideline.setGuidelineBegin(mRootHeightWithMargins);
+        mGuideline.setGuidelineBegin(mRootHeightWithMargins + mTopAndBottomMargins);
     }
 
 
