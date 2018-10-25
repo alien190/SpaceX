@@ -11,6 +11,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.ivanovnv.spacex.R;
@@ -21,11 +23,10 @@ public class LaunchItemView extends CardView {
     public static final int MIN_SCALE = 0;
     public static final int MAX_SCALE = 100;
     private View mView;
-    private ConstraintLayout mClTitle;
-    private ConstraintLayout mClRoot;
+    private LinearLayout mClTitle;
+    private RelativeLayout mClRoot;
     private ImageView mIvMissionIcon;
     private TextView mTvMissionName;
-    private Guideline mGuideline;
     private int mRootHeight;
     private int mRootHeightWithMargins;
     private int mTitleHeight;
@@ -53,21 +54,23 @@ public class LaunchItemView extends CardView {
         mClTitle = mView.findViewById(R.id.cl_title);
         mIvMissionIcon = mView.findViewById(R.id.iv_mission_icon);
         mTvMissionName = mView.findViewById(R.id.tv_mission_name);
-        mGuideline = mView.findViewById(R.id.guideline);
         measureHeight();
     }
 
     private void measureHeight() {
         measureChild(mClRoot, 0, 0);
         CardView.LayoutParams rootLayoutParams = (LayoutParams) mClRoot.getLayoutParams();
-        ConstraintLayout.LayoutParams titleLayoutParams = (ConstraintLayout.LayoutParams) mClTitle.getLayoutParams();
+        LinearLayout.LayoutParams titleLayoutParams = (LinearLayout.LayoutParams) mClTitle.getLayoutParams();
         mTitleHeight = mClTitle.getMeasuredHeight();
         mTitleHeightWithMargins = mTitleHeight + titleLayoutParams.topMargin + titleLayoutParams.bottomMargin
                 + rootLayoutParams.topMargin + rootLayoutParams.bottomMargin;
         mRootHeight = mClRoot.getMeasuredHeight();
         mRootHeightWithMargins = mRootHeight + rootLayoutParams.topMargin + rootLayoutParams.bottomMargin;
         mTopAndBottomMargins = rootLayoutParams.topMargin + rootLayoutParams.bottomMargin;
-        mGuideline.setGuidelineBegin(mRootHeightWithMargins + mTopAndBottomMargins);
+        //mGuideline.setGuidelineBegin(mRootHeightWithMargins + mTopAndBottomMargins);
+        mTvMissionName.offsetLeftAndRight(mRootHeightWithMargins + mTopAndBottomMargins);
+        mTvMissionName.setRight(mIvMissionIcon.getLeft() + mRootHeightWithMargins);
+        mTvMissionName.setBottom(mIvMissionIcon.getTop() + mRootHeightWithMargins);
     }
 
 
@@ -97,10 +100,10 @@ public class LaunchItemView extends CardView {
         //setViewSize(mIvMissionIcon, height, height);
         // mIvMissionIcon.setBottom(mIvMissionIcon.getTop() + value);
         //mIvMissionIcon.setRight(mIvMissionIcon.getLeft() + value);
-        //setViewSize(mIvMissionIcon, value + mTopAndBottomMargins, value +mTopAndBottomMargins);
-        ViewGroup.LayoutParams layoutParams = mIvMissionIcon.getLayoutParams();
-        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        // setViewSize(mIvMissionIcon, value + mTopAndBottomMargins, value +mTopAndBottomMargins);
+//        ViewGroup.LayoutParams layoutParams = mIvMissionIcon.getLayoutParams();
+//        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+//        layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
 
 
         value -= 2 * mTopAndBottomMargins;
@@ -117,6 +120,8 @@ public class LaunchItemView extends CardView {
 
         //  forceLayout();
         //  mIvMissionIcon.forceLayout();
+        //mIvMissionIcon.setRight(value);
+        //mIvMissionIcon.setBottom(value);
     }
 
     private void setViewSize(View view, int height, int width) {
