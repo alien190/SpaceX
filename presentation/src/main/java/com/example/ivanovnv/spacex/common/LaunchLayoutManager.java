@@ -9,6 +9,8 @@ import android.view.View;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import timber.log.Timber;
+
 public class LaunchLayoutManager extends RecyclerView.LayoutManager {
 
     private SparseArray<View> mViewCache = new SparseArray<>();
@@ -101,21 +103,34 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
         if (anchorView != null) {
             int pos = getPosition(anchorView) - 1;
             if (pos >= 0) {
+                boolean isAttach = false;
                 View view = mViewCache.get(pos);
                 if (view != null) {
-                    recycler.recycleView(view);
                     mViewCache.remove(pos);
-                }
-
-                view = recycler.getViewForPosition(pos);
-                if (view instanceof LaunchItemView) {
-                    ((LaunchItemView) view).setScale(LaunchItemView.MAX_SCALE);
+                    isAttach = true;
+                } else {
+                    view = recycler.getViewForPosition(pos);
+                    if (view instanceof LaunchItemView) {
+                        ((LaunchItemView) view).setScale(LaunchItemView.MAX_SCALE);
+                    }
                 }
                 int anchorTop = anchorView.getTop();
-                measureChildWithMargins(view, 0, 0);
-                int top = anchorTop - getDecoratedMeasuredHeight(view)
-                        - getTopAndBottomMargins(view) - getTopAndBottomMargins(anchorView);
-                drawView(view, top, 0);
+
+
+                if (isAttach) {
+                    int top = anchorTop - getViewHeightWithMargins(view);
+                    int viewTop = view.getTop();
+                    int delta = top - viewTop ;
+                    Timber.d("fillUp isAttach:%b top:%d view.top:%d delta:%d", isAttach, top, viewTop, delta);
+                    view.offsetTopAndBottom(delta);
+                    attachView(view);
+                } else {
+                    measureChildWithMargins(view, 0, 0);
+                    int top = anchorTop - getDecoratedMeasuredHeight(view)
+                            - getTopAndBottomMargins(view) - getTopAndBottomMargins(anchorView);
+                    drawView(view, top, 0);
+                    Timber.d("fillUp isAttach:%b top:%d ", isAttach, top);
+                }
             }
         }
     }
@@ -215,13 +230,13 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
     @Override
     public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
         //if (state.) {
-            //mLock.lock();
-            int delta = getScrollDelta(dy);
-            Log.d("TAGgetScrollDelta", "scrollVerticallyBy: delta: " + delta);
-            offsetChildrenVertical(-delta);
-            doLayoutChildren(recycler);
-            //mLock.unlock();
-            return delta;
+        //mLock.lock();
+        int delta = getScrollDelta(dy);
+        Log.d("TAGgetScrollDelta", "scrollVerticallyBy: delta: " + delta);
+        offsetChildrenVertical(-delta);
+        doLayoutChildren(recycler);
+        //mLock.unlock();
+        return delta;
         //}
         //return 0;
     }
@@ -238,20 +253,22 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
 
         if (dy < 0) {
             //mLock.lock();
-            RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) topView.getLayoutParams();
-            int topPosition = getPosition(topView);
-            Log.d("TAGgetScrollDelta", "topPosition: " + topPosition);
-            if (topPosition > 0) {
-                int top = getDecoratedTop(topView) - layoutParams.topMargin;
-                top = top - topPosition* getViewHeightWithMargins(topView);
-                return Math.max(top, dy);
-            } else {
-                int top = getDecoratedTop(topView) - layoutParams.topMargin;
-                int ret = Math.max(top < 0 ? top : 0, dy);
-                Log.d("TAGgetScrollDelta", "getScrollDelta: top: " + top + " ret:" + ret);
-                // mLock.unlock();
-                return Math.max(top < 0 ? top : 0, dy);
-            }
+//            RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) topView.getLayoutParams();
+//            int topPosition = getPosition(topView);
+//            Log.d("TAGgetScrollDelta", "topPosition: " + topPosition);
+//            if (topPosition > 0) {
+//                int top = getDecoratedTop(topView) - layoutParams.topMargin;
+//                top = top - topPosition * getViewHeightWithMargins(topView);
+//                return Math.max(top, dy);
+//            } else {
+//                int top = getDecoratedTop(topView) - layoutParams.topMargin;
+//                int ret = Math.max(top < 0 ? top : 0, dy);
+//                Log.d("TAGgetScrollDelta", "getScrollDelta: top: " + top + " ret:" + ret);
+//                // mLock.unlock();
+//                return Math.max(top < 0 ? top : 0, dy);
+//
+//            }
+            return dy;
         } else {
             RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) bottomView.getLayoutParams();
             int bottomPosition = getPosition(bottomView);
