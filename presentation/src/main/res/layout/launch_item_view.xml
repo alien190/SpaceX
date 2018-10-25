@@ -10,17 +10,20 @@
 
     <ImageView
         android:id="@+id/iv_mission_icon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_margin="2dp"
         android:scaleType="centerInside"
         android:src="@drawable/ic_rocket_stub"
+        app:layout_constraintTop_toTopOf="@id/cl_title"
         />
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/cl_title">
+        android:id="@+id/cl_title"
+        app:layout_constraintLeft_toRightOf="@+id/iv_mission_icon"
+        >
 
         <TextView
             android:id="@+id/tv_flight_number_hint"
@@ -55,11 +58,13 @@
     </android.support.constraint.ConstraintLayout>
 
     <TextView
+        android:layout_marginTop="@dimen/layout_margin"
         android:id="@+id/tv_rocket_name_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/rocket_name"
-        app:layout_constraintTop_toBottomOf="@id/cl_title" />
+        app:layout_constraintTop_toBottomOf="@id/cl_title"
+        app:layout_constraintLeft_toRightOf="@+id/iv_mission_icon"/>
 
     <TextView
         android:id="@+id/tv_rocket_name"
@@ -74,7 +79,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/launch_date_utc"
-        app:layout_constraintTop_toBottomOf="@id/tv_rocket_name_hint" />
+        app:layout_constraintTop_toBottomOf="@id/tv_rocket_name_hint"
+        app:layout_constraintLeft_toRightOf="@+id/iv_mission_icon"/>
 
     <TextView
         android:id="@+id/tv_launch_date"

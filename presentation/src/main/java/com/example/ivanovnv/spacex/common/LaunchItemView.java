@@ -1,6 +1,7 @@
 package com.example.ivanovnv.spacex.common;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.CardView;
@@ -24,6 +25,7 @@ public class LaunchItemView extends CardView {
     private int mRootHeightWithMargins;
     private int mTitleHeight;
     private int mTitleHeightWithMargins;
+    private int mTopAndBottomMargins;
 
     public LaunchItemView(Context context) {
         this(context, null);
@@ -57,6 +59,7 @@ public class LaunchItemView extends CardView {
                 + rootLayoutParams.topMargin + rootLayoutParams.bottomMargin;
         mRootHeight = mClRoot.getMeasuredHeight();
         mRootHeightWithMargins = mRootHeight + rootLayoutParams.topMargin + rootLayoutParams.bottomMargin;
+        mTopAndBottomMargins = rootLayoutParams.topMargin + rootLayoutParams.bottomMargin;
     }
 
 
@@ -79,6 +82,20 @@ public class LaunchItemView extends CardView {
         setViewSize(mView, overallHeight, -1);
         int iconHeight = (int) (mTitleHeight + (mRootHeight - mTitleHeight) * percent / 100);
         setViewSize(mIvMissionIcon, iconHeight, iconHeight);
+    }
+
+    public void updateContentSize(int value) {
+    //    int iconHeight = getBottom() - getTop() - mTopAndBottomMargins;
+        //setViewSize(mIvMissionIcon, height, height);
+       // mIvMissionIcon.setBottom(mIvMissionIcon.getTop() + value);
+        //mIvMissionIcon.setRight(mIvMissionIcon.getLeft() + value);
+        Drawable drawable = mIvMissionIcon.getDrawable();
+        mIvMissionIcon.setPivotX(0f);
+        mIvMissionIcon.setPivotY(0f);
+        mIvMissionIcon.setScaleX(0.003f * value);
+        mIvMissionIcon.setScaleY(0.003f * value);
+      //  forceLayout();
+      //  mIvMissionIcon.forceLayout();
     }
 
     private void setViewSize(View view, int height, int width) {

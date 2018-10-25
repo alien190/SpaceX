@@ -156,6 +156,9 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
                 }
                 viewHeight = getViewHeightByTopValue(topValue);
                 bottomValue = topValue + viewHeight;
+                if (view instanceof LaunchItemView) {
+                    ((LaunchItemView) view).updateContentSize(viewHeight);
+                }
                 if (isViewFromCache) {
                     view.setTop(topValue);
                     view.setBottom(bottomValue - mTopAndBottomMargins);
@@ -164,6 +167,7 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
                     drawView(view, topValue, bottomValue);
                 }
                 topValue = bottomValue;
+
             }
         } catch (Throwable throwable) {
             Timber.d(throwable);
