@@ -32,6 +32,7 @@ public class LaunchViewHolder extends RecyclerView.ViewHolder {
             LaunchItemView launchItemView = (LaunchItemView) mView;
             launchItemView.setMissionIconURL(launch.getMission_patch_small());
             launchItemView.setMissionName(launch.getMission_name());
+            launchItemView.setDetails(launch.getDetails());
         }
     }
 

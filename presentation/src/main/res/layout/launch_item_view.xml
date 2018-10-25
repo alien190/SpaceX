@@ -44,11 +44,10 @@
 
     <TextView
         android:layout_marginTop="16dp"
-        android:id="@+id/tv_launch_date"
+        android:id="@+id/tv_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="2"
-        android:text="||asdasd asd a asd  lkdn s;dfj  s;jf s;df sd;fj s;d s;dfj s;df sd;fj s;d sd;fjsd;kfjiwjrs;jf sad asdasd  dsd dsfa s jkadsna kadsk akdhak  akdak aksd kasdh a akfdh kasf akf ak askd ashkf aaks af ak lasd las asldjlasl asfjajfl||"
         android:layout_toEndOf="@id/iv_mission_icon"
         android:layout_below="@+id/title_parent"
         android:textStyle="bold" />

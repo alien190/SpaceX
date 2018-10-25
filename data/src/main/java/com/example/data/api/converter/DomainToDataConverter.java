@@ -18,6 +18,7 @@ public final class DomainToDataConverter {
             dataLaunch.setRocket_name(launch.getRocket_name());
             dataLaunch.setLaunch_date_utc(launch.getLaunch_date_utc());
             dataLaunch.setMission_patch_small(launch.getMission_patch_small());
+            dataLaunch.setDetails(launch.getDetails());
             dataLaunches.add(dataLaunch);
         }
         return dataLaunches;

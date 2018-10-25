@@ -27,6 +27,7 @@ public class LaunchItemView extends CardView {
     private RelativeLayout mClRoot;
     private ImageView mIvMissionIcon;
     private TextView mTvMissionName;
+    private TextView mTvDetails;
     private int mRootHeight;
     private int mRootHeightWithMargins;
     private int mTitleHeight;
@@ -54,6 +55,7 @@ public class LaunchItemView extends CardView {
         mClTitle = mView.findViewById(R.id.cl_title);
         mIvMissionIcon = mView.findViewById(R.id.iv_mission_icon);
         mTvMissionName = mView.findViewById(R.id.tv_mission_name);
+        mTvDetails = mView.findViewById(R.id.tv_details);
         measureHeight();
     }
 
@@ -146,7 +148,15 @@ public class LaunchItemView extends CardView {
     }
 
     public void setMissionName(String name) {
-        mTvMissionName.setText(name);
+        if (name != null) {
+            mTvMissionName.setText(name);
+        }
+    }
+
+    public void setDetails(String details) {
+        if (details != null) {
+            mTvDetails.setText(details);
+        }
     }
 
     public void setMissionIconURL(String url) {
