@@ -214,14 +214,16 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
 
     @Override
     public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
-        if (!(state.isMeasuring() || state.isPreLayout())) {
+        //if (state.) {
+            //mLock.lock();
             int delta = getScrollDelta(dy);
-            Log.d("TAG", "scrollVerticallyBy: delta: " + delta);
+            Log.d("TAGgetScrollDelta", "scrollVerticallyBy: delta: " + delta);
             offsetChildrenVertical(-delta);
             doLayoutChildren(recycler);
+            //mLock.unlock();
             return delta;
-        }
-        return 0;
+        //}
+        //return 0;
     }
 
     private int getScrollDelta(int dy) {
@@ -241,7 +243,7 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
             Log.d("TAGgetScrollDelta", "topPosition: " + topPosition);
             if (topPosition > 0) {
                 int top = getDecoratedTop(topView) - layoutParams.topMargin;
-                top = top - (topPosition - 1) * getViewHeightWithMargins(topView);
+                top = top - topPosition* getViewHeightWithMargins(topView);
                 return Math.max(top, dy);
             } else {
                 int top = getDecoratedTop(topView) - layoutParams.topMargin;
