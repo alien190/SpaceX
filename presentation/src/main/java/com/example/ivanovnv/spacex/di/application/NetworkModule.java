@@ -35,7 +35,7 @@ public class NetworkModule extends Module {
     private OkHttpClient provideOkHttpClient() {
         if (mOkHttpClient == null) {
             mOkHttpClient = new OkHttpClient.Builder()
-                    .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                    //.addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                     .build();
         }
         return mOkHttpClient;

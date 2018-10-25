@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.ivanovnv.spacex.R;
 
@@ -18,6 +19,7 @@ public class LaunchItemView extends CardView {
     private ConstraintLayout mClTitle;
     private ConstraintLayout mClRoot;
     private ImageView mIvMissionIcon;
+    private TextView mTvFlightNumber;
     private int mRootHeight;
     private int mRootHeightWithMargins;
     private int mTitleHeight;
@@ -42,6 +44,7 @@ public class LaunchItemView extends CardView {
         mClRoot = mView.findViewById(R.id.cl_root);
         mClTitle = mView.findViewById(R.id.cl_title);
         mIvMissionIcon = mView.findViewById(R.id.iv_mission_icon);
+        mTvFlightNumber = mView.findViewById(R.id.tv_flight_number);
         measureHeight();
     }
 
@@ -72,7 +75,7 @@ public class LaunchItemView extends CardView {
         } else if (percent > 100) {
             percent = 100;
         }
-        int overallHeight = (int)(mTitleHeightWithMargins + (mRootHeightWithMargins - mTitleHeightWithMargins) * percent / 100);
+        int overallHeight = (int) (mTitleHeightWithMargins + (mRootHeightWithMargins - mTitleHeightWithMargins) * percent / 100);
         setViewSize(mView, overallHeight, -1);
         int iconHeight = (int) (mTitleHeight + (mRootHeight - mTitleHeight) * percent / 100);
         setViewSize(mIvMissionIcon, iconHeight, iconHeight);
@@ -97,5 +100,9 @@ public class LaunchItemView extends CardView {
     public int getTitleHeightWithMargins() {
         measureHeight();
         return mTitleHeightWithMargins;
+    }
+
+    public String getFlightNumber() {
+        return String.valueOf(mTvFlightNumber.getText());
     }
 }

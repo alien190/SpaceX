@@ -15,22 +15,22 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
 
     private SparseArray<View> mViewCache = new SparseArray<>();
     private Lock mLock = new ReentrantLock();
+    private int mOffset;
+    private int mBigViewSize;
+    private int mSmallViewSize;
+    private int mFirstVisiblePosition;
+    private int mLastVisiblePosition;
 
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
-        return new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT,
-                RecyclerView.LayoutParams.MATCH_PARENT);
+        return new RecyclerView.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT,
+                RecyclerView.LayoutParams.WRAP_CONTENT);
     }
 
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
         detachAndScrapAttachedViews(recycler);
         doLayoutChildren(recycler);
-    }
-
-    @Override
-    public boolean isAutoMeasureEnabled() {
-        return true;
     }
 
     @Override
@@ -44,12 +44,36 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
     }
 
     private void doLayoutChildren(RecyclerView.Recycler recycler) {
-        View anchorView = getAnchorView();
+        if (getChildCount() == 0 && getItemCount() != 0) {
+            initConstants(recycler);
+        }
+        calculateVisiblePositions();
+        int anchorPos = getAnchorPos();
         initializeCache();
-        drawAnchorView(anchorView, recycler);
-        fillDown(recycler, anchorView);
-        fillUp(recycler, anchorView);
+        // drawAnchorView(anchorView, recycler);
+        fillDown(recycler, anchorPos);
+        // fillUp(recycler, anchorView);
         recyclerCache(recycler);
+    }
+
+    private void calculateVisiblePositions() {
+
+    }
+
+    private void initConstants(RecyclerView.Recycler recycler) {
+        mOffset = 0;
+        View view = recycler.getViewForPosition(0);
+        if (view instanceof LaunchItemView) {
+            LaunchItemView launchItemView = (LaunchItemView) view;
+            mBigViewSize = launchItemView.getRootHeightWithMargins();
+            mSmallViewSize = launchItemView.getTitleHeightWithMargins();
+        } else {
+            mBigViewSize = getViewHeightWithMargins(view);
+            mSmallViewSize = mBigViewSize;
+        }
+        Timber.d("initConstants mOffset:%d, mBigViewSize:%d, mSmallViewSize:%d",
+                mOffset, mBigViewSize, mSmallViewSize);
+        recycler.recycleView(view);
     }
 
     private void recyclerCache(RecyclerView.Recycler recycler) {
@@ -58,30 +82,33 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
         }
     }
 
-    private void fillDown(RecyclerView.Recycler recycler, View anchorView) {
+    private void fillDown(RecyclerView.Recycler recycler, int anchorPos) {
         int pos = 0;
         int height = getHeight();
         int itemCount = getItemCount();
         boolean fillDown = true;
         int top = 0;
 
-        if (anchorView != null) {
-            int anchorViewPosition = getPosition(anchorView);
-            View view = mViewCache.get(anchorViewPosition);
-            if (view != null) {
-                recycler.recycleView(view);
-                mViewCache.remove(anchorViewPosition);
-            }
-            pos = getPosition(anchorView) + 1;
-            top = getDecoratedBottom(anchorView);
-        }
+//        if (anchorView != null) {
+//            int anchorViewPosition = getPosition(anchorView);
+//            View view = mViewCache.get(anchorViewPosition);
+//            if (view != null) {
+//                recycler.recycleView(view);
+//                mViewCache.remove(anchorViewPosition);
+//            }
+//            pos = getPosition(anchorView) + 1;
+//            top = getDecoratedBottom(anchorView);
+//        }
+        pos = anchorPos > 0 ? anchorPos - 1 : anchorPos;
 
         while (fillDown && pos < itemCount) {
             View view = mViewCache.get(pos);
             if (view == null) {
                 view = recycler.getViewForPosition(pos);
                 if (view instanceof LaunchItemView) {
-                    if (anchorView == null && pos == 0) {
+                    if (pos == anchorPos) {
+                        Timber.d("fillDown setScale(MAX_SCALE) to anchorView with pos:%d launchId:%s",
+                                anchorPos, ((LaunchItemView) view).getFlightNumber());
                         ((LaunchItemView) view).setScale(LaunchItemView.MAX_SCALE);
                     } else {
                         ((LaunchItemView) view).setScale(LaunchItemView.MIN_SCALE);
@@ -89,11 +116,37 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
                 }
                 top = drawView(view, top, -1);
             } else {
+                //if (pos == anchorPos) {
+                LaunchItemView launchItemView = (LaunchItemView) view;
+                //Timber.d("fillDown setScale(MAX_SCALE) to anchorView with pos:%d launchId:%s",
+                //      anchorPos, launchItemView.getFlightNumber());
+                launchItemView.setScale(LaunchItemView.MAX_SCALE);
+                int viewBottom = launchItemView.getBottom();
+                int bottomThresholdDown = launchItemView.getRootHeightWithMargins() + launchItemView.getTitleHeightWithMargins();
+                int bottomThresholdUp = launchItemView.getRootHeightWithMargins();
+                Timber.d("fillDown bottomThresholdDown:%d bottomThresholdUp:%d", bottomThresholdDown, bottomThresholdUp);
+
+                Timber.d("fillDown viewBottom:%d", viewBottom);
+                if (viewBottom <= bottomThresholdDown && viewBottom >= bottomThresholdUp) {
+                    float scale = (float) (bottomThresholdDown - viewBottom) / (bottomThresholdDown - bottomThresholdUp);
+                    int newTop = (int) (-scale * (launchItemView.getRootHeightWithMargins() - launchItemView.getTitleHeightWithMargins())
+                            + viewBottom - launchItemView.getTitleHeightWithMargins());
+                    Timber.d("fillDown flightId:%s scale:%f newTop:%d", launchItemView.getFlightNumber(), scale, newTop);
+                    view.setTop(newTop);
+                } else if (viewBottom > bottomThresholdDown) {
+                    int newTop = viewBottom - launchItemView.getTitleHeightWithMargins();
+                    Timber.d("fillDown flightId:%s newTop:%d", launchItemView.getFlightNumber(), newTop);
+                    view.setTop(newTop);
+                }
+                //}
                 attachView(view);
                 mViewCache.remove(pos);
                 top = getDecoratedBottom(view);
             }
 
+            if (pos == anchorPos - 1 && view instanceof LaunchItemView) {
+                Timber.d("fillDown first view flightId:%s", ((LaunchItemView) view).getFlightNumber());
+            }
             fillDown = top <= height;
             pos++;
         }
@@ -120,7 +173,7 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
                 if (isAttach) {
                     int top = anchorTop - getViewHeightWithMargins(view);
                     int viewTop = view.getTop();
-                    int delta = top - viewTop ;
+                    int delta = top - viewTop;
                     Timber.d("fillUp isAttach:%b top:%d view.top:%d delta:%d", isAttach, top, viewTop, delta);
                     view.offsetTopAndBottom(delta);
                     attachView(view);
@@ -149,38 +202,62 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
         }
     }
 
+
     private int drawAnchorView(View anchorView, RecyclerView.Recycler recycler) {
+        int pos = 0;
+        int top = 0;
         if (anchorView != null) {
-            int anchorPos = getPosition(anchorView);
-            int newTop;
-            View view = recycler.getViewForPosition(anchorPos);
-
-            if (view instanceof LaunchItemView && anchorView instanceof LaunchItemView) {
-                LaunchItemView launchItemView = (LaunchItemView) view;
-                LaunchItemView launchItemAnchorView = (LaunchItemView) anchorView;
-
-                int anchorTop = anchorView.getTop();
-                float scale = ((float) launchItemView.getRootHeightWithMargins() +
-                        getTopAndBottomMargins(view) - anchorTop) /
-                        launchItemView.getRootHeightWithMargins() * 100;
-                // Log.d("TAG", "drawAnchorView: scale: " + scale);
-                launchItemView.setScale(scale);
-
-                measureChildWithMargins(launchItemView, 0, 0);
-                measureChildWithMargins(launchItemAnchorView, 0, 0);
-
-                int itemHeight = getDecoratedMeasuredHeight(launchItemView);
-                int anchorHeight = getDecoratedMeasuredHeight(launchItemAnchorView);
-
-                newTop = anchorTop - getTopAndBottomMargins(launchItemView) -
-                        (itemHeight - anchorHeight);
-            } else {
-                newTop = view.getTop();
+            anchorView = recycler.getViewForPosition(pos);
+            if (anchorView instanceof LaunchItemView) {
+                ((LaunchItemView) anchorView).setScale(LaunchItemView.MAX_SCALE);
             }
-            return drawView(view, newTop, -1);
+            top = drawView(anchorView, top, -1);
+        } else {
+            attachView(anchorView);
+            mViewCache.remove(pos);
+            top = getDecoratedBottom(anchorView);
         }
-        return 0;
+
+//                fillDown = top <= height;
+//                pos++;
+        return top;
     }
+
+    // }
+    //}
+
+//    private int drawAnchorView(View anchorView, RecyclerView.Recycler recycler) {
+//        if (anchorView != null) {
+//            int anchorPos = getPosition(anchorView);
+//            int newTop;
+//            View view = recycler.getViewForPosition(anchorPos);
+//
+//            if (view instanceof LaunchItemView && anchorView instanceof LaunchItemView) {
+//                LaunchItemView launchItemView = (LaunchItemView) view;
+//                LaunchItemView launchItemAnchorView = (LaunchItemView) anchorView;
+//
+//                int anchorTop = anchorView.getTop();
+//                float scale = ((float) launchItemView.getRootHeightWithMargins() +
+//                        getTopAndBottomMargins(view) - anchorTop) /
+//                        launchItemView.getRootHeightWithMargins() * 100;
+//                // Log.d("TAG", "drawAnchorView: scale: " + scale);
+//                launchItemView.setScale(scale);
+//
+//                measureChildWithMargins(launchItemView, 0, 0);
+//                measureChildWithMargins(launchItemAnchorView, 0, 0);
+//
+//                int itemHeight = getDecoratedMeasuredHeight(launchItemView);
+//                int anchorHeight = getDecoratedMeasuredHeight(launchItemAnchorView);
+//
+//                newTop = anchorTop - getTopAndBottomMargins(launchItemView) -
+//                        (itemHeight - anchorHeight);
+//            } else {
+//                newTop = view.getTop();
+//            }
+//            return drawView(view, newTop, -1);
+//        }
+//        return 0;
+//    }
 
     //    private int drawTopView(View view, int top) {
 //        addView(view, 0);
@@ -210,25 +287,27 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
     }
 
 
-    private View getAnchorView() {
+    private int getAnchorPos() {
         int childCount = getChildCount();
-        int topMin = getHeight();
+        //int topMin = getHeight();
         int top;
-        View retView = null;
+        //View retView = null;
         for (int i = 0; i < childCount; i++) {
             View view = getChildAt(i);
             RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) view.getLayoutParams();
             top = getDecoratedTop(view) - layoutParams.topMargin;
-            if (top > 0 && top < topMin) {
-                topMin = top;
-                retView = view;
+            if (top > 0) {
+                return i;
+                //topMin = top;
+                //retView = view;
             }
         }
-        return retView;
+        return 0;
     }
 
     @Override
-    public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
+    public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.
+            State state) {
         //if (state.) {
         //mLock.lock();
         int delta = getScrollDelta(dy);
