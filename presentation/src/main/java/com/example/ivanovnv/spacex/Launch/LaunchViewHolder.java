@@ -2,6 +2,7 @@ package com.example.ivanovnv.spacex.Launch;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.data.utils.DbBitmapUtility;
@@ -17,6 +18,7 @@ public class LaunchViewHolder extends RecyclerView.ViewHolder {
     private View mView;
     private int mFlightNumber;
     private LaunchAdapter.OnItemClickListener mClickCallback = null;
+    //private ImageView mImageView;
 
 //    @BindView(R.id.iv_mission_icon)
 //    ImageView mIvMissionIcon;
@@ -25,6 +27,8 @@ public class LaunchViewHolder extends RecyclerView.ViewHolder {
     public LaunchViewHolder(View view) {
         super(view);
         mView = view;
+        //mImageView = mView.findViewById(R.id.iv_icon);
+
         //ButterKnife.bind(this, mView);
     }
 
@@ -38,7 +42,10 @@ public class LaunchViewHolder extends RecyclerView.ViewHolder {
             launchItemView.setMissionName(launch.getMission_name());
             launchItemView.setDetails(launch.getDetails());
             launchItemView.setLaunchDate(launch.getLaunch_date_utc());
-            launchItemView.setIconTransitionName(String.valueOf(launch.getFlight_number()));
+            launchItemView.setTransitionName(String.valueOf(launch.getFlight_number()));
+            //launchItemView.setIconTransitionName(String.valueOf(launch.getFlight_number()));
+            //mImageView.setImageBitmap(DbBitmapUtility.getImage(launch.getImage()));
+            //mImageView.setTransitionName(String.valueOf(launch.getFlight_number()));
             mClickCallback = clickListener;
             launchItemView.setOnClickListener(mOnClickListener);
         }

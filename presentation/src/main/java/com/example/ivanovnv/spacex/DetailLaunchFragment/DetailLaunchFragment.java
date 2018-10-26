@@ -68,6 +68,7 @@ public class DetailLaunchFragment extends Fragment {
 //        mFlightNumber = view.findViewById(R.id.tv_flight_number);
 //        mMissionName = view.findViewById(R.id.tv_mission_name);
         mImageView = view.findViewById(R.id.iv_mission_icon);
+        mImageView.setTransitionName("bla");
 //        mRocketName = view.findViewById(R.id.tv_rocket_name);
 //        mLaunchDate = view.findViewById(R.id.tv_launch_date);
 //        mDetails = view.findViewById(R.id.tv_details);
@@ -75,11 +76,6 @@ public class DetailLaunchFragment extends Fragment {
         Scope scope = Toothpick.openScope("Application");
         Toothpick.inject(this, scope);
 
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         Bundle args = getArguments();
         try {
             mFlightNumberInt = args.getInt(FLIGHT_NUMBER_KEY);
@@ -89,13 +85,17 @@ public class DetailLaunchFragment extends Fragment {
         } catch (Throwable t) {
             t.printStackTrace();
         }
+
+        return view;
     }
+
+
 
     private void showImage(DomainLaunch domainLaunch) {
         if (domainLaunch != null) {
             mImageView.setImageBitmap(DbBitmapUtility.getImage(domainLaunch.getImage()));
-            mImageView.setTransitionName(String.valueOf(mFlightNumberInt));
-            startPostponedEnterTransition();
+
+            //startPostponedEnterTransition();
         }
     }
 
