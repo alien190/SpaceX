@@ -61,7 +61,7 @@ public class LaunchAdapter extends RecyclerView.Adapter<LaunchViewHolder> {
     }
 
     public interface OnItemClickListener {
-        void onItemClick(int flightNumber);
+        void onItemClick(int flightNumber, View sharedView);
     }
 
     public void setItemClickListener(OnItemClickListener listener) {

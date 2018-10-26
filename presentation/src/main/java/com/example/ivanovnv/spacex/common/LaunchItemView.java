@@ -153,19 +153,19 @@ public class LaunchItemView extends CardView {
     }
 
     public void setMissionName(String name) {
-        if (name != null) {
+        if (mTvMissionName != null && name != null) {
             mTvMissionName.setText(name);
         }
     }
 
     public void setDetails(String details) {
-        if (details != null) {
+        if (mTvDetails != null && details != null) {
             mTvDetails.setText(details);
         }
     }
 
     public void setLaunchDate(String date) {
-        if (date != null) {
+        if (mTvLaunchDate != null && date != null) {
             mTvLaunchDate.setText(date);
         }
     }
@@ -189,11 +189,25 @@ public class LaunchItemView extends CardView {
     }
 
     public void setMissionIconBitmap(Bitmap bitmap) {
-        try {
-            mIvMissionIcon.setImageBitmap(bitmap);
-        } catch (Throwable throwable) {
-            Timber.d(throwable);
+        if (mIvMissionIcon != null && bitmap != null) {
+            try {
+                mIvMissionIcon.setImageBitmap(bitmap);
+                //invalidate();
+                //requestLayout();
+                //forceLayout();
+            } catch (Throwable throwable) {
+                Timber.d(throwable);
+            }
         }
     }
 
+    public void setIconTransitionName(String name) {
+        if (mIvMissionIcon != null && name != null) {
+            mIvMissionIcon.setTransitionName(name);
+        }
+    }
+
+    public ImageView getIvMissionIcon() {
+        return mIvMissionIcon;
+    }
 }

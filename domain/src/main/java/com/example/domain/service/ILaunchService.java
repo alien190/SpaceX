@@ -13,4 +13,5 @@ public interface ILaunchService {
     Flowable<List<DomainLaunch>> getLaunchesLive();
     void insertLaunches(List<DomainLaunch> domainLaunches);
     Single<Boolean> refreshLaunches();
+    Single<DomainLaunch> getLaunchByFlightNumber(int flightNumber);
 }

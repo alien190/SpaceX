@@ -42,4 +42,9 @@ public class LaunchServiceImpl implements ILaunchService {
     public Flowable<List<DomainLaunch>> getLaunchesLive() {
         return mLocalRepository.getLaunchesLive().subscribeOn(Schedulers.io());
     }
+
+    @Override
+    public Single<DomainLaunch> getLaunchByFlightNumber(int flightNumber) {
+        return mLocalRepository.getLaunchByFlightNumber(flightNumber).subscribeOn(Schedulers.io());
+    }
 }

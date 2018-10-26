@@ -11,6 +11,7 @@ import com.example.data.model.DataLaunch;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 
 @Dao
 public interface LaunchDao {
@@ -44,5 +45,5 @@ public interface LaunchDao {
     List<DataLaunch> getLaunchesInYear(String year);
 
     @Query("SELECT * FROM DataLaunch where flight_number = :flightNumber")
-    DataLaunch getLaunchByFlightNumber(int flightNumber);
+    Single<DataLaunch> getLaunchByFlightNumber(int flightNumber);
 }

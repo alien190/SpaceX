@@ -8,9 +8,16 @@ import java.util.List;
 
 public final class DataToDomainConverter {
 
-    public static List<DomainLaunch> convertLaunch(List<DataLaunch> dataLaunches) {
+    public static List<DomainLaunch> convertLaunchList(List<DataLaunch> dataLaunches) {
         List<DomainLaunch> domainLaunches = new ArrayList<>();
         for (DataLaunch launch : dataLaunches) {
+            domainLaunches.add(convertLaunch(launch));
+        }
+        return domainLaunches;
+    }
+
+    public static DomainLaunch convertLaunch(DataLaunch launch) {
+        if(launch!=null) {
             DomainLaunch domainLaunch = new DomainLaunch();
             domainLaunch.setFlight_number(launch.getFlight_number());
             domainLaunch.setMission_name(launch.getMission_name());
@@ -20,9 +27,9 @@ public final class DataToDomainConverter {
             domainLaunch.setMission_patch_small(launch.getMission_patch_small());
             domainLaunch.setDetails(launch.getDetails());
             domainLaunch.setImage(launch.getImage());
-            domainLaunches.add(domainLaunch);
+            return domainLaunch;
         }
-        return domainLaunches;
+        return null;
     }
 
 }

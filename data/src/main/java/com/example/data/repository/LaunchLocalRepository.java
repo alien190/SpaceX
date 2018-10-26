@@ -21,7 +21,7 @@ public class LaunchLocalRepository implements ILaunchRepository {
 
     @Override
     public Single<List<DomainLaunch>> getLaunches() {
-        return Single.fromCallable(() -> DataToDomainConverter.convertLaunch(mLaunchDao.getLaunches()));
+        return Single.fromCallable(() -> DataToDomainConverter.convertLaunchList(mLaunchDao.getLaunches()));
     }
 
     @Override
@@ -31,6 +31,11 @@ public class LaunchLocalRepository implements ILaunchRepository {
 
     @Override
     public Flowable<List<DomainLaunch>> getLaunchesLive() {
-        return mLaunchDao.getLaunchesLive().map(DataToDomainConverter::convertLaunch);
+        return mLaunchDao.getLaunchesLive().map(DataToDomainConverter::convertLaunchList);
+    }
+
+    @Override
+    public Single<DomainLaunch> getLaunchByFlightNumber(int flightNumber) {
+        return mLaunchDao.getLaunchByFlightNumber(flightNumber).map(DataToDomainConverter::convertLaunch);
     }
 }

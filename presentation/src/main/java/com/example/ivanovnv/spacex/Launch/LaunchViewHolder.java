@@ -14,8 +14,9 @@ import butterknife.ButterKnife;
 
 
 public class LaunchViewHolder extends RecyclerView.ViewHolder {
-    View mView;
-
+    private View mView;
+    private int mFlightNumber;
+    private LaunchAdapter.OnItemClickListener mClickCallback = null;
 
 //    @BindView(R.id.iv_mission_icon)
 //    ImageView mIvMissionIcon;
@@ -31,12 +32,28 @@ public class LaunchViewHolder extends RecyclerView.ViewHolder {
         // mTvFlightNumber.setText(String.valueOf(launch.getFlight_number()));
         if (mView instanceof LaunchItemView) {
             LaunchItemView launchItemView = (LaunchItemView) mView;
+            mFlightNumber = launch.getFlight_number();
             //launchItemView.setMissionIconURL(launch.getMission_patch_small());
             launchItemView.setMissionIconBitmap(DbBitmapUtility.getImage(launch.getImage()));
             launchItemView.setMissionName(launch.getMission_name());
             launchItemView.setDetails(launch.getDetails());
             launchItemView.setLaunchDate(launch.getLaunch_date_utc());
+            launchItemView.setIconTransitionName(String.valueOf(launch.getFlight_number()));
+            mClickCallback = clickListener;
+            launchItemView.setOnClickListener(mOnClickListener);
         }
     }
 
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (mClickCallback != null) {
+                View sharedView = null;
+                if (mView instanceof LaunchItemView) {
+                    sharedView = ((LaunchItemView) mView).getIvMissionIcon();
+                }
+                mClickCallback.onItemClick(mFlightNumber, sharedView);
+            }
+        }
+    };
 }

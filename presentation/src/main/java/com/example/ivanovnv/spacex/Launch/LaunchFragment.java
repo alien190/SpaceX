@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +23,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 import toothpick.Scope;
 import toothpick.Toothpick;
 
@@ -62,24 +64,42 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
         Toothpick.inject(this, scope);
         mRecyclerView.setLayoutManager(mLaunchLayoutManager);
         //mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mAdapter.setItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
 
         viewModel.getLaunches().observe(this, mAdapter::updateLaunches);
         viewModel.getOnRefreshListener().observe(this, mSwipeRefreshLayout::setOnRefreshListener);
         viewModel.getIsLoadData().observe(this, mSwipeRefreshLayout::setRefreshing);
 
+        postponeEnterTransition();
+
         return view;
     }
 
     @Override
-    public void onItemClick(int flightNumber) {
+    public void onItemClick(int flightNumber, View sharedView) {
         //Toast.makeText(getActivity(), "" + flightNumber, Toast.LENGTH_SHORT).show();
 
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, DetailLaunchFragment.newInstance(flightNumber))
-                .addToBackStack(DetailLaunchFragment.class.getSimpleName())
-                .commit();
+        //FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//        fragmentManager.beginTransaction()
+//                .replace(R.id.fragment_container, DetailLaunchFragment.newInstance(flightNumber))
+//                .addToBackStack(DetailLaunchFragment.class.getSimpleName())
+//                .commit();
+
+        try {
+            // mRecyclerView.setAdapter(null);
+            //mRecyclerView.setLayoutManager(null);
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager
+                    .beginTransaction()
+                    .addSharedElement(sharedView,
+                            ViewCompat.getTransitionName(sharedView))
+                    .addToBackStack(TAG)
+                    .replace(R.id.fragment_container, DetailLaunchFragment.newInstance(flightNumber))
+                    .commit();
+        } catch (Throwable throwable) {
+            Timber.d(throwable);
+        }
     }
 
     @Override
@@ -88,4 +108,5 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
         mRecyclerView.setLayoutManager(null);
         super.onDestroy();
     }
+
 }

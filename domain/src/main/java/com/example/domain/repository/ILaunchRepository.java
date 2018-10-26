@@ -16,5 +16,6 @@ public interface ILaunchRepository {
 
     Flowable<List<DomainLaunch>> getLaunchesLive();
     void insertLaunches(List<DomainLaunch> domainLaunches);
+    Single<DomainLaunch> getLaunchByFlightNumber(int flightNumber);
 
 }

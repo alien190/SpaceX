@@ -20,7 +20,7 @@ public class LaunchRemoteRepository implements ILaunchRepository {
 
     @Override
     public Single<List<DomainLaunch>> getLaunches() {
-        return mApi.getAllPastLaunches().map(DataToDomainConverter::convertLaunch);
+        return mApi.getAllPastLaunches().map(DataToDomainConverter::convertLaunchList);
     }
 
     @Override
@@ -30,6 +30,12 @@ public class LaunchRemoteRepository implements ILaunchRepository {
 
     @Override
     public Flowable<List<DomainLaunch>> getLaunchesLive() {
+        return null;
+    }
+
+    @Override
+    public Single<DomainLaunch> getLaunchByFlightNumber(int flightNumber) {
+        //do nothing
         return null;
     }
 }
