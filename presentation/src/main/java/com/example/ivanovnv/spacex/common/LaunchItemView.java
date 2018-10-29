@@ -122,10 +122,11 @@ public class LaunchItemView extends CardView {
         mIvMissionIcon.setPivotY(0f);
         mIvMissionIcon.setScaleX(scale);
         mIvMissionIcon.setScaleY(scale);
-        mIvMissionIcon.invalidate();
         mIconHeight = value;
 
-        //  forceLayout();
+        //requestLayout();
+
+        // forceLayout();
         //  mIvMissionIcon.forceLayout();
         //mIvMissionIcon.setRight(value);
         //mIvMissionIcon.setBottom(value);
@@ -209,5 +210,13 @@ public class LaunchItemView extends CardView {
 
     public ImageView getIvMissionIcon() {
         return mIvMissionIcon;
+    }
+
+    public RelativeLayout getClRoot() {
+        return mClRoot;
+    }
+
+    public LinearLayout getClTitle() {
+        return mClTitle;
     }
 }

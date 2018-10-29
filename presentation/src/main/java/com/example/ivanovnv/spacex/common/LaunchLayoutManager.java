@@ -23,6 +23,7 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
     private int mLastVisibleViewPosition;
     private int mFirstVisibleViewTopValue;
     private int mTopAndBottomMargins;
+    private boolean mFirst = true;
 
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
@@ -32,6 +33,7 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
 
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+        Timber.d("onLayoutChildren state.isPreLayout: %b", state.isPreLayout() );
         detachAndScrapAttachedViews(recycler);
         doLayoutChildren(recycler);
     }
@@ -39,10 +41,16 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
     @Override
     public void onMeasure(@NonNull RecyclerView.Recycler recycler, @NonNull RecyclerView.State state, int widthSpec, int heightSpec) {
         super.onMeasure(recycler, state, widthSpec, heightSpec);
+        Timber.d("onMeasure");
     }
 
     @Override
     public boolean canScrollVertically() {
+        return true;
+    }
+
+    @Override
+    public boolean supportsPredictiveItemAnimations() {
         return true;
     }
 
@@ -58,6 +66,10 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
             fillDown(recycler);
             // fillUp(recycler, anchorView);
             recyclerCache(recycler);
+//            if(mFirst) {
+//                requestLayout();
+//                mFirst = false;
+//            }
         }
     }
 
@@ -168,7 +180,13 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
                     drawView(view, topValue, bottomValue);
                 }
                 topValue = bottomValue;
+                if (view instanceof LaunchItemView) {
+                    ((LaunchItemView) view).getIvMissionIcon().requestLayout();
+                    ((LaunchItemView) view).getClTitle().requestLayout();
 
+                    //view.requestLayout();
+                 //   ((LaunchItemView) view).getClRoot().requestLayout();
+                }
             }
         } catch (Throwable throwable) {
             Timber.d(throwable);
