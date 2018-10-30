@@ -3,15 +3,15 @@ package com.example.ivanovnv.spacex.common;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.util.TimeUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -21,12 +21,20 @@ import com.example.ivanovnv.spacex.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import java.util.concurrent.Callable;
+import org.reactivestreams.Subscriber;
 
-import io.reactivex.Single;
+import java.nio.BufferOverflowException;
+
+import io.reactivex.BackpressureOverflowStrategy;
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
+import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -48,6 +56,21 @@ public class LaunchItemView extends CardView {
     private int mIconHeight;
     private Bitmap mMissionIconBitmap;
     private Disposable mImageDisposable;
+    //private Subscriber<? super Integer> mSubscriber;
+    FlowableEmitter<Integer> mEmitter;
+    //    private Flowable<Integer> mIconHeightFlowable = new Flowable<Integer>() {
+//        @Override
+//        protected void subscribeActual(Subscriber<? super Integer> s) {
+//            mSubscriber = s;
+//        }
+//    };
+    private Flowable<Integer> mIconHeightFlowable = Flowable.create(new FlowableOnSubscribe<Integer>() {
+        @Override
+        public void subscribe(FlowableEmitter<Integer> emitter) throws Exception {
+            mEmitter = emitter;
+        }
+    }, BackpressureStrategy.DROP);
+
 
     public LaunchItemView(Context context) {
         this(context, null);
@@ -72,6 +95,69 @@ public class LaunchItemView extends CardView {
         mTvDetails = mView.findViewById(R.id.tv_details);
         mTvLaunchDate = mView.findViewById(R.id.tv_launch_date);
         measureHeight();
+        initObserver();
+    }
+
+    @SuppressLint("CheckResult")
+    private void initObserver() {
+
+        mIconHeightFlowable
+                //.subscribeOn(AndroidSchedulers.mainThread())
+                .onBackpressureBuffer(1, () ->{}, BackpressureOverflowStrategy.DROP_OLDEST)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .map(integer -> {
+                    Thread.sleep(500);
+                    //Timber.d("mIconHeightFlowable threadId:%d", Thread.currentThread().getId());
+                    Log.d("TAG", "initObserver: map threadId:" + Thread.currentThread().getId());
+                    return integer;
+                })
+                //.observeOn()
+                .subscribe((value) -> {
+                    Log.d("TAG", "initObserver: subscribe threadId:" + Thread.currentThread().getId());
+                    //Timber.d("mIconHeightFlowable value:%d, threadId:%d", value, Thread.currentThread().getId());
+                });
+//        mIconHeightFlowable
+//                //.onBackpressureBuffer(1)
+//                .subscribeOn(Schedulers.io())
+//                .filter(integer -> integer != null && integer > 0)
+//                .map(value -> {
+//                    int viewSize = Math.min(mIvMissionIcon.getWidth(), mIvMissionIcon.getHeight());
+//                    if (viewSize > 0) {
+//                        int newSize = value - 2 * mTopAndBottomMargins;
+//                        int originalSize = Math.max(mMissionIconBitmap.getHeight(), mMissionIconBitmap.getWidth());
+//                        float scale = (float) (newSize) / originalSize;
+//                        Bitmap dstBitmap = Bitmap.createBitmap(viewSize, viewSize, Bitmap.Config.ARGB_8888);
+//                        int iOrig;
+//                        int yOrig;
+//                        for (int i = 0; i < viewSize; i++) {
+//                            for (int j = 0; j < viewSize; j++) {
+//                                iOrig = (int) (i / scale);
+//                                yOrig = (int) (j / scale);
+//                                if (iOrig < originalSize && yOrig < originalSize) {
+//                                    dstBitmap.setPixel(i, j, mMissionIconBitmap.getPixel(iOrig, yOrig));
+//                                } else {
+//                                    dstBitmap.setPixel(i, j, Color.argb(0, 255, 255, 255));
+//                                }
+//                            }
+//                        }
+//                        mIconHeight = newSize;
+//                        return dstBitmap;
+//                    } else {
+//                        return mMissionIconBitmap;
+//                    }
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(bitmap -> {
+////                    if (mIvMissionIcon.getDrawable() instanceof BitmapDrawable) {
+////                        Bitmap oldBitmap = ((BitmapDrawable) mIvMissionIcon.getDrawable()).getBitmap();
+////                        if (oldBitmap != null) {
+////                            oldBitmap.recycle();
+////                        }
+////                    }
+//                    mIvMissionIcon.setImageBitmap(bitmap);
+//                    // mIvMissionIcon.requestLayout();
+//                }, Throwable::printStackTrace);
     }
 
     private void measureHeight() {
@@ -113,46 +199,18 @@ public class LaunchItemView extends CardView {
 
     @SuppressLint("CheckResult")
     public void updateContentSize(int value) {
-        final int newSize = value - 2 * mTopAndBottomMargins;
-        final int viewSize = Math.min(mIvMissionIcon.getWidth(), mIvMissionIcon.getHeight());
+        // final int newSize = value - 2 * mTopAndBottomMargins;
+        //final int viewSize = Math.min(mIvMissionIcon.getWidth(), mIvMissionIcon.getHeight());
 
-        if (mMissionIconBitmap != null && mIconHeight != newSize && newSize > 0 && viewSize > 0) {
+        if (mMissionIconBitmap != null && value > 0) {
 //            if (mImageDisposable != null) {
 //                mImageDisposable.dispose();
 //            }
-
-            mImageDisposable = Single.fromCallable((Callable<Bitmap>) () -> {
-                int originalSize = Math.max(mMissionIconBitmap.getHeight(), mMissionIconBitmap.getWidth());
-                float scale = (float) (newSize) / originalSize;
-                Bitmap dstBitmap = Bitmap.createBitmap(viewSize, viewSize, Bitmap.Config.ARGB_8888);
-                int iOrig;
-                int yOrig;
-                for (int i = 0; i < viewSize; i++) {
-                    for (int j = 0; j < viewSize; j++) {
-                        iOrig = (int) (i / scale);
-                        yOrig = (int) (j / scale);
-                        if (iOrig < originalSize && yOrig < originalSize) {
-                            dstBitmap.setPixel(i, j, mMissionIconBitmap.getPixel(iOrig, yOrig));
-                        } else {
-                            dstBitmap.setPixel(i, j, Color.argb(0, 255, 255, 255));
-                        }
-                    }
-                }
-                return dstBitmap;
-            }).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(bitmap -> {
-                        if (mIvMissionIcon.getDrawable() instanceof BitmapDrawable) {
-                            Bitmap oldBitmap = ((BitmapDrawable) mIvMissionIcon.getDrawable()).getBitmap();
-                            if (oldBitmap != null) {
-                                oldBitmap.recycle();
-                            }
-                        }
-                        mIvMissionIcon.setImageBitmap(bitmap);
-                        mIconHeight = newSize;
-                    });
-
-
+            try {
+                mEmitter.onNext(value);
+            } catch (Throwable throwable) {
+                Timber.d(throwable);
+            }
         }
     }
 
