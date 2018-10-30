@@ -33,7 +33,7 @@ public class LaunchViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(mLaunches::postValue));
 
-       // loadLaunches();
+        loadLaunches();
     }
 
     @Override

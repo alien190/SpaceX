@@ -9,12 +9,10 @@
 
     <ImageView
         android:id="@+id/iv_mission_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_margin="2dp"
-        android:scaleType="fitStart"
-        android:src="@drawable/ic_rocket_stub"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/title_parent"
@@ -37,7 +35,9 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                tools:text="Mission 1" />
+                tools:text="Mission 1"
+                android:ellipsize="end"
+                android:maxLines="1"/>
 
         </LinearLayout>
     </LinearLayout>

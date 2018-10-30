@@ -1,16 +1,17 @@
 package com.example.ivanovnv.spacex.common;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.Guideline;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -20,6 +21,13 @@ import com.example.ivanovnv.spacex.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class LaunchItemView extends CardView {
@@ -38,6 +46,8 @@ public class LaunchItemView extends CardView {
     private int mTitleHeightWithMargins;
     private int mTopAndBottomMargins;
     private int mIconHeight;
+    private Bitmap mMissionIconBitmap;
+    private Disposable mImageDisposable;
 
     public LaunchItemView(Context context) {
         this(context, null);
@@ -66,7 +76,7 @@ public class LaunchItemView extends CardView {
 
     private void measureHeight() {
         measureChild(mClRoot, 0, 0);
-        CardView.LayoutParams rootLayoutParams = (LayoutParams) mClRoot.getLayoutParams();
+        LayoutParams rootLayoutParams = (LayoutParams) mClRoot.getLayoutParams();
         LinearLayout.LayoutParams titleLayoutParams = (LinearLayout.LayoutParams) mClTitle.getLayoutParams();
         mTitleHeight = mClTitle.getMeasuredHeight();
         mTitleHeightWithMargins = mTitleHeight + titleLayoutParams.topMargin + titleLayoutParams.bottomMargin
@@ -74,7 +84,6 @@ public class LaunchItemView extends CardView {
         mRootHeight = mClRoot.getMeasuredHeight();
         mRootHeightWithMargins = mRootHeight + rootLayoutParams.topMargin + rootLayoutParams.bottomMargin;
         mTopAndBottomMargins = rootLayoutParams.topMargin + rootLayoutParams.bottomMargin;
-        //mGuideline.setGuidelineBegin(mRootHeightWithMargins + mTopAndBottomMargins);
         mTvMissionName.offsetLeftAndRight(mRootHeightWithMargins + mTopAndBottomMargins);
         mTvMissionName.setRight(mIvMissionIcon.getLeft() + mRootHeightWithMargins);
         mTvMissionName.setBottom(mIvMissionIcon.getTop() + mRootHeightWithMargins);
@@ -102,34 +111,49 @@ public class LaunchItemView extends CardView {
         setViewSize(mIvMissionIcon, iconHeight, iconHeight);
     }
 
+    @SuppressLint("CheckResult")
     public void updateContentSize(int value) {
-        //    int iconHeight = getBottom() - getTop() - mTopAndBottomMargins;
-        //setViewSize(mIvMissionIcon, height, height);
-        // mIvMissionIcon.setBottom(mIvMissionIcon.getTop() + value);
-        //mIvMissionIcon.setRight(mIvMissionIcon.getLeft() + value);
-        // setViewSize(mIvMissionIcon, value + mTopAndBottomMargins, value +mTopAndBottomMargins);
-//        ViewGroup.LayoutParams layoutParams = mIvMissionIcon.getLayoutParams();
-//        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-//        layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        final int newSize = value - 2 * mTopAndBottomMargins;
+        final int viewSize = Math.min(mIvMissionIcon.getWidth(), mIvMissionIcon.getHeight());
+
+        if (mMissionIconBitmap != null && mIconHeight != newSize && newSize > 0 && viewSize > 0) {
+//            if (mImageDisposable != null) {
+//                mImageDisposable.dispose();
+//            }
+
+            mImageDisposable = Single.fromCallable((Callable<Bitmap>) () -> {
+                int originalSize = Math.max(mMissionIconBitmap.getHeight(), mMissionIconBitmap.getWidth());
+                float scale = (float) (newSize) / originalSize;
+                Bitmap dstBitmap = Bitmap.createBitmap(viewSize, viewSize, Bitmap.Config.ARGB_8888);
+                int iOrig;
+                int yOrig;
+                for (int i = 0; i < viewSize; i++) {
+                    for (int j = 0; j < viewSize; j++) {
+                        iOrig = (int) (i / scale);
+                        yOrig = (int) (j / scale);
+                        if (iOrig < originalSize && yOrig < originalSize) {
+                            dstBitmap.setPixel(i, j, mMissionIconBitmap.getPixel(iOrig, yOrig));
+                        } else {
+                            dstBitmap.setPixel(i, j, Color.argb(0, 255, 255, 255));
+                        }
+                    }
+                }
+                return dstBitmap;
+            }).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(bitmap -> {
+                        if (mIvMissionIcon.getDrawable() instanceof BitmapDrawable) {
+                            Bitmap oldBitmap = ((BitmapDrawable) mIvMissionIcon.getDrawable()).getBitmap();
+                            if (oldBitmap != null) {
+                                oldBitmap.recycle();
+                            }
+                        }
+                        mIvMissionIcon.setImageBitmap(bitmap);
+                        mIconHeight = newSize;
+                    });
 
 
-        value -= 2 * mTopAndBottomMargins;
-        Drawable drawable = mIvMissionIcon.getDrawable();
-        Rect bounds = drawable.getBounds();
-        int height = Math.max(bounds.height(), bounds.width());
-        float scale = (float) (value) / height;
-        mIvMissionIcon.setPivotX(0f);
-        mIvMissionIcon.setPivotY(0f);
-        mIvMissionIcon.setScaleX(scale);
-        mIvMissionIcon.setScaleY(scale);
-        mIconHeight = value;
-
-        //requestLayout();
-
-        // forceLayout();
-        //  mIvMissionIcon.forceLayout();
-        //mIvMissionIcon.setRight(value);
-        //mIvMissionIcon.setBottom(value);
+        }
     }
 
     private void setViewSize(View view, int height, int width) {
@@ -179,27 +203,33 @@ public class LaunchItemView extends CardView {
                 .into(mIvMissionIcon, new Callback() {
                     @Override
                     public void onSuccess() {
+                        Timber.d("setMissionIconURL mIvMissionIcon.isLaidOut:%b", mIvMissionIcon.isLaidOut());
                         updateContentSize(mIconHeight);
+                        onRequestLayout();
                     }
 
                     @Override
                     public void onError(Exception e) {
+                        Timber.d("setMissionIconURL mIvMissionIcon.isLaidOut:%b", mIvMissionIcon.isLaidOut());
                         updateContentSize(mIconHeight);
+                        onRequestLayout();
                     }
                 });
     }
 
     public void setMissionIconBitmap(Bitmap bitmap) {
-        if (mIvMissionIcon != null && bitmap != null) {
-            try {
-                mIvMissionIcon.setImageBitmap(bitmap);
-                //invalidate();
-                //requestLayout();
-                //forceLayout();
-            } catch (Throwable throwable) {
-                Timber.d(throwable);
-            }
-        }
+        mMissionIconBitmap = bitmap;
+        updateContentSize(mIconHeight);
+//        if (mIvMissionIcon != null && bitmap != null) {
+//            try {
+//                mIvMissionIcon.setImageBitmap(bitmap);
+//                updateContentSize(mIconHeight);
+//                onRequestLayout();
+//                Timber.d("setMissionIconBitmap mIvMissionIcon.isLaidOut:%b", mIvMissionIcon.isLaidOut());
+//            } catch (Throwable throwable) {
+//                Timber.d(throwable);
+//            }
+//        }
     }
 
     public void setIconTransitionName(String name) {
@@ -212,11 +242,29 @@ public class LaunchItemView extends CardView {
         return mIvMissionIcon;
     }
 
-    public RelativeLayout getClRoot() {
-        return mClRoot;
+
+    public void onRequestLayout() {
+//        if (!mTvMissionName.isInLayout()) {
+//        mIvMissionIcon.requestLayout();
+//        Timber.d("onRequestLayout: mIvMissionIcon");
+//        }
+//        if (!mClTitle.isInLayout()) {
+//        mClTitle.requestLayout();
+//        }
+//
+//        if (!mTvMissionName.isInLayout()) {
+//        mTvMissionName.requestLayout();
+//        Timber.d("onRequestLayout: mTvMissionName");
+//        }
     }
 
-    public LinearLayout getClTitle() {
-        return mClTitle;
-    }
+//    @Override
+//    protected void onAttachedToWindow() {
+//        ViewGroup parent = (ViewGroup) getParent();
+//        if (parent != null) {
+//            int width = (int)(0.5 * parent.getWidth());
+//            setViewSize(mIvMissionIcon,width, width);
+//        }
+//        super.onAttachedToWindow();
+//    }
 }
