@@ -22,6 +22,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 
 import java.nio.BufferOverflowException;
 
@@ -30,12 +31,15 @@ import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
+import io.reactivex.FlowableSubscriber;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
+import io.reactivex.processors.PublishProcessor;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subscribers.DisposableSubscriber;
 import timber.log.Timber;
 
 public class LaunchItemView extends CardView {
@@ -69,7 +73,9 @@ public class LaunchItemView extends CardView {
         public void subscribe(FlowableEmitter<Integer> emitter) throws Exception {
             mEmitter = emitter;
         }
-    }, BackpressureStrategy.DROP);
+    }, BackpressureStrategy.LATEST);
+
+    PublishProcessor<Integer> mPublishProcessor = PublishProcessor.create();
 
 
     public LaunchItemView(Context context) {
@@ -101,22 +107,94 @@ public class LaunchItemView extends CardView {
     @SuppressLint("CheckResult")
     private void initObserver() {
 
-        mIconHeightFlowable
-                //.subscribeOn(AndroidSchedulers.mainThread())
-                .onBackpressureBuffer(1, () ->{}, BackpressureOverflowStrategy.DROP_OLDEST)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .map(integer -> {
-                    Thread.sleep(500);
-                    //Timber.d("mIconHeightFlowable threadId:%d", Thread.currentThread().getId());
-                    Log.d("TAG", "initObserver: map threadId:" + Thread.currentThread().getId());
-                    return integer;
+        mPublishProcessor
+                .onBackpressureBuffer(1, () -> {
+                    Log.d("TAG", "initObserver: buffer overflow");
+                }, BackpressureOverflowStrategy.DROP_OLDEST)
+                .observeOn(Schedulers.io(), false, 1)
+                .map(value -> {
+                    int viewSize = Math.min(mIvMissionIcon.getWidth(), mIvMissionIcon.getHeight());
+                    int newSize = value - 2 * mTopAndBottomMargins;
+                    if (viewSize > 0 && newSize > 0) {
+                        int originalSize = Math.max(mMissionIconBitmap.getHeight(), mMissionIconBitmap.getWidth());
+                        float scale = (float) (newSize) / originalSize;
+                        Bitmap dstBitmap = Bitmap.createBitmap(viewSize, viewSize, Bitmap.Config.ARGB_8888);
+                        int iOrig;
+                        int yOrig;
+                        for (int i = 0; i < viewSize; i++) {
+                            for (int j = 0; j < viewSize; j++) {
+                                iOrig = (int) (i / scale);
+                                yOrig = (int) (j / scale);
+                                if (iOrig < originalSize && yOrig < originalSize) {
+                                    dstBitmap.setPixel(i, j, mMissionIconBitmap.getPixel(iOrig, yOrig));
+                                } else {
+                                    dstBitmap.setPixel(i, j, Color.argb(0, 255, 255, 255));
+                                }
+                            }
+                        }
+                        mIconHeight = newSize;
+                        return dstBitmap;
+                    } else {
+                        return mMissionIconBitmap;
+                    }
                 })
-                //.observeOn()
-                .subscribe((value) -> {
-                    Log.d("TAG", "initObserver: subscribe threadId:" + Thread.currentThread().getId());
-                    //Timber.d("mIconHeightFlowable value:%d, threadId:%d", value, Thread.currentThread().getId());
-                });
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(bitmap -> {
+                  //  if (mIvMissionIcon.getDrawable() instanceof BitmapDrawable) {
+//                        Bitmap oldBitmap = ((BitmapDrawable) mIvMissionIcon.getDrawable()).getBitmap();
+//                        if (oldBitmap != null) {
+//                            oldBitmap.recycle();
+//                        }
+                  //  }
+                    mIvMissionIcon.setImageBitmap(bitmap);
+                    // mIvMissionIcon.requestLayout();
+                }, Throwable::printStackTrace);
+
+
+//        mIconHeightFlowable
+//                //.subscribeOn(AndroidSchedulers.mainThread())
+////                .onBackpressureBuffer(1, () ->{
+////                    Log.d("TAG", "initObserver: buffer overflow");
+////                }, BackpressureOverflowStrategy.DROP_OLDEST)
+//                .onBackpressureLatest()
+//                //.subscribeOn(Schedulers.io())
+//                //.observeOn(Schedulers.io())
+////                .map(integer -> {
+////                    //Timber.d("mIconHeightFlowable threadId:%d", Thread.currentThread().getId());
+////                    Log.d("TAG", "initObserver: map threadId:" + Thread.currentThread().getId());
+////                    return integer;
+////                })
+//                //.observeOn()
+//                .subscribe(new FlowableSubscriber<Integer>() {
+//                    @Override
+//                    public void onSubscribe(Subscription s) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(Integer integer) {
+//                        Log.d("TAG", "initObserver: subscribe threadId:" + Thread.currentThread().getId());
+//                        try {
+//                            Thread.sleep(500);
+//                        } catch (Throwable throwable) {
+//                            throwable.printStackTrace();
+//                        }
+//                        //Timber.d("mIconHeightFlowable value:%d, threadId:%d", value, Thread.currentThread().getId());
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable t) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//
+//                    }
+//                });
+
+
 //        mIconHeightFlowable
 //                //.onBackpressureBuffer(1)
 //                .subscribeOn(Schedulers.io())
@@ -207,7 +285,9 @@ public class LaunchItemView extends CardView {
 //                mImageDisposable.dispose();
 //            }
             try {
-                mEmitter.onNext(value);
+                //mEmitter.onNext(value);
+                mPublishProcessor.onNext(value);
+                Log.d("TAG", "initObserver: updateContentSize threadId:" + Thread.currentThread().getId());
             } catch (Throwable throwable) {
                 Timber.d(throwable);
             }
