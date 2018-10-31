@@ -1,19 +1,31 @@
 package com.example.ivanovnv.spacex.common;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import io.reactivex.BackpressureOverflowStrategy;
+import io.reactivex.functions.Function;
+import io.reactivex.processors.PublishProcessor;
+import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
+
 public class ScaledImageView extends View {
     private int mWidthSpecSize;
     private int mHeightSpecSize;
-    private Bitmap mBitmap;
+    private Bitmap mOriginalBitmap;
+    private Bitmap mDrawBitmap;
     private Rect mDstRect;
+    private PublishProcessor<Integer> mScalePublishProcessor;
+    private Lock mBitmapLock;
 
     public ScaledImageView(Context context) {
         super(context);
@@ -32,8 +44,49 @@ public class ScaledImageView extends View {
 
     private void init(Context context, AttributeSet attrs) {
         mDstRect = new Rect(0, 0, 0, 0);
-
+        mScalePublishProcessor = PublishProcessor.create();
+        mBitmapLock = new ReentrantLock();
+        initObserver();
     }
+
+    @SuppressLint("CheckResult")
+    private void initObserver() {
+        mScalePublishProcessor
+                .filter(value -> value > 0 && mOriginalBitmap != null)
+                .onBackpressureBuffer(1, () -> {
+                    Timber.d("initObserver: buffer overflow");
+                }, BackpressureOverflowStrategy.DROP_OLDEST)
+                .observeOn(Schedulers.io(), false, 1)
+                .map(mCreateScaledBitmap)
+                .map(mSetScaledBitmap)
+                //.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(value -> invalidate(), Timber::d);
+    }
+
+    private Function<Integer, Bitmap> mCreateScaledBitmap = (Function<Integer, Bitmap>) value -> {
+        Timber.d("initObserver value:%d", value);
+        if (value > mHeightSpecSize) {
+            value = mHeightSpecSize;
+        }
+        return Bitmap.createScaledBitmap(mOriginalBitmap, value, value, false);
+    };
+
+    private Function<Bitmap, Boolean> mSetScaledBitmap = new Function<Bitmap, Boolean>() {
+        @Override
+        public Boolean apply(Bitmap bitmap) throws Exception {
+            try {
+                mBitmapLock.lock();
+                if (bitmap != mDrawBitmap && mDrawBitmap != null) {
+                    mDrawBitmap.recycle();
+                }
+                mDrawBitmap = bitmap;
+            } catch (Throwable throwable) {
+                Timber.d(throwable);
+            }
+            mBitmapLock.unlock();
+            return true;
+        }
+    };
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -45,14 +98,34 @@ public class ScaledImageView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mBitmap != null) {
-            mDstRect.right = mBitmap.getWidth();
-            mDstRect.bottom = mBitmap.getHeight();
-            canvas.drawBitmap(mBitmap, null, mDstRect, null);
+        if (mDrawBitmap != null) {
+            try {
+                mBitmapLock.lock();
+                mDstRect.right = mDrawBitmap.getWidth();
+                mDstRect.bottom = mDrawBitmap.getHeight();
+                canvas.drawBitmap(mDrawBitmap, null, mDstRect, null);
+            } catch (Throwable throwable) {
+                Timber.d(throwable);
+            }
+            mBitmapLock.unlock();
         }
     }
 
     public void setBitmap(Bitmap bitmap) {
-        mBitmap = bitmap;
+        mOriginalBitmap = bitmap;
+        invalidate();
+    }
+
+    public void setBitmap(Bitmap bitmap, int height) {
+        mOriginalBitmap = bitmap;
+        setImageHeight(height);
+    }
+
+    public Bitmap getBitmap() {
+        return mOriginalBitmap;
+    }
+
+    public void setImageHeight(int height) {
+        mScalePublishProcessor.onNext(height);
     }
 }
