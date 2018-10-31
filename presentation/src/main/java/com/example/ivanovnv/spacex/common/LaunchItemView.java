@@ -3,13 +3,11 @@ package com.example.ivanovnv.spacex.common;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.TimeUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -21,25 +19,15 @@ import com.example.ivanovnv.spacex.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
-
-import java.nio.BufferOverflowException;
-
 import io.reactivex.BackpressureOverflowStrategy;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
-import io.reactivex.FlowableSubscriber;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
 import io.reactivex.processors.PublishProcessor;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subscribers.DisposableSubscriber;
 import timber.log.Timber;
 
 public class LaunchItemView extends CardView {
@@ -118,20 +106,21 @@ public class LaunchItemView extends CardView {
                     if (viewSize > 0 && newSize > 0) {
                         int originalSize = Math.max(mMissionIconBitmap.getHeight(), mMissionIconBitmap.getWidth());
                         float scale = (float) (newSize) / originalSize;
-                        Bitmap dstBitmap = Bitmap.createBitmap(viewSize, viewSize, Bitmap.Config.ARGB_8888);
-                        int iOrig;
-                        int yOrig;
-                        for (int i = 0; i < viewSize; i++) {
-                            for (int j = 0; j < viewSize; j++) {
-                                iOrig = (int) (i / scale);
-                                yOrig = (int) (j / scale);
-                                if (iOrig < originalSize && yOrig < originalSize) {
-                                    dstBitmap.setPixel(i, j, mMissionIconBitmap.getPixel(iOrig, yOrig));
-                                } else {
-                                    dstBitmap.setPixel(i, j, Color.argb(0, 255, 255, 255));
-                                }
-                            }
-                        }
+                        //Bitmap dstBitmap = Bitmap.createBitmap(viewSize, viewSize, Bitmap.Config.ARGB_8888);
+                        Bitmap dstBitmap = Bitmap.createScaledBitmap(mMissionIconBitmap, newSize, newSize, false);
+//                        int iOrig;
+//                        int yOrig;
+//                        for (int i = 0; i < viewSize; i++) {
+//                            for (int j = 0; j < viewSize; j++) {
+//                                iOrig = (int) (i / scale);
+//                                yOrig = (int) (j / scale);
+//                                if (iOrig < originalSize && yOrig < originalSize) {
+//                                    dstBitmap.setPixel(i, j, mMissionIconBitmap.getPixel(iOrig, yOrig));
+//                                } else {
+//                                    dstBitmap.setPixel(i, j, Color.argb(0, 255, 255, 255));
+//                                }
+//                            }
+//                        }
                         mIconHeight = newSize;
                         return dstBitmap;
                     } else {
@@ -140,12 +129,12 @@ public class LaunchItemView extends CardView {
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(bitmap -> {
-                  //  if (mIvMissionIcon.getDrawable() instanceof BitmapDrawable) {
-//                        Bitmap oldBitmap = ((BitmapDrawable) mIvMissionIcon.getDrawable()).getBitmap();
-//                        if (oldBitmap != null) {
-//                            oldBitmap.recycle();
-//                        }
-                  //  }
+                    if (mIvMissionIcon.getDrawable() instanceof BitmapDrawable) {
+                        Bitmap oldBitmap = ((BitmapDrawable) mIvMissionIcon.getDrawable()).getBitmap();
+                        if (oldBitmap != mMissionIconBitmap && oldBitmap != null && oldBitmap != bitmap) {
+                            oldBitmap.recycle();
+                        }
+                    }
                     mIvMissionIcon.setImageBitmap(bitmap);
                     // mIvMissionIcon.requestLayout();
                 }, Throwable::printStackTrace);
