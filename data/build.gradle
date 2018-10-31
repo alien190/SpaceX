@@ -11,7 +11,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        buildConfigField 'String', 'SERVER_URL', '"https://api.spacexdata.com/v2/"'
+        buildConfigField 'String', 'SERVER_URL', '"https://api.spacexdata.com/v3/"'
 
 //        javaCompileOptions {
 //            annotationProcessorOptions {
