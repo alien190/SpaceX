@@ -1,12 +1,12 @@
 package com.example.data.database;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
 import com.example.data.model.DataLaunch;
+import com.example.data.model.DataLaunchCache;
 
 import java.util.List;
 
@@ -18,6 +18,17 @@ public interface LaunchDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertLaunches(List<DataLaunch> dataLaunches);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    Long insertLaunch(DataLaunch dataLaunch);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertLaunchesCache(List<DataLaunchCache> dataLaunchCash);
+
+    @Query("SELECT DataLaunchCache.flight_number FROM DataLaunchCache LEFT JOIN DataLaunch " +
+            "ON DataLaunchCache.flight_number = DataLaunch.flight_number " +
+            "WHERE LENGTH(DataLaunch.image) IS NULL ORDER BY DataLaunchCache.flight_number DESC")
+    Single<List<DataLaunchCache>> getLaunchCacheForLoadImage();
 
     @Query("SELECT * FROM DataLaunch ORDER BY launch_date_unix DESC")
     List<DataLaunch> getLaunches();

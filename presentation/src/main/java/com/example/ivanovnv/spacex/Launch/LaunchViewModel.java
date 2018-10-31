@@ -11,6 +11,7 @@ import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import timber.log.Timber;
 
 public class LaunchViewModel extends ViewModel {
     //private MutableLiveData<LaunchAdapter> mLaunchAdapter = new MutableLiveData<>();
@@ -28,12 +29,12 @@ public class LaunchViewModel extends ViewModel {
         //LaunchAdapter launchAdapter = new LaunchAdapter();
 
         mOnRefreshListener.postValue(this::loadLaunches);
-      //  mLaunchAdapter.postValue(launchAdapter);
+        //  mLaunchAdapter.postValue(launchAdapter);
         compositeDisposable.add(launchService.getLaunchesLive()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(mLaunches::postValue));
 
-       // loadLaunches();
+        // loadLaunches();
     }
 
     @Override
@@ -49,7 +50,8 @@ public class LaunchViewModel extends ViewModel {
     private void loadLaunches() {
         mIsLoadData.postValue(true);
         compositeDisposable.add(mLaunchService.refreshLaunches()
-                .subscribe(b -> mIsLoadData.postValue(false)));
+                .doOnComplete(() -> mIsLoadData.postValue(false))
+                .subscribe(b -> mIsLoadData.postValue(false), Timber::d));
     }
 
     public MutableLiveData<SwipeRefreshLayout.OnRefreshListener> getOnRefreshListener() {

@@ -3,6 +3,7 @@ package com.example.data.api.converter;
 import android.support.annotation.Nullable;
 
 import com.example.data.model.DataLaunch;
+import com.example.data.model.DataLaunchCache;
 import com.example.data.model.ServerResponse;
 import com.google.gson.reflect.TypeToken;
 
@@ -14,23 +15,53 @@ import java.util.List;
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
+import timber.log.Timber;
 
 public class DataConverterFactory extends Converter.Factory {
 
     @Nullable
     @Override
     public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
-        Type responseType = TypeToken.get(ServerResponse.class).getType();
-        Type launchTypeToken = TypeToken.getParameterized(List.class, responseType).getType();
-        final Converter<ResponseBody, List<ServerResponse>> converter = retrofit.nextResponseBodyConverter(this, launchTypeToken, annotations);
-        return (Converter<ResponseBody, Object>) value -> {
-            List<ServerResponse> serverResponseList = converter.convert(value);
-            List<DataLaunch> dataLaunches = new ArrayList<>();
 
-            for (ServerResponse serverResponse : serverResponseList) {
-                dataLaunches.add(new DataLaunch(serverResponse));
+        //final Type dataLunchType = TypeToken.get(DataLaunch.class).getType();
+
+        final Type listDataLunchType = TypeToken.getParameterized(List.class, DataLaunch.class).getType();
+        final Type listDataLunchCacheType = TypeToken.getParameterized(List.class, DataLaunchCache.class).getType();
+        final Type responseType = TypeToken.get(ServerResponse.class).getType();
+        Type launchTypeToken;
+
+        if(type.equals(listDataLunchCacheType) || type.equals(listDataLunchType)) {
+            launchTypeToken = TypeToken.getParameterized(List.class, responseType).getType();
+        } else {
+            launchTypeToken = responseType;
+        }
+
+        final Converter<ResponseBody, List<ServerResponse>> listConverter = retrofit.nextResponseBodyConverter(this, launchTypeToken, annotations);
+        final Converter<ResponseBody, ServerResponse> itemConverter = retrofit.nextResponseBodyConverter(this, launchTypeToken, annotations);
+
+        return (Converter<ResponseBody, Object>) value -> {
+
+            if(type.equals(listDataLunchType)) {
+                List<ServerResponse> serverResponseList = listConverter.convert(value);
+                List<DataLaunch> dataLaunches = new ArrayList<>();
+
+                for (ServerResponse serverResponse : serverResponseList) {
+                    dataLaunches.add(new DataLaunch(serverResponse));
+                }
+                return dataLaunches;
+            } else if(type.equals(listDataLunchCacheType)) {
+                List<ServerResponse> serverResponseList = listConverter.convert(value);
+                List<DataLaunchCache> dataLaunches = new ArrayList<>();
+
+                for (ServerResponse serverResponse : serverResponseList) {
+                    dataLaunches.add(new DataLaunchCache(serverResponse));
+                }
+                return dataLaunches;
+            } else {
+                ServerResponse serverResponse = itemConverter.convert(value);
+                DataLaunch dataLaunch = new DataLaunch(serverResponse);
+                return dataLaunch;
             }
-            return dataLaunches;
         };
     }
 }

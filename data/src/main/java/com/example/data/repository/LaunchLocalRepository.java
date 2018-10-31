@@ -3,10 +3,13 @@ package com.example.data.repository;
 import com.example.data.api.converter.DataToDomainConverter;
 import com.example.data.api.converter.DomainToDataConverter;
 import com.example.data.database.LaunchDao;
+import com.example.data.model.DataLaunchCache;
 import com.example.domain.model.launch.DomainLaunch;
+import com.example.domain.model.launch.DomainLaunchCache;
 import com.example.domain.repository.ILaunchRepository;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
@@ -26,7 +29,7 @@ public class LaunchLocalRepository implements ILaunchRepository {
 
     @Override
     public void insertLaunches(List<DomainLaunch> launches) {
-        mLaunchDao.insertLaunches(DomainToDataConverter.convertLaunch(launches));
+        mLaunchDao.insertLaunches(DomainToDataConverter.convertLaunchList(launches));
     }
 
     @Override
@@ -37,5 +40,34 @@ public class LaunchLocalRepository implements ILaunchRepository {
     @Override
     public Single<DomainLaunch> getLaunchByFlightNumber(int flightNumber) {
         return mLaunchDao.getLaunchByFlightNumber(flightNumber).map(DataToDomainConverter::convertLaunch);
+    }
+
+    @Override
+    public Single<List<DomainLaunchCache>> getLaunchesCash() {
+        //do noting
+        return null;
+    }
+
+    @Override
+    public Single<Boolean> insertLaunchesCash(List<DomainLaunchCache> domainLaunches) {
+        return Single.fromCallable(() -> {
+            mLaunchDao.insertLaunchesCache(DomainToDataConverter.convertLaunchCacheList(domainLaunches));
+            return true;
+        });
+    }
+
+    @Override
+    public Single<List<DomainLaunchCache>> getLaunchCacheForLoadImage() {
+        return mLaunchDao.getLaunchCacheForLoadImage().map(DataToDomainConverter::convertLaunchCacheList);
+    }
+
+    @Override
+    public Long insertLaunch(DomainLaunch domainLaunch) {
+        return mLaunchDao.insertLaunch(DomainToDataConverter.convertLaunch(domainLaunch));
+    }
+
+    @Override
+    public DomainLaunch loadImage(DomainLaunch launch) {
+        return launch;
     }
 }
