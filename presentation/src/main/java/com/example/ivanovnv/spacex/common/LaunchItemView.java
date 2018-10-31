@@ -101,6 +101,7 @@ public class LaunchItemView extends CardView {
                 }, BackpressureOverflowStrategy.DROP_OLDEST)
                 .observeOn(Schedulers.io(), false, 1)
                 .map(value -> {
+                    Timber.d("initObserver value:%d", value);
                     int viewSize = Math.min(mIvMissionIcon.getWidth(), mIvMissionIcon.getHeight());
                     int newSize = value - 2 * mTopAndBottomMargins;
                     if (viewSize > 0 && newSize > 0) {
@@ -127,7 +128,7 @@ public class LaunchItemView extends CardView {
                         return mMissionIconBitmap;
                     }
                 })
-                .observeOn(AndroidSchedulers.mainThread())
+                //.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(bitmap -> {
                     if (mIvMissionIcon.getDrawable() instanceof BitmapDrawable) {
                         Bitmap oldBitmap = ((BitmapDrawable) mIvMissionIcon.getDrawable()).getBitmap();
