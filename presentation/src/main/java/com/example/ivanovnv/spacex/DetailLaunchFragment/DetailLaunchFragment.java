@@ -57,8 +57,8 @@ public class DetailLaunchFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setSharedElementEnterTransition(TransitionInflater
                 .from(getContext())
-                .inflateTransition(R.transition.image_shared_element_transition));
-                //.inflateTransition(android.R.transition.move));
+               // .inflateTransition(R.transition.image_shared_element_transition));
+                .inflateTransition(android.R.transition.move));
     }
 
     @Nullable

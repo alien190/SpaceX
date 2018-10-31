@@ -226,8 +226,8 @@ public class LaunchItemView extends CardView {
 //        }
     }
 
-    public ImageView getIvMissionIcon() {
-        return null;
+    public ScaledImageView getMissionIcon() {
+        return mSivMissionIcon;
     }
 
 

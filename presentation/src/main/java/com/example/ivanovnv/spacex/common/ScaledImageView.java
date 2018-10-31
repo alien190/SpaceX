@@ -26,6 +26,7 @@ public class ScaledImageView extends View {
     private Rect mDstRect;
     private PublishProcessor<Integer> mScalePublishProcessor;
     private Lock mBitmapLock;
+    private int mBitmapHeight;
 
     public ScaledImageView(Context context) {
         super(context);
@@ -46,13 +47,14 @@ public class ScaledImageView extends View {
         mDstRect = new Rect(0, 0, 0, 0);
         mScalePublishProcessor = PublishProcessor.create();
         mBitmapLock = new ReentrantLock();
+        mBitmapHeight = 0;
         initObserver();
     }
 
     @SuppressLint("CheckResult")
     private void initObserver() {
         mScalePublishProcessor
-                .filter(value -> value > 0 && mOriginalBitmap != null)
+                .filter(value -> value > 0 && value!= mBitmapHeight && mOriginalBitmap != null)
                 .onBackpressureBuffer(1, () -> {
                     Timber.d("initObserver: buffer overflow");
                 }, BackpressureOverflowStrategy.DROP_OLDEST)
@@ -60,7 +62,11 @@ public class ScaledImageView extends View {
                 .map(mCreateScaledBitmap)
                 .map(mSetScaledBitmap)
                 //.observeOn(AndroidSchedulers.mainThread())
-                .subscribe(value -> invalidate(), Timber::d);
+                .subscribe(
+                        (value) -> {
+                            invalidate();
+                            Timber.d("initObserver invalidate ThreadId:%d", Thread.currentThread().getId());
+                        }, Timber::d);
     }
 
     private Function<Integer, Bitmap> mCreateScaledBitmap = (Function<Integer, Bitmap>) value -> {
@@ -68,7 +74,10 @@ public class ScaledImageView extends View {
         if (value > mHeightSpecSize) {
             value = mHeightSpecSize;
         }
-        return Bitmap.createScaledBitmap(mOriginalBitmap, value, value, false);
+       // if (value != mBitmapHeight) {
+            return Bitmap.createScaledBitmap(mOriginalBitmap, value, value, false);
+//        }
+//        return mDrawBitmap;
     };
 
     private Function<Bitmap, Boolean> mSetScaledBitmap = new Function<Bitmap, Boolean>() {
@@ -80,6 +89,7 @@ public class ScaledImageView extends View {
                     mDrawBitmap.recycle();
                 }
                 mDrawBitmap = bitmap;
+                mBitmapHeight = bitmap.getHeight();
             } catch (Throwable throwable) {
                 Timber.d(throwable);
             }

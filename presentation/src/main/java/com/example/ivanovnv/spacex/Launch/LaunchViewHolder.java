@@ -2,16 +2,10 @@ package com.example.ivanovnv.spacex.Launch;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.data.utils.DbBitmapUtility;
 import com.example.domain.model.launch.DomainLaunch;
-import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.common.LaunchItemView;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 
 public class LaunchViewHolder extends RecyclerView.ViewHolder {
@@ -57,7 +51,7 @@ public class LaunchViewHolder extends RecyclerView.ViewHolder {
             if (mClickCallback != null) {
                 View sharedView = null;
                 if (mView instanceof LaunchItemView) {
-                    sharedView = ((LaunchItemView) mView).getIvMissionIcon();
+                    sharedView = ((LaunchItemView) mView).getMissionIcon();
                 }
                 mClickCallback.onItemClick(mFlightNumber, sharedView);
             }

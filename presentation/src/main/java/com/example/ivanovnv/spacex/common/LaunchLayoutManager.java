@@ -13,7 +13,6 @@ import timber.log.Timber;
 public class LaunchLayoutManager extends RecyclerView.LayoutManager {
 
     private SparseArray<View> mViewCache = new SparseArray<>();
-    private Lock mLock = new ReentrantLock();
     private int mOffset = 0;
     private int mMaximumOffset;
     private int mBigViewHeight;
@@ -37,11 +36,6 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
         doLayoutChildren(recycler);
     }
 
-    @Override
-    public void onMeasure(@NonNull RecyclerView.Recycler recycler, @NonNull RecyclerView.State state, int widthSpec, int heightSpec) {
-        super.onMeasure(recycler, state, widthSpec, heightSpec);
-        Timber.d("onMeasure");
-    }
 
     @Override
     public boolean canScrollVertically() {
@@ -58,16 +52,7 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
             initializeCache();
             fillDown(recycler);
             recyclerCache(recycler);
-            //childrenRequestLayout(recycler);
         }
-    }
-
-    private void childrenRequestLayout(RecyclerView.Recycler recycler) {
-        for (int i = mFirstVisibleViewPosition; i <= mLastVisibleViewPosition; i++) {
-            View view = recycler.getViewForPosition(i);
-            ((LaunchItemView) view).onRequestLayout();
-        }
-
     }
 
     @Override
@@ -77,18 +62,6 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
         }
     }
 
-    @Override
-    public void onItemsChanged(@NonNull RecyclerView recyclerView) {
-        super.onItemsChanged(recyclerView);
-        Timber.d("onItemsChanged");
-    }
-
-
-    @Override
-    public void onItemsUpdated(@NonNull RecyclerView recyclerView, int positionStart, int itemCount) {
-        super.onItemsUpdated(recyclerView, positionStart, itemCount);
-        Timber.d("onItemsUpdated");
-    }
 
     private void calculateVisiblePositions() {
         if (mBigViewHeight != 0) {
@@ -241,13 +214,16 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
     }
 
 
-
     @Override
     public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
-        int delta = getScrollDelta(dy);
-        mOffset += delta;
-        doLayoutChildren(recycler);
-        return delta;
+        if (!state.isMeasuring()) {
+            int delta = getScrollDelta(dy);
+            mOffset += delta;
+            doLayoutChildren(recycler);
+            return delta;
+        } else {
+            return 0;
+        }
     }
 
     private int getScrollDelta(int dy) {
