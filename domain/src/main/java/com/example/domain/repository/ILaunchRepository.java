@@ -16,7 +16,7 @@ public interface ILaunchRepository {
 
     Flowable<List<DomainLaunch>> getLaunchesLive();
 
-    void insertLaunches(List<DomainLaunch> domainLaunches);
+    Single<Boolean> insertLaunches(List<DomainLaunch> domainLaunches);
 
     Long insertLaunch(DomainLaunch domainLaunch);
 
@@ -26,7 +26,9 @@ public interface ILaunchRepository {
 
     Single<Boolean> insertLaunchesCache(List<DomainLaunchCache> domainLaunches);
 
-    Single<List<DomainLaunchCache>> getLaunchCacheForLoadImage();
+    Single<List<DomainLaunch>> getLaunchFromCacheForUpdate();
 
-    DomainLaunch loadImage(DomainLaunch launch);
+    byte[] loadImage(String url);
+
+    int insertImage(byte[] bytes);
 }

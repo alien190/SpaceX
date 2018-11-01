@@ -3,10 +3,13 @@ package com.example.domain.service;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.repository.ILaunchRepository;
 
+import org.reactivestreams.Publisher;
+
 import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class LaunchServiceImpl implements ILaunchService {
@@ -50,22 +53,56 @@ public class LaunchServiceImpl implements ILaunchService {
 
     @Override
     public Flowable<Long> refreshLaunches() {
-        return mRemoteRepository.getLaunchesCache()
+
+        return mRemoteRepository.getLaunches()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(mLocalRepository::insertLaunchesCache)
-                .flatMap(aBoolean -> mLocalRepository.getLaunchCacheForLoadImage())
+                .flatMap(mLocalRepository::insertLaunches)
+                .flatMap(aBoolean -> mLocalRepository.getLaunchFromCacheForUpdate())
                 .toFlowable()
                 .flatMap(Flowable::fromIterable)
                 .parallel(10)
                 .runOn(Schedulers.io())
-                .flatMap(launch -> mRemoteRepository
-                        .getLaunchByFlightNumber(launch.getFlight_number())
-                        .toFlowable())
-                .map(mRemoteRepository::loadImage)
-                .flatMap(domainLaunch -> Flowable.fromCallable(
-                        () -> mLocalRepository.insertLaunch(domainLaunch)))
+                .flatMap(this::loadMissionImage)
+                .map(this::setNonCache)
+                .map(mLocalRepository::insertLaunch)
                 .sequential();
 
+
+//        return mRemoteRepository.getLaunchesCache()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(Schedulers.io())
+//                .flatMap(mLocalRepository::insertLaunchesCache)
+//                .flatMap(aBoolean -> mLocalRepository.getLaunchFromCacheForUpdate())
+//                .toFlowable()
+//                .flatMap(Flowable::fromIterable)
+//                .parallel(10)
+//                .runOn(Schedulers.io())
+//                .flatMap(launch -> mRemoteRepository
+//                        .getLaunchByFlightNumber(launch.getFlight_number())
+//                        .toFlowable())
+//                .map(mRemoteRepository::loadImage)
+//                .flatMap(domainLaunch -> Flowable.fromCallable(
+//                        () -> mLocalRepository.insertLaunch(domainLaunch)))
+//                .sequential();
+
     }
+
+    private Flowable<DomainLaunch> loadMissionImage(DomainLaunch domainLaunch) {
+        return Flowable.fromCallable(() ->
+        {
+            byte[] bytes = mRemoteRepository.loadImage(domainLaunch.getMission_patch_small());
+            domainLaunch.setImageId(mLocalRepository.insertImage(bytes));
+            //mLocalRepository.insertLaunch(domainLaunch);
+            return domainLaunch;
+        });
+    }
+
+    private DomainLaunch setNonCache(DomainLaunch domainLaunch) {
+        domainLaunch.setCache(false);
+        return domainLaunch;
+    }
+//    private Flowable<DomainLaunch> loadMissionImage(Flowable<DomainLaunch> domainLaunch){
+//        domainLaunch.
+//    }
 }

@@ -1,7 +1,6 @@
 package com.example.data.repository;
 
 import android.graphics.Bitmap;
-import android.text.BoringLayout;
 
 import com.example.data.api.SpaceXAPI;
 import com.example.data.api.converter.DataToDomainConverter;
@@ -31,8 +30,9 @@ public class LaunchRemoteRepository implements ILaunchRepository {
     }
 
     @Override
-    public void insertLaunches(List<DomainLaunch> launches) {
+    public Single<Boolean> insertLaunches(List<DomainLaunch> launches) {
         //do nothing
+        return null;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class LaunchRemoteRepository implements ILaunchRepository {
     }
 
     @Override
-    public Single<List<DomainLaunchCache>> getLaunchCacheForLoadImage() {
+    public Single<List<DomainLaunch>> getLaunchFromCacheForUpdate() {
         //do nothing
         return null;
     }
@@ -69,17 +69,20 @@ public class LaunchRemoteRepository implements ILaunchRepository {
     }
 
     @Override
-    public DomainLaunch loadImage(DomainLaunch launch) {
+    public byte[] loadImage(String url) {
         try {
-            String url = launch.getMission_patch_small();
             if (url != null && !url.isEmpty()) {
                 Bitmap bitmap = Picasso.get().load(url).get();
-                byte[] bytes = DbBitmapUtility.getBytes(bitmap);
-                launch.setImage(bytes);
+                return DbBitmapUtility.getBytes(bitmap);
             }
         } catch (Throwable throwable) {
             Timber.d(throwable);
         }
-        return launch;
+        return null;
+    }
+
+    @Override
+    public int insertImage(byte[] bytes) {
+        return 0;
     }
 }

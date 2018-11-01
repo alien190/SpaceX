@@ -4,6 +4,7 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.Relation;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
@@ -13,11 +14,10 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 //        childColumns = "imageId",
 //        onDelete = CASCADE))
 
-@Entity
+@Entity(primaryKeys = {"flight_number", "isCache"})
 public class DataLaunch {
 
     @ColumnInfo(name = "flight_number")
-    @PrimaryKey
     private int flight_number;
 
     @ColumnInfo(name = "launch_year")
@@ -53,8 +53,12 @@ public class DataLaunch {
     @ColumnInfo(name = "image", typeAffinity = ColumnInfo.BLOB)
     private byte[] image;
 
-    // @ColumnInfo(name = "imageId")
-    // private int imageId;
+    @ColumnInfo(name = "imageId")
+    private int imageId = 0;
+
+    @ColumnInfo(name = "isCache")
+    private boolean isCache = true;
+
 
     public int getFlight_number() {
         return flight_number;
@@ -148,13 +152,13 @@ public class DataLaunch {
     public DataLaunch() {
     }
 
-//    public int getImageId() {
-//        return imageId;
-//    }
-//
-//    public void setImageId(int imageId) {
-//        this.imageId = imageId;
-//    }
+    public int getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(int imageId) {
+        this.imageId = imageId;
+    }
 
     public byte[] getImage() {
         return image;
@@ -162,6 +166,14 @@ public class DataLaunch {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public boolean isCache() {
+        return isCache;
+    }
+
+    public void setCache(boolean cache) {
+        isCache = cache;
     }
 
     public DataLaunch(ServerResponse serverResponse) {

@@ -3,13 +3,12 @@ package com.example.data.repository;
 import com.example.data.api.converter.DataToDomainConverter;
 import com.example.data.api.converter.DomainToDataConverter;
 import com.example.data.database.LaunchDao;
-import com.example.data.model.DataLaunchCache;
+import com.example.data.model.DataImage;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.launch.DomainLaunchCache;
 import com.example.domain.repository.ILaunchRepository;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
@@ -28,8 +27,11 @@ public class LaunchLocalRepository implements ILaunchRepository {
     }
 
     @Override
-    public void insertLaunches(List<DomainLaunch> launches) {
-        mLaunchDao.insertLaunches(DomainToDataConverter.convertLaunchList(launches));
+    public Single<Boolean> insertLaunches(List<DomainLaunch> launches) {
+        return Single.fromCallable(() -> {
+            mLaunchDao.insertLaunches(DomainToDataConverter.convertLaunchList(launches));
+            return true;
+        });
     }
 
     @Override
@@ -57,8 +59,8 @@ public class LaunchLocalRepository implements ILaunchRepository {
     }
 
     @Override
-    public Single<List<DomainLaunchCache>> getLaunchCacheForLoadImage() {
-        return mLaunchDao.getLaunchCacheForLoadImage().map(DataToDomainConverter::convertLaunchCacheList);
+    public Single<List<DomainLaunch>> getLaunchFromCacheForUpdate() {
+        return mLaunchDao.getLaunchFromCacheForUpdate().map(DataToDomainConverter::convertLaunchList);
     }
 
     @Override
@@ -67,7 +69,14 @@ public class LaunchLocalRepository implements ILaunchRepository {
     }
 
     @Override
-    public DomainLaunch loadImage(DomainLaunch launch) {
-        return launch;
+    public byte[] loadImage(String url) {
+        return null;
+    }
+
+    @Override
+    public int insertImage(byte[] bytes) {
+        DataImage dataImage = new DataImage();
+        dataImage.setImage(bytes);
+        return (int) mLaunchDao.insertImage(dataImage);
     }
 }

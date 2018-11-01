@@ -8,7 +8,7 @@ import android.arch.persistence.room.PrimaryKey;
 public class DataImage {
 
     @ColumnInfo(name = "id")
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
 
     @ColumnInfo(name = "image", typeAffinity = ColumnInfo.BLOB)
