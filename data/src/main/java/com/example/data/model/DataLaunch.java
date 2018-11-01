@@ -2,7 +2,16 @@ package com.example.data.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
+
+import static android.arch.persistence.room.ForeignKey.CASCADE;
+
+//@Entity(foreignKeys = @ForeignKey(
+//        entity = DataImage.class,
+//        parentColumns = "id",
+//        childColumns = "imageId",
+//        onDelete = CASCADE))
 
 @Entity
 public class DataLaunch {
@@ -43,6 +52,9 @@ public class DataLaunch {
 
     @ColumnInfo(name = "image", typeAffinity = ColumnInfo.BLOB)
     private byte[] image;
+
+    // @ColumnInfo(name = "imageId")
+    // private int imageId;
 
     public int getFlight_number() {
         return flight_number;
@@ -135,6 +147,14 @@ public class DataLaunch {
 
     public DataLaunch() {
     }
+
+//    public int getImageId() {
+//        return imageId;
+//    }
+//
+//    public void setImageId(int imageId) {
+//        this.imageId = imageId;
+//    }
 
     public byte[] getImage() {
         return image;
