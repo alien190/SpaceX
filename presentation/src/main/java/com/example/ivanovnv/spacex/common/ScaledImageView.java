@@ -54,7 +54,7 @@ public class ScaledImageView extends View {
     @SuppressLint("CheckResult")
     private void initObserver() {
         mScalePublishProcessor
-                .filter(value -> value > 0 && value!= mBitmapHeight && mOriginalBitmap != null)
+                .filter(value -> value > 0 && mOriginalBitmap != null) //&& value!= mBitmapHeight
                 .onBackpressureBuffer(1, () -> {
                     Timber.d("initObserver: buffer overflow");
                 }, BackpressureOverflowStrategy.DROP_OLDEST)
