@@ -12,6 +12,7 @@ import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
+import timber.log.Timber;
 
 public class LaunchLocalRepository implements ILaunchRepository {
 
@@ -83,5 +84,12 @@ public class LaunchLocalRepository implements ILaunchRepository {
     @Override
     public int getImageId(DomainLaunch domainLaunch) {
         return mLaunchDao.getImageId(domainLaunch.getFlight_number(), domainLaunch.getMission_patch_small());
+    }
+
+    @Override
+    public Boolean deleteUnusedImages() {
+        Timber.d("deleteUnusedImages");
+        mLaunchDao.deleteUnusedImages();
+        return true;
     }
 }

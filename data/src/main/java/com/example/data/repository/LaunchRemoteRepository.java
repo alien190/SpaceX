@@ -90,4 +90,10 @@ public class LaunchRemoteRepository implements ILaunchRepository {
     public int getImageId(DomainLaunch domainLaunch) {
         return 0;
     }
+
+    @Override
+    public Boolean deleteUnusedImages() {
+        //do nothing
+        return true;
+    }
 }

@@ -33,4 +33,6 @@ public interface ILaunchRepository {
     int insertImage(byte[] bytes);
 
     int getImageId(DomainLaunch domainLaunch);
+
+    Boolean deleteUnusedImages();
 }

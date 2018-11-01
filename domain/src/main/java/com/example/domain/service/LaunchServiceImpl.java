@@ -2,12 +2,14 @@ package com.example.domain.service;
 
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.repository.ILaunchRepository;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import org.reactivestreams.Publisher;
 
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -52,7 +54,7 @@ public class LaunchServiceImpl implements ILaunchService {
     }
 
     @Override
-    public Flowable<Long> refreshLaunches() {
+    public Maybe<Boolean> refreshLaunches() {
 
         return mRemoteRepository.getLaunches()
                 .subscribeOn(Schedulers.io())
@@ -64,7 +66,9 @@ public class LaunchServiceImpl implements ILaunchService {
                 .flatMap(this::updateImageIdFromDb)
                 .flatMap(this::loadMissionImage)
                 .map(mLocalRepository::insertLaunch)
-                .sequential();
+                .sequential()
+                .lastElement()
+                .map(launch -> mLocalRepository.deleteUnusedImages());
 
 
 //        return mRemoteRepository.getLaunchesCache()

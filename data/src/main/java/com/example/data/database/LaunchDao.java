@@ -77,4 +77,9 @@ public interface LaunchDao {
 
     @Query("SELECT imageId FROM DataLaunch WHERE flight_number=:flight_number and mission_patch_small=:mission_patch_small")
     int getImageId(int flight_number, String mission_patch_small);
+
+    @Query("DELETE FROM DataImage WHERE id <> 0 AND id " +
+            "IN (SELECT DataImage.id FROM DataImage LEFT JOIN DataLaunch " +
+            "ON DataImage.id = DataLaunch.imageId WHERE flight_number is NULL)")
+    void deleteUnusedImages();
 }
