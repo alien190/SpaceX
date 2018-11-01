@@ -26,9 +26,11 @@ public interface ILaunchRepository {
 
     Single<Boolean> insertLaunchesCache(List<DomainLaunchCache> domainLaunches);
 
-    Single<List<DomainLaunch>> getLaunchFromCacheForUpdate();
+    //Single<List<DomainLaunch>> getLaunchFromCacheForUpdate();
 
     byte[] loadImage(String url);
 
     int insertImage(byte[] bytes);
+
+    int getImageId(DomainLaunch domainLaunch);
 }

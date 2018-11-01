@@ -44,7 +44,6 @@ public final class DomainToDataConverter {
             dataLaunch.setMission_patch_small(launch.getMission_patch_small());
             dataLaunch.setDetails(launch.getDetails());
             dataLaunch.setImageId(launch.getImageId());
-            dataLaunch.setCache(launch.isCache());
             dataLaunch.setImage(launch.getImage());
 
             return dataLaunch;

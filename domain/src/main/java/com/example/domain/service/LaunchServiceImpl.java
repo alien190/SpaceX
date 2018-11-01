@@ -57,14 +57,12 @@ public class LaunchServiceImpl implements ILaunchService {
         return mRemoteRepository.getLaunches()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(mLocalRepository::insertLaunches)
-                .flatMap(aBoolean -> mLocalRepository.getLaunchFromCacheForUpdate())
                 .toFlowable()
                 .flatMap(Flowable::fromIterable)
                 .parallel(10)
                 .runOn(Schedulers.io())
+                .flatMap(this::updateImageIdFromDb)
                 .flatMap(this::loadMissionImage)
-                .map(this::setNonCache)
                 .map(mLocalRepository::insertLaunch)
                 .sequential();
 
@@ -88,20 +86,29 @@ public class LaunchServiceImpl implements ILaunchService {
 
     }
 
-    private Flowable<DomainLaunch> loadMissionImage(DomainLaunch domainLaunch) {
-        return Flowable.fromCallable(() ->
-        {
-            byte[] bytes = mRemoteRepository.loadImage(domainLaunch.getMission_patch_small());
-            domainLaunch.setImageId(mLocalRepository.insertImage(bytes));
-            //mLocalRepository.insertLaunch(domainLaunch);
+    private Flowable<DomainLaunch> updateImageIdFromDb(DomainLaunch domainLaunch) {
+        return Flowable.fromCallable(() -> {
+            int imageId = mLocalRepository.getImageId(domainLaunch);
+            domainLaunch.setImageId(imageId);
             return domainLaunch;
         });
     }
 
-    private DomainLaunch setNonCache(DomainLaunch domainLaunch) {
-        domainLaunch.setCache(false);
-        return domainLaunch;
+    private Flowable<DomainLaunch> loadMissionImage(DomainLaunch domainLaunch) {
+        return Flowable.fromCallable(() ->
+        {
+            if (domainLaunch.getImageId() == 0) {
+                byte[] bytes = mRemoteRepository.loadImage(domainLaunch.getMission_patch_small());
+                domainLaunch.setImageId(mLocalRepository.insertImage(bytes));
+            }
+            return domainLaunch;
+        });
     }
+
+//    private DomainLaunch setNonCache(DomainLaunch domainLaunch) {
+//        domainLaunch.setCache(false);
+//        return domainLaunch;
+//    }
 //    private Flowable<DomainLaunch> loadMissionImage(Flowable<DomainLaunch> domainLaunch){
 //        domainLaunch.
 //    }

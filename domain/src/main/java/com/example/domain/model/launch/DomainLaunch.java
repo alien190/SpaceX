@@ -15,7 +15,6 @@ public class DomainLaunch {
     private String launch_date_utc;
     private byte[] image;
     private int imageId;
-    private boolean isCache;
 
     public int getFlight_number() {
         return flight_number;
@@ -122,13 +121,6 @@ public class DomainLaunch {
         this.imageId = imageId;
     }
 
-    public boolean isCache() {
-        return isCache;
-    }
-
-    public void setCache(boolean cache) {
-        isCache = cache;
-    }
 
     public DomainLaunch() {
     }

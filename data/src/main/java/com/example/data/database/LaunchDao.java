@@ -39,18 +39,18 @@ public interface LaunchDao {
 //            "AND (nonCacheTable.imageId =0 " +
 //            "OR nonCacheTable.mission_patch_small <> cacheTable.mission_patch_small) " +
 //            "ORDER BY flight_number DESC")
-    @Query("SELECT cacheTable.* FROM (SELECT * FROM DataLaunch WHERE isCache = 1) AS cacheTable " +
-            "LEFT JOIN (SELECT * FROM DataLaunch WHERE isCache = 0) AS nonCacheTable " +
-            "ON cacheTable.flight_number = nonCacheTable.flight_number " +
-            "AND (nonCacheTable.imageId =0 " +
-            "OR nonCacheTable.mission_patch_small <> cacheTable.mission_patch_small) " +
-            "ORDER BY launch_date_unix DESC")
-    Single<List<DataLaunch>> getLaunchFromCacheForUpdate();
+//    @Query("SELECT cacheTable.* FROM (SELECT * FROM DataLaunch WHERE isCache = 1) AS cacheTable " +
+//            "LEFT JOIN (SELECT * FROM DataLaunch WHERE isCache = 0) AS nonCacheTable " +
+//            "ON cacheTable.flight_number = nonCacheTable.flight_number " +
+//            "AND (nonCacheTable.imageId =0 " +
+//            "OR nonCacheTable.mission_patch_small <> cacheTable.mission_patch_small) " +
+//            "ORDER BY launch_date_unix DESC")
+//    Single<List<DataLaunch>> getLaunchFromCacheForUpdate();
 
     @Query("SELECT * FROM DataLaunch ORDER BY launch_date_unix DESC")
     List<DataLaunch> getLaunches();
 
-    @Query("SELECT * FROM DataLaunch WHERE isCache = 0 ORDER BY launch_date_unix DESC")
+    @Query("SELECT DataLaunch.*, DataImage.image FROM DataLaunch,DataImage WHERE DataLaunch.imageId=DataImage.id ORDER BY launch_date_unix DESC")
     Flowable<List<DataLaunch>> getLaunchesLive();
 
 
@@ -74,4 +74,7 @@ public interface LaunchDao {
 
     @Query("SELECT * FROM DataLaunch where flight_number = :flightNumber")
     Single<DataLaunch> getLaunchByFlightNumber(int flightNumber);
+
+    @Query("SELECT imageId FROM DataLaunch WHERE flight_number=:flight_number and mission_patch_small=:mission_patch_small")
+    int getImageId(int flight_number, String mission_patch_small);
 }

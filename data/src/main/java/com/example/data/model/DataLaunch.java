@@ -14,10 +14,11 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 //        childColumns = "imageId",
 //        onDelete = CASCADE))
 
-@Entity(primaryKeys = {"flight_number", "isCache"})
+@Entity()
 public class DataLaunch {
 
     @ColumnInfo(name = "flight_number")
+    @PrimaryKey
     private int flight_number;
 
     @ColumnInfo(name = "launch_year")
@@ -50,14 +51,11 @@ public class DataLaunch {
     @ColumnInfo(name = "launch_date_utc")
     private String launch_date_utc;
 
-    @ColumnInfo(name = "image", typeAffinity = ColumnInfo.BLOB)
+    //@ColumnInfo(name = "image", typeAffinity = ColumnInfo.BLOB)
     private byte[] image;
 
     @ColumnInfo(name = "imageId")
     private int imageId = 0;
-
-    @ColumnInfo(name = "isCache")
-    private boolean isCache = true;
 
 
     public int getFlight_number() {
@@ -168,13 +166,6 @@ public class DataLaunch {
         this.image = image;
     }
 
-    public boolean isCache() {
-        return isCache;
-    }
-
-    public void setCache(boolean cache) {
-        isCache = cache;
-    }
 
     public DataLaunch(ServerResponse serverResponse) {
         flight_number = serverResponse.getFlight_number();

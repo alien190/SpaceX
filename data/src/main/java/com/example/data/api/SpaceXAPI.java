@@ -11,7 +11,7 @@ import retrofit2.http.Path;
 
 public interface SpaceXAPI {
 
-    @GET("launches/past")
+    @GET("launches/past?sort=launch_date_utc&order=DESC")
     Single<List<DataLaunch>> getAllPastLaunches();
 
     @GET("launches/{flight_number}")

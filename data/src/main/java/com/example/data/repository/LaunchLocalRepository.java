@@ -58,10 +58,10 @@ public class LaunchLocalRepository implements ILaunchRepository {
         });
     }
 
-    @Override
-    public Single<List<DomainLaunch>> getLaunchFromCacheForUpdate() {
-        return mLaunchDao.getLaunchFromCacheForUpdate().map(DataToDomainConverter::convertLaunchList);
-    }
+//    @Override
+//    public Single<List<DomainLaunch>> getLaunchFromCacheForUpdate() {
+//        return mLaunchDao.getLaunchFromCacheForUpdate().map(DataToDomainConverter::convertLaunchList);
+//    }
 
     @Override
     public Long insertLaunch(DomainLaunch domainLaunch) {
@@ -78,5 +78,10 @@ public class LaunchLocalRepository implements ILaunchRepository {
         DataImage dataImage = new DataImage();
         dataImage.setImage(bytes);
         return (int) mLaunchDao.insertImage(dataImage);
+    }
+
+    @Override
+    public int getImageId(DomainLaunch domainLaunch) {
+        return mLaunchDao.getImageId(domainLaunch.getFlight_number(), domainLaunch.getMission_patch_small());
     }
 }

@@ -56,11 +56,11 @@ public class LaunchRemoteRepository implements ILaunchRepository {
         return null;
     }
 
-    @Override
-    public Single<List<DomainLaunch>> getLaunchFromCacheForUpdate() {
-        //do nothing
-        return null;
-    }
+//    @Override
+//    public Single<List<DomainLaunch>> getLaunchFromCacheForUpdate() {
+//        //do nothing
+//        return null;
+//    }
 
     @Override
     public Long insertLaunch(DomainLaunch domainLaunch) {
@@ -83,6 +83,11 @@ public class LaunchRemoteRepository implements ILaunchRepository {
 
     @Override
     public int insertImage(byte[] bytes) {
+        return 0;
+    }
+
+    @Override
+    public int getImageId(DomainLaunch domainLaunch) {
         return 0;
     }
 }
