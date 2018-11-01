@@ -54,7 +54,7 @@ public class ScaledImageView extends View {
     @SuppressLint("CheckResult")
     private void initObserver() {
         mScalePublishProcessor
-                .filter(value -> value > 0 && mOriginalBitmap != null) //&& value!= mBitmapHeight
+                .filter(value -> value > 0 && value != mBitmapHeight && mOriginalBitmap != null)
                 .onBackpressureBuffer(1, () -> {
                     Timber.d("initObserver: buffer overflow");
                 }, BackpressureOverflowStrategy.DROP_OLDEST)
@@ -74,8 +74,8 @@ public class ScaledImageView extends View {
         if (value > mHeightSpecSize) {
             value = mHeightSpecSize;
         }
-       // if (value != mBitmapHeight) {
-            return Bitmap.createScaledBitmap(mOriginalBitmap, value, value, false);
+        // if (value != mBitmapHeight) {
+        return Bitmap.createScaledBitmap(mOriginalBitmap, value, value, false);
 //        }
 //        return mDrawBitmap;
     };
@@ -123,7 +123,10 @@ public class ScaledImageView extends View {
 
     public void setBitmap(Bitmap bitmap) {
         mOriginalBitmap = bitmap;
-        invalidate();
+        int height = mBitmapHeight;
+        mBitmapHeight = 0;
+        setImageHeight(height);
+        //invalidate();
     }
 
     public void setBitmap(Bitmap bitmap, int height) {
