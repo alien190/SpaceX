@@ -22,9 +22,9 @@ public interface ILaunchRepository {
 
     Single<DomainLaunch> getLaunchByFlightNumber(int flightNumber);
 
-    Single<List<DomainLaunchCache>> getLaunchesCash();
+    Single<List<DomainLaunchCache>> getLaunchesCache();
 
-    Single<Boolean> insertLaunchesCash(List<DomainLaunchCache> domainLaunches);
+    Single<Boolean> insertLaunchesCache(List<DomainLaunchCache> domainLaunches);
 
     Single<List<DomainLaunchCache>> getLaunchCacheForLoadImage();
 

@@ -46,12 +46,12 @@ public class LaunchRemoteRepository implements ILaunchRepository {
     }
 
     @Override
-    public Single<List<DomainLaunchCache>> getLaunchesCash() {
+    public Single<List<DomainLaunchCache>> getLaunchesCache() {
         return mApi.getAllPastLaunchesCache().map(DataToDomainConverter::convertLaunchCacheList);
     }
 
     @Override
-    public Single<Boolean> insertLaunchesCash(List<DomainLaunchCache> domainLaunches) {
+    public Single<Boolean> insertLaunchesCache(List<DomainLaunchCache> domainLaunches) {
         // do nothing
         return null;
     }

@@ -1,22 +1,12 @@
 package com.example.domain.service;
 
 import com.example.domain.model.launch.DomainLaunch;
-import com.example.domain.model.launch.DomainLaunchCache;
 import com.example.domain.repository.ILaunchRepository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
-import io.reactivex.MaybeSource;
-import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
 import io.reactivex.Single;
-import io.reactivex.SingleSource;
-import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
 public class LaunchServiceImpl implements ILaunchService {
@@ -59,20 +49,23 @@ public class LaunchServiceImpl implements ILaunchService {
     }
 
     @Override
-    public Observable<Long> refreshLaunches() {
-        return mRemoteRepository.getLaunchesCash()
+    public Flowable<Long> refreshLaunches() {
+        return mRemoteRepository.getLaunchesCache()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(mLocalRepository::insertLaunchesCash)
+                .flatMap(mLocalRepository::insertLaunchesCache)
                 .flatMap(aBoolean -> mLocalRepository.getLaunchCacheForLoadImage())
-                .toObservable()
-                .flatMap(Observable::fromIterable)
+                .toFlowable()
+                .flatMap(Flowable::fromIterable)
+                .parallel(10)
+                .runOn(Schedulers.io())
                 .flatMap(launch -> mRemoteRepository
                         .getLaunchByFlightNumber(launch.getFlight_number())
-                        .toObservable())
+                        .toFlowable())
                 .map(mRemoteRepository::loadImage)
-                .flatMap(domainLaunch -> Observable.fromCallable(
+                .flatMap(domainLaunch -> Flowable.fromCallable(
                         () -> mLocalRepository.insertLaunch(domainLaunch)))
-                .subscribeOn(Schedulers.io());
+                .sequential();
+
     }
 }

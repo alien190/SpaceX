@@ -43,13 +43,13 @@ public class LaunchLocalRepository implements ILaunchRepository {
     }
 
     @Override
-    public Single<List<DomainLaunchCache>> getLaunchesCash() {
+    public Single<List<DomainLaunchCache>> getLaunchesCache() {
         //do noting
         return null;
     }
 
     @Override
-    public Single<Boolean> insertLaunchesCash(List<DomainLaunchCache> domainLaunches) {
+    public Single<Boolean> insertLaunchesCache(List<DomainLaunchCache> domainLaunches) {
         return Single.fromCallable(() -> {
             mLaunchDao.insertLaunchesCache(DomainToDataConverter.convertLaunchCacheList(domainLaunches));
             return true;
