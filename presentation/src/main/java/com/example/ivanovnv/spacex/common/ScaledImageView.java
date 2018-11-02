@@ -122,16 +122,21 @@ public class ScaledImageView extends View {
     }
 
     public void setBitmap(Bitmap bitmap) {
-        mOriginalBitmap = bitmap;
-        int height = mBitmapHeight;
-        mBitmapHeight = 0;
-        setImageHeight(height);
+        if (bitmap != null) {
+            mOriginalBitmap = Bitmap.createScaledBitmap(bitmap, mWidthSpecSize, mHeightSpecSize, false);
+            if (bitmap != mOriginalBitmap) {
+                bitmap.recycle();
+            }
+            int height = mBitmapHeight;
+            mBitmapHeight = 0;
+            setImageHeight(height);
+        }
         //invalidate();
     }
 
     public void setBitmap(Bitmap bitmap, int height) {
-        mOriginalBitmap = bitmap;
-        setImageHeight(height);
+        mBitmapHeight = height;
+        setBitmap(bitmap);
     }
 
     public Bitmap getBitmap() {
