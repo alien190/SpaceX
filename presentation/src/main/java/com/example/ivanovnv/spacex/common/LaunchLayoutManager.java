@@ -175,9 +175,6 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
                     layoutView(view, topValue, bottomValue);
                 }
                 topValue = bottomValue;
-                if (view instanceof LaunchItemView) {
-                    ((LaunchItemView) view).onRequestLayout();
-                }
             }
         } catch (Throwable throwable) {
             Timber.d(throwable);

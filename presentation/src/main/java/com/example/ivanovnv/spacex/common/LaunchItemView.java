@@ -8,26 +8,16 @@ import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.ivanovnv.spacex.R;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableEmitter;
-import io.reactivex.FlowableOnSubscribe;
-import io.reactivex.disposables.Disposable;
-
 public class LaunchItemView extends CardView {
-    public static final int MIN_SCALE = 0;
-    public static final int MAX_SCALE = 100;
     private View mView;
     private LinearLayout mClTitle;
     private RelativeLayout mClRoot;
-    //private ImageView mIvMissionIcon;
     private ScaledImageView mSivMissionIcon;
     private TextView mTvMissionName;
     private TextView mTvDetails;
@@ -37,23 +27,6 @@ public class LaunchItemView extends CardView {
     private int mTitleHeight;
     private int mTitleHeightWithMargins;
     private int mTopAndBottomMargins;
-    private int mIconHeight;
-    private Bitmap mMissionIconBitmap;
-    private Disposable mImageDisposable;
-    //private Subscriber<? super Integer> mSubscriber;
-    FlowableEmitter<Integer> mEmitter;
-    //    private Flowable<Integer> mIconHeightFlowable = new Flowable<Integer>() {
-//        @Override
-//        protected void subscribeActual(Subscriber<? super Integer> s) {
-//            mSubscriber = s;
-//        }
-//    };
-    private Flowable<Integer> mIconHeightFlowable = Flowable.create(new FlowableOnSubscribe<Integer>() {
-        @Override
-        public void subscribe(FlowableEmitter<Integer> emitter) throws Exception {
-            mEmitter = emitter;
-        }
-    }, BackpressureStrategy.LATEST);
 
 
     public LaunchItemView(Context context) {
@@ -74,7 +47,6 @@ public class LaunchItemView extends CardView {
         mView = inflate(context, R.layout.launch_item_view, this);
         mClRoot = mView.findViewById(R.id.cl_root);
         mClTitle = mView.findViewById(R.id.cl_title);
-        //mIvMissionIcon = mView.findViewById(R.id.iv_mission_icon);
         mSivMissionIcon = mView.findViewById(R.id.siv_mission_icon);
         mTvMissionName = mView.findViewById(R.id.tv_mission_name);
         mTvDetails = mView.findViewById(R.id.tv_details);
@@ -122,24 +94,8 @@ public class LaunchItemView extends CardView {
 
     @SuppressLint("CheckResult")
     public void updateContentSize(int value) {
-        // final int newSize = value - 2 * mTopAndBottomMargins;
-        //final int viewSize = Math.min(mIvMissionIcon.getWidth(), mIvMissionIcon.getHeight());
-
         value -= 2 * mTopAndBottomMargins;
         mSivMissionIcon.setImageHeight(value);
-
-//        if (mMissionIconBitmap != null && value > 0) {
-////            if (mImageDisposable != null) {
-////                mImageDisposable.dispose();
-////            }
-//            try {
-//                //mEmitter.onNext(value);
-//                mPublishProcessor.onNext(value);
-//                Log.d("TAG", "initObserver: updateContentSize threadId:" + Thread.currentThread().getId());
-//            } catch (Throwable throwable) {
-//                Timber.d(throwable);
-//            }
-//        }
     }
 
     private void setViewSize(View view, int height, int width) {
@@ -204,20 +160,7 @@ public class LaunchItemView extends CardView {
     }
 
     public void setMissionIconBitmap(Bitmap bitmap) {
-
-        //mMissionIconBitmap = bitmap;
         mSivMissionIcon.setBitmap(bitmap);
-        //updateContentSize(mIconHeight);
-//        if (mIvMissionIcon != null && bitmap != null) {
-//            try {
-//                mIvMissionIcon.setImageBitmap(bitmap);
-//                updateContentSize(mIconHeight);
-//                onRequestLayout();
-//                Timber.d("setMissionIconBitmap mIvMissionIcon.isLaidOut:%b", mIvMissionIcon.isLaidOut());
-//            } catch (Throwable throwable) {
-//                Timber.d(throwable);
-//            }
-//        }
     }
 
     public void setIconTransitionName(String name) {
@@ -230,29 +173,4 @@ public class LaunchItemView extends CardView {
         return mSivMissionIcon;
     }
 
-
-    public void onRequestLayout() {
-//        if (!mTvMissionName.isInLayout()) {
-//        mIvMissionIcon.requestLayout();
-//        Timber.d("onRequestLayout: mIvMissionIcon");
-//        }
-//        if (!mClTitle.isInLayout()) {
-//        mClTitle.requestLayout();
-//        }
-//
-//        if (!mTvMissionName.isInLayout()) {
-//        mTvMissionName.requestLayout();
-//        Timber.d("onRequestLayout: mTvMissionName");
-//        }
-    }
-
-//    @Override
-//    protected void onAttachedToWindow() {
-//        ViewGroup parent = (ViewGroup) getParent();
-//        if (parent != null) {
-//            int width = (int)(0.5 * parent.getWidth());
-//            setViewSize(mIvMissionIcon,width, width);
-//        }
-//        super.onAttachedToWindow();
-//    }
 }
