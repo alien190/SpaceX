@@ -1,7 +1,6 @@
 package com.example.domain.repository;
 
 import com.example.domain.model.launch.DomainLaunch;
-import com.example.domain.model.launch.DomainLaunchCache;
 
 import java.util.List;
 
@@ -21,10 +20,6 @@ public interface ILaunchRepository {
     Long insertLaunch(DomainLaunch domainLaunch);
 
     Single<DomainLaunch> getLaunchByFlightNumber(int flightNumber);
-
-    Single<List<DomainLaunchCache>> getLaunchesCache();
-
-    Single<Boolean> insertLaunchesCache(List<DomainLaunchCache> domainLaunches);
 
     //Single<List<DomainLaunch>> getLaunchFromCacheForUpdate();
 

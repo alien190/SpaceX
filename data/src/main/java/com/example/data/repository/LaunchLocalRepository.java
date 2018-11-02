@@ -5,7 +5,6 @@ import com.example.data.api.converter.DomainToDataConverter;
 import com.example.data.database.LaunchDao;
 import com.example.data.model.DataImage;
 import com.example.domain.model.launch.DomainLaunch;
-import com.example.domain.model.launch.DomainLaunchCache;
 import com.example.domain.repository.ILaunchRepository;
 
 import java.util.List;
@@ -45,24 +44,6 @@ public class LaunchLocalRepository implements ILaunchRepository {
         return mLaunchDao.getLaunchByFlightNumber(flightNumber).map(DataToDomainConverter::convertLaunch);
     }
 
-    @Override
-    public Single<List<DomainLaunchCache>> getLaunchesCache() {
-        //do noting
-        return null;
-    }
-
-    @Override
-    public Single<Boolean> insertLaunchesCache(List<DomainLaunchCache> domainLaunches) {
-        return Single.fromCallable(() -> {
-            mLaunchDao.insertLaunchesCache(DomainToDataConverter.convertLaunchCacheList(domainLaunches));
-            return true;
-        });
-    }
-
-//    @Override
-//    public Single<List<DomainLaunch>> getLaunchFromCacheForUpdate() {
-//        return mLaunchDao.getLaunchFromCacheForUpdate().map(DataToDomainConverter::convertLaunchList);
-//    }
 
     @Override
     public Long insertLaunch(DomainLaunch domainLaunch) {

@@ -6,11 +6,9 @@ import com.example.data.api.SpaceXAPI;
 import com.example.data.api.converter.DataToDomainConverter;
 import com.example.data.utils.DbBitmapUtility;
 import com.example.domain.model.launch.DomainLaunch;
-import com.example.domain.model.launch.DomainLaunchCache;
 import com.example.domain.repository.ILaunchRepository;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
@@ -28,10 +26,6 @@ public class LaunchRemoteRepository implements ILaunchRepository {
     @Override
     public Single<List<DomainLaunch>> getLaunches() {
         return mApi.getAllPastLaunches().map(DataToDomainConverter::convertLaunchList);
-//                .onErrorReturn(throwable -> {
-//                    Timber.d(throwable);
-//                    return new ArrayList<>();
-//                });
     }
 
     @Override
@@ -50,22 +44,6 @@ public class LaunchRemoteRepository implements ILaunchRepository {
         return mApi.getLaunchByFlightNumber(flightNumber).map(DataToDomainConverter::convertLaunch);
     }
 
-    @Override
-    public Single<List<DomainLaunchCache>> getLaunchesCache() {
-        return mApi.getAllPastLaunchesCache().map(DataToDomainConverter::convertLaunchCacheList);
-    }
-
-    @Override
-    public Single<Boolean> insertLaunchesCache(List<DomainLaunchCache> domainLaunches) {
-        // do nothing
-        return null;
-    }
-
-//    @Override
-//    public Single<List<DomainLaunch>> getLaunchFromCacheForUpdate() {
-//        //do nothing
-//        return null;
-//    }
 
     @Override
     public Long insertLaunch(DomainLaunch domainLaunch) {
