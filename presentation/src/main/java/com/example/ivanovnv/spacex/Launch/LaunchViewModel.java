@@ -9,8 +9,10 @@ import com.example.domain.service.ILaunchService;
 
 import java.util.List;
 
+import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class LaunchViewModel extends ViewModel {
@@ -51,7 +53,17 @@ public class LaunchViewModel extends ViewModel {
         mIsLoadData.postValue(true);
         compositeDisposable.add(mLaunchService.refreshLaunches()
                 .doOnComplete(() -> mIsLoadData.postValue(false))
+                .doOnError(throwable -> {
+                    mIsLoadData.postValue(false);
+                    Timber.d(throwable);
+                })
                 .subscribe(b -> mIsLoadData.postValue(false), Timber::d));
+
+//        compositeDisposable.add(mLaunchService.getLaunches()
+//                .subscribe(value -> Timber.d("res"), Timber::d));
+//
+//        mIsLoadData.postValue(false);
+
     }
 
     public MutableLiveData<SwipeRefreshLayout.OnRefreshListener> getOnRefreshListener() {

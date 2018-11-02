@@ -46,7 +46,10 @@ public class DataConverterFactory extends Converter.Factory {
                 List<DataLaunch> dataLaunches = new ArrayList<>();
 
                 for (ServerResponse serverResponse : serverResponseList) {
-                    dataLaunches.add(new DataLaunch(serverResponse));
+                    DataLaunch dataLaunch = new DataLaunch(serverResponse);
+                  //  dataLaunch.setMission_patch_small("bla-bla-bla-path");
+                    dataLaunches.add(dataLaunch);
+
                 }
                 return dataLaunches;
             } else if(type.equals(listDataLunchCacheType)) {

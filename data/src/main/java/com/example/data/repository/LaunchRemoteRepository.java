@@ -10,6 +10,7 @@ import com.example.domain.model.launch.DomainLaunchCache;
 import com.example.domain.repository.ILaunchRepository;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
@@ -18,7 +19,7 @@ import timber.log.Timber;
 
 public class LaunchRemoteRepository implements ILaunchRepository {
 
-    SpaceXAPI mApi;
+    private SpaceXAPI mApi;
 
     public LaunchRemoteRepository(SpaceXAPI mApi) {
         this.mApi = mApi;
@@ -27,6 +28,10 @@ public class LaunchRemoteRepository implements ILaunchRepository {
     @Override
     public Single<List<DomainLaunch>> getLaunches() {
         return mApi.getAllPastLaunches().map(DataToDomainConverter::convertLaunchList);
+//                .onErrorReturn(throwable -> {
+//                    Timber.d(throwable);
+//                    return new ArrayList<>();
+//                });
     }
 
     @Override

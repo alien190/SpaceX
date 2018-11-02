@@ -55,9 +55,9 @@ public class ScaledImageView extends View {
     private void initObserver() {
         mScalePublishProcessor
                 .filter(value -> value > 0 && value != mBitmapHeight && mOriginalBitmap != null)
-                .onBackpressureBuffer(1, () -> {
-                    Timber.d("initObserver: buffer overflow");
-                }, BackpressureOverflowStrategy.DROP_OLDEST)
+                .onBackpressureBuffer(1,
+                        () -> Timber.d("initObserver: buffer overflow"),
+                        BackpressureOverflowStrategy.DROP_OLDEST)
                 .observeOn(Schedulers.io(), false, 1)
                 .map(mCreateScaledBitmap)
                 .map(mSetScaledBitmap)
