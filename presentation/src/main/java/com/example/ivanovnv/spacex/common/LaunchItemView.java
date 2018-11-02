@@ -22,6 +22,7 @@ public class LaunchItemView extends CardView {
     private TextView mTvMissionName;
     private TextView mTvDetails;
     private TextView mTvLaunchDate;
+    private View mAnimationHelperView;
     private int mRootHeight;
     private int mRootHeightWithMargins;
     private int mTitleHeight;
@@ -45,12 +46,13 @@ public class LaunchItemView extends CardView {
 
     private void init(Context context, AttributeSet attrs) {
         mView = inflate(context, R.layout.launch_item_view, this);
-        mClRoot = mView.findViewById(R.id.cl_root);
-        mClTitle = mView.findViewById(R.id.cl_title);
+        mClRoot = mView.findViewById(R.id.rl_root);
+        mClTitle = mView.findViewById(R.id.ll_title);
         mSivMissionIcon = mView.findViewById(R.id.siv_mission_icon);
         mTvMissionName = mView.findViewById(R.id.tv_mission_name);
         mTvDetails = mView.findViewById(R.id.tv_details);
         mTvLaunchDate = mView.findViewById(R.id.tv_launch_date);
+        mAnimationHelperView = mView.findViewById(R.id.view_animate_helper);
         measureHeight();
     }
 
@@ -169,8 +171,16 @@ public class LaunchItemView extends CardView {
 //        }
     }
 
-    public ScaledImageView getMissionIcon() {
-        return mSivMissionIcon;
+    public View getAnimationHelper() {
+        int top = mSivMissionIcon.getTop();
+        int left = mSivMissionIcon.getLeft();
+        int height = mSivMissionIcon.getImageHeight();
+        mAnimationHelperView.setTop(top);
+        mAnimationHelperView.setLeft(left);
+        mAnimationHelperView.setBottom(top + height);
+        mAnimationHelperView.setRight(left + height);
+
+        return mAnimationHelperView;
     }
 
 }

@@ -146,4 +146,8 @@ public class ScaledImageView extends View {
     public void setImageHeight(int height) {
         mScalePublishProcessor.onNext(height);
     }
+
+    public int getImageHeight() {
+        return mBitmapHeight;
+    }
 }

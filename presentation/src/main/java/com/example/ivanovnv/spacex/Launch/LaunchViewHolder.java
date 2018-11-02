@@ -31,6 +31,7 @@ public class LaunchViewHolder extends RecyclerView.ViewHolder {
         if (mView instanceof LaunchItemView) {
             LaunchItemView launchItemView = (LaunchItemView) mView;
             mFlightNumber = launch.getFlight_number();
+            launchItemView.getAnimationHelper().setTransitionName("TransitionName" + String.valueOf(mFlightNumber));
             //launchItemView.setMissionIconURL(launch.getMission_patch_small());
             launchItemView.setMissionIconBitmap(DbBitmapUtility.getImage(launch.getImage()));
             launchItemView.setMissionName(launch.getMission_name());
@@ -51,7 +52,7 @@ public class LaunchViewHolder extends RecyclerView.ViewHolder {
             if (mClickCallback != null) {
                 View sharedView = null;
                 if (mView instanceof LaunchItemView) {
-                    sharedView = ((LaunchItemView) mView).getMissionIcon();
+                    sharedView = ((LaunchItemView) mView).getAnimationHelper();
                 }
                 mClickCallback.onItemClick(mFlightNumber, sharedView);
             }

@@ -24,9 +24,9 @@ public class LaunchAdapter extends RecyclerView.Adapter<LaunchViewHolder> {
     @NonNull
     @Override
     public LaunchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-          LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-          View view = layoutInflater.inflate(R.layout.li_launch, parent, false);
-          return new LaunchViewHolder(view);
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        View view = layoutInflater.inflate(R.layout.li_launch, parent, false);
+        return new LaunchViewHolder(view);
 //        LaunchListItemBinding launchListItemBinding = LaunchListItemBinding.inflate(layoutInflater, parent, false);
 //
 //        return new LaunchViewHolder(launchListItemBinding);
@@ -39,7 +39,6 @@ public class LaunchAdapter extends RecyclerView.Adapter<LaunchViewHolder> {
 
     @Override
     public int getItemCount() {
-
         int size = 0;
         if (mLaunches != null) {
             mLaunchesLock.lock();

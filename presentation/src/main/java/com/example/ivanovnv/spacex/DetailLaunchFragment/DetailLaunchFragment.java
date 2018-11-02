@@ -9,21 +9,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.data.database.LaunchDao;
 import com.example.data.utils.DbBitmapUtility;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spacex.R;
-import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 import toothpick.Scope;
 import toothpick.Toothpick;
@@ -57,8 +53,11 @@ public class DetailLaunchFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setSharedElementEnterTransition(TransitionInflater
                 .from(getContext())
-               // .inflateTransition(R.transition.image_shared_element_transition));
-                .inflateTransition(android.R.transition.move));
+                .inflateTransition(R.transition.image_shared_element_transition));
+        setEnterTransition(TransitionInflater.from(getContext())
+                .inflateTransition(R.transition.detail_fragment_enter_transition));
+
+        //.inflateTransition(android.R.transition.move));
     }
 
     @Nullable
@@ -68,7 +67,7 @@ public class DetailLaunchFragment extends Fragment {
 //        mFlightNumber = view.findViewById(R.id.tv_flight_number);
 //        mMissionName = view.findViewById(R.id.tv_mission_name);
         mImageView = view.findViewById(R.id.iv_mission_icon);
-        mImageView.setTransitionName("bla");
+        //mImageView.setTransitionName("t69");
 //        mRocketName = view.findViewById(R.id.tv_rocket_name);
 //        mLaunchDate = view.findViewById(R.id.tv_launch_date);
 //        mDetails = view.findViewById(R.id.tv_details);
@@ -79,6 +78,7 @@ public class DetailLaunchFragment extends Fragment {
         Bundle args = getArguments();
         try {
             mFlightNumberInt = args.getInt(FLIGHT_NUMBER_KEY);
+            mImageView.setTransitionName("TransitionName" + String.valueOf(mFlightNumberInt));
             mDisposable = launchService.getLaunchByFlightNumber(mFlightNumberInt)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::showImage, Timber::d);
@@ -90,12 +90,9 @@ public class DetailLaunchFragment extends Fragment {
     }
 
 
-
     private void showImage(DomainLaunch domainLaunch) {
         if (domainLaunch != null) {
             mImageView.setImageBitmap(DbBitmapUtility.getImage(domainLaunch.getImage()));
-
-            //startPostponedEnterTransition();
         }
     }
 

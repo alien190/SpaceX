@@ -11,18 +11,18 @@ import toothpick.config.Module;
 
 public class LaunchFragmentModule extends Module {
     private Fragment mFragment;
-    private LaunchAdapter mLaunchAdapter;
-    private LaunchLayoutManager mLaunchLayoutManager;
+    //private LaunchAdapter mLaunchAdapter;
+    //private LaunchLayoutManager mLaunchLayoutManager;
 
     public LaunchFragmentModule(Fragment fragment) {
         mFragment = fragment;
-        mLaunchAdapter = new LaunchAdapter();
-        mLaunchLayoutManager = new LaunchLayoutManager();
+      //  mLaunchAdapter = new LaunchAdapter();
+//        mLaunchLayoutManager = new LaunchLayoutManager();
         bind(LaunchViewModel.class).toProvider(LaunchViewModelProvider.class).providesSingletonInScope();
         bind(Fragment.class).toInstance(mFragment);
         bind(LaunchViewModelFactory.class).toProvider(LaunchViewModelFactoryProvider.class);
-        bind(LaunchAdapter.class).toInstance(mLaunchAdapter);
-        bind(LaunchLayoutManager.class).toInstance(mLaunchLayoutManager);
+        bind(LaunchAdapter.class).toInstance(new LaunchAdapter());
+        bind(LaunchLayoutManager.class).toInstance(new LaunchLayoutManager());
     }
 
 }

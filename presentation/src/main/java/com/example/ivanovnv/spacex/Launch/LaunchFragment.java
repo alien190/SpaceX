@@ -6,14 +6,18 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.example.ivanovnv.spacex.DetailLaunchFragment.DetailLaunchFragment;
@@ -64,71 +68,55 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
         Scope scope = Toothpick.openScopes("Application", "LaunchFragment");
         scope.installModules(new LaunchFragmentModule(this));
         Toothpick.inject(this, scope);
-        mRecyclerView.setLayoutManager(mLaunchLayoutManager);
-        //mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter.setItemClickListener(this);
-        mRecyclerView.setAdapter(mAdapter);
 
         viewModel.getLaunches().observe(this, mAdapter::updateLaunches);
         viewModel.getOnRefreshListener().observe(this, mSwipeRefreshLayout::setOnRefreshListener);
         viewModel.getIsLoadData().observe(this, mSwipeRefreshLayout::setRefreshing);
 
-        postponeEnterTransition();
 
         return view;
     }
 
     @Override
-    public void onItemClick(int flightNumber, View sharedView) {
-        //Toast.makeText(getActivity(), "" + flightNumber, Toast.LENGTH_SHORT).show();
-
-        //FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//        fragmentManager.beginTransaction()
-//                .replace(R.id.fragment_container, DetailLaunchFragment.newInstance(flightNumber))
-//                .addToBackStack(DetailLaunchFragment.class.getSimpleName())
-//                .commit();
-
-//        try {
-//             mRecyclerView.setAdapter(null);
-//            mRecyclerView.setLayoutManager(null);
-//            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//            fragmentManager
-//                    .beginTransaction()
-//                    .setReorderingAllowed(true)
-//                    .addSharedElement(sharedView,
-//                            ViewCompat.getTransitionName(sharedView))
-//                    .addToBackStack(TAG)
-//                    .replace(R.id.fragment_container, DetailLaunchFragment.newInstance(flightNumber))
-//                    .commit();
-//        } catch (Throwable throwable) {
-//            Timber.d(throwable);
-//        }
-
-        //mImageView.setImageBitmap(((BitmapDrawable) ((ImageView) sharedView).getDrawable()).getBitmap());
-        //mImageView.setTransitionName("bla");
-
-
-        sharedView.setTransitionName("bla");
-
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            fragmentManager
-                    .beginTransaction()
-                    .setReorderingAllowed(true)
-                    .addSharedElement(sharedView,
-                            ViewCompat.getTransitionName(sharedView))
-                    .addToBackStack(TAG)
-                    .replace(R.id.fragment_container, DetailLaunchFragment.newInstance(flightNumber))
-                    .commit();
-
-       // mRecyclerView.setAdapter(null);
-        //mRecyclerView.setLayoutManager(null);
+    public void onStart() {
+        super.onStart();
+        mRecyclerView.setLayoutManager(mLaunchLayoutManager);
+        //mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mAdapter.setItemClickListener(this);
+        mRecyclerView.setAdapter(mAdapter);
 
     }
 
     @Override
-    public void onDestroy() {
-        mRecyclerView.setAdapter(null);
+    public void onStop() {
         mRecyclerView.setLayoutManager(null);
+        mAdapter.setItemClickListener(null);
+        mRecyclerView.setAdapter(null);
+        super.onStop();
+    }
+
+    @Override
+    public void onItemClick(int flightNumber, View sharedView) {
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager()
+                    .beginTransaction()
+                    .setReorderingAllowed(true);
+            if (sharedView != null) {
+                fragmentTransaction
+                        .addSharedElement(sharedView, sharedView.getTransitionName());
+            }
+            fragmentTransaction
+                    .replace(R.id.fragment_container, DetailLaunchFragment.newInstance(flightNumber))
+                    .addToBackStack(TAG)
+                    .commit();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        //  mRecyclerView.setAdapter(null);
+//        mRecyclerView.setLayoutManager(null);
         super.onDestroy();
     }
 
