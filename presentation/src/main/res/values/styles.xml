@@ -7,6 +7,21 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowContentTransitions">true</item>
+        <item name="actionBarStyle">@style/hideViewStyle</item>
+    </style>
+
+    <style name="hideViewStyle">
+        <item name="android:visibility">@integer/view_gone</item>
+    </style>
+
+    <style name="expandedToolbarTextColor">
+        <item name="android:textColor">@color/colorFullOpacity</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="collapsedToolbarTextColor">
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textSize">30sp</item>
     </style>
 
 </resources>
