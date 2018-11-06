@@ -169,6 +169,7 @@
                             style="@style/Widget.MaterialComponents.Button.TextButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:onClick="@{() -> vm.openExternalLink(vm.articleLink)}"
                             android:text="@string/article"
                             android:textAlignment="textStart"
                             bind:visibilityValue="@{vm.canArticleShow}" />
@@ -178,6 +179,7 @@
                             style="@style/Widget.MaterialComponents.Button.TextButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:onClick="@{() -> vm.openExternalLink(vm.PressReleaseLink)}"
                             android:text="@string/press_release"
                             android:textAlignment="textStart"
                             bind:visibilityValue="@{vm.canPressReleaseShow}" />
@@ -187,6 +189,7 @@
                             style="@style/Widget.MaterialComponents.Button.TextButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:onClick="@{() -> vm.openExternalLink(vm.youTubeLink)}"
                             android:text="@string/youtube"
                             android:textAlignment="textStart"
                             bind:visibilityValue="@{vm.canYouTubeShow}" />
@@ -196,6 +199,7 @@
                             style="@style/Widget.MaterialComponents.Button.TextButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:onClick="@{() -> vm.openExternalLink(vm.wikipediaLink)}"
                             android:text="@string/wikipedia"
                             android:textAlignment="textStart"
                             bind:visibilityValue="@{vm.canWikipediaShow}" />

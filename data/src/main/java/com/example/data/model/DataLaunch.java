@@ -3,8 +3,12 @@ package com.example.data.model;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.Relation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
@@ -67,6 +71,8 @@ public class DataLaunch {
 
     @ColumnInfo(name = "wikipedia")
     private String wikipedia;
+
+    private List<String> flickr_images;
 
 
     public int getFlight_number() {
@@ -209,6 +215,14 @@ public class DataLaunch {
         this.wikipedia = wikipedia;
     }
 
+    public List<String> getFlickr_images() {
+        return flickr_images;
+    }
+
+    public void setFlickr_images(List<String> flickr_images) {
+        this.flickr_images = flickr_images;
+    }
+
     public DataLaunch(ServerResponse serverResponse) {
         flight_number = serverResponse.getFlight_number();
         launch_year = serverResponse.getLaunch_year();
@@ -223,6 +237,8 @@ public class DataLaunch {
         article_link = serverResponse.getLinks().getArticle_link();
         video_link = serverResponse.getLinks().getVideo_link();
         wikipedia = serverResponse.getLinks().getWikipedia();
+        flickr_images = new ArrayList<>();
+        flickr_images.addAll(serverResponse.getLinks().getFlickr_images());
 
         payload_mass_kg_sum = 0;
         payload_mass_lbs_sum = 0;

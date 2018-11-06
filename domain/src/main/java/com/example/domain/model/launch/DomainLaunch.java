@@ -1,6 +1,7 @@
 package com.example.domain.model.launch;
 
 import java.io.InputStream;
+import java.util.List;
 
 public class DomainLaunch {
 
@@ -21,6 +22,7 @@ public class DomainLaunch {
     private String article_link;
     private String video_link;
     private String wikipedia;
+    private List<String> flickr_images;
 
     public int getFlight_number() {
         return flight_number;
@@ -157,6 +159,14 @@ public class DomainLaunch {
 
     public void setWikipedia(String wikipedia) {
         this.wikipedia = wikipedia;
+    }
+
+    public List<String> getFlickr_images() {
+        return flickr_images;
+    }
+
+    public void setFlickr_images(List<String> flickr_images) {
+        this.flickr_images = flickr_images;
     }
 
     public DomainLaunch() {

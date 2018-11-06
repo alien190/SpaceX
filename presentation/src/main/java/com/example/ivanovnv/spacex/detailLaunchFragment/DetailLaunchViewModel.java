@@ -33,6 +33,7 @@ public class DetailLaunchViewModel extends ViewModel {
     private MutableLiveData<Boolean> mCanLinksSectionShow = new MutableLiveData<>();
     private MutableLiveData<Boolean> mCanMissionDetailsShow = new MutableLiveData<>();
     private MutableLiveData<Boolean> mIsLoadDone = new MutableLiveData<>();
+    private MutableLiveData<String> mExternalLinkForOpen = new MutableLiveData<>();
 
 
     public DetailLaunchViewModel(ILaunchService launchService, Integer flightNumber) {
@@ -43,15 +44,15 @@ public class DetailLaunchViewModel extends ViewModel {
     }
 
     private void initVisibilitySubscribers() {
-            mArticleLink.observeForever(v -> mCanArticleShow.postValue(checkLinkValue(v)));
-            mYouTubeLink.observeForever(v -> mCanYouTubeShow.postValue(checkLinkValue(v)));
-            mWikipediaLink.observeForever(v -> mCanWikipediaShow.postValue(checkLinkValue(v)));
-            mPressReleaseLink.observeForever(v -> mCanPressReleaseShow.postValue(checkLinkValue(v)));
-            mMissionDetails.observeForever(v -> mCanMissionDetailsShow.postValue(checkLinkValue(v)));
-            mCanArticleShow.observeForever(this::checkLinksSectionShow);
-            mCanYouTubeShow.observeForever(this::checkLinksSectionShow);
-            mCanWikipediaShow.observeForever(this::checkLinksSectionShow);
-            mCanPressReleaseShow.observeForever(this::checkLinksSectionShow);
+        mArticleLink.observeForever(v -> mCanArticleShow.postValue(checkLinkValue(v)));
+        mYouTubeLink.observeForever(v -> mCanYouTubeShow.postValue(checkLinkValue(v)));
+        mWikipediaLink.observeForever(v -> mCanWikipediaShow.postValue(checkLinkValue(v)));
+        mPressReleaseLink.observeForever(v -> mCanPressReleaseShow.postValue(checkLinkValue(v)));
+        mMissionDetails.observeForever(v -> mCanMissionDetailsShow.postValue(checkLinkValue(v)));
+        mCanArticleShow.observeForever(this::checkLinksSectionShow);
+        mCanYouTubeShow.observeForever(this::checkLinksSectionShow);
+        mCanWikipediaShow.observeForever(this::checkLinksSectionShow);
+        mCanPressReleaseShow.observeForever(this::checkLinksSectionShow);
     }
 
     private Boolean checkLinkValue(String value) {
@@ -84,12 +85,23 @@ public class DetailLaunchViewModel extends ViewModel {
         mDomainLaunch = domainLaunch;
         if (domainLaunch != null) {
             mMissionImage.postValue(DbBitmapUtility.getImage(domainLaunch.getImage()));
-            mMissionName.postValue(domainLaunch.getMission_name());
-            mMissionDetails.postValue(domainLaunch.getDetails());
-            mMissionDate.postValue(domainLaunch.getLaunch_date_utc());
-            mArticleLink.postValue(domainLaunch.getArticle_link());
+            mMissionName.postValue(checkStringValue(domainLaunch.getMission_name()));
+            mMissionDetails.postValue(checkStringValue(domainLaunch.getDetails()));
+            mMissionDate.postValue(checkStringValue(domainLaunch.getLaunch_date_utc()));
+            mArticleLink.postValue(checkStringValue(domainLaunch.getArticle_link()));
+            mYouTubeLink.postValue(checkStringValue(domainLaunch.getVideo_link()));
+            mPressReleaseLink.postValue(checkStringValue(domainLaunch.getPresskit()));
+            mWikipediaLink.postValue(checkStringValue(domainLaunch.getWikipedia()));
             mIsLoadDone.postValue(true);
         }
+    }
+
+    private String checkStringValue(String value) {
+        return value != null && !value.isEmpty() ? value : "";
+    }
+
+    public void openExternalLink(String link) {
+        mExternalLinkForOpen.postValue(link);
     }
 
     @Override
@@ -163,5 +175,9 @@ public class DetailLaunchViewModel extends ViewModel {
 
     public MutableLiveData<Boolean> getIsLoadDone() {
         return mIsLoadDone;
+    }
+
+    public MutableLiveData<String> getExternalLinkForOpen() {
+        return mExternalLinkForOpen;
     }
 }

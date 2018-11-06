@@ -1,5 +1,8 @@
 package com.example.ivanovnv.spacex.detailLaunchFragment;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +15,8 @@ import android.view.ViewGroup;
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.databinding.DetailLaunchBinding;
 import com.example.ivanovnv.spacex.di.detailLaunchFragment.DetailLaunchFragmentModule;
+
+import java.sql.DataTruncation;
 
 import javax.inject.Inject;
 
@@ -54,21 +59,42 @@ public class DetailLaunchFragment extends Fragment {
         Bundle args = getArguments();
         try {
             int flightNumber = args.getInt(FLIGHT_NUMBER_KEY);
-
-            Toothpick.closeScope("DetailLaunchFragment");
-            Scope scope = Toothpick.openScopes("Application", "DetailLaunchFragment");
-            scope.installModules(new DetailLaunchFragmentModule(this, flightNumber));
-            Toothpick.inject(this, scope);
-            binding.setVm(mDetailLaunchViewModel);
-            binding.setLifecycleOwner(this);
-            binding.executePendingBindings();
-
-            mDetailLaunchViewModel.loadLaunch();
-            mDetailLaunchViewModel.getIsLoadDone().observe(this, this::startAnimation);
+            injectToothpick(flightNumber);
+            initBinding(binding);
+            initObservers();
         } catch (Throwable t) {
             t.printStackTrace();
         }
         return binding.getRoot();
+    }
+
+    private void initObservers() {
+        mDetailLaunchViewModel.getExternalLinkForOpen().observe(this, this::openExternalLink);
+    }
+
+    private void openExternalLink(String link) {
+        Activity activity = getActivity();
+        if (activity != null && link != null && !link.isEmpty()) {
+            Uri uri = Uri.parse(link);
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            if (intent.resolveActivity(activity.getPackageManager()) != null)
+                startActivity(intent);
+        }
+    }
+
+    private void initBinding(DetailLaunchBinding binding) {
+        binding.setVm(mDetailLaunchViewModel);
+        binding.setLifecycleOwner(this);
+        binding.executePendingBindings();
+        mDetailLaunchViewModel.loadLaunch();
+        mDetailLaunchViewModel.getIsLoadDone().observe(this, this::startAnimation);
+    }
+
+    private void injectToothpick(int flightNumber) {
+        Toothpick.closeScope("DetailLaunchFragment");
+        Scope scope = Toothpick.openScopes("Application", "DetailLaunchFragment");
+        scope.installModules(new DetailLaunchFragmentModule(this, flightNumber));
+        Toothpick.inject(this, scope);
     }
 
     private void startAnimation(Boolean isDone) {

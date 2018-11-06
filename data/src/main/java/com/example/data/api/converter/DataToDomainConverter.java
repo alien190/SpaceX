@@ -33,6 +33,8 @@ public final class DataToDomainConverter {
             domainLaunch.setArticle_link(launch.getArticle_link());
             domainLaunch.setVideo_link(launch.getVideo_link());
             domainLaunch.setWikipedia(launch.getWikipedia());
+            domainLaunch.setFlickr_images(new ArrayList<>());
+            domainLaunch.getFlickr_images().addAll(launch.getFlickr_images());
             return domainLaunch;
         }
         return null;

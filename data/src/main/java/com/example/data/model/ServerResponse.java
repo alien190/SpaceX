@@ -500,6 +500,7 @@ public class ServerResponse {
         private String article_link;
         private String video_link;
         private String wikipedia;
+        private List<String> flickr_images;
 
 
         public String getIssion_patch() {
@@ -580,6 +581,14 @@ public class ServerResponse {
 
         public void setWikipedia(String wikipedia) {
             this.wikipedia = wikipedia;
+        }
+
+        public List<String> getFlickr_images() {
+            return flickr_images;
+        }
+
+        public void setFlickr_images(List<String> flickr_images) {
+            this.flickr_images = flickr_images;
         }
     }
 }
