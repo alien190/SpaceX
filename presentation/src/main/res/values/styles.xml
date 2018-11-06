@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -14,14 +14,25 @@
         <item name="android:visibility">@integer/view_gone</item>
     </style>
 
-    <style name="expandedToolbarTextColor">
+    <style name="expandedToolbarText">
         <item name="android:textColor">@color/colorFullOpacity</item>
         <item name="android:textSize">30sp</item>
     </style>
 
-    <style name="collapsedToolbarTextColor">
+    <style name="collapsedToolbarText">
         <item name="android:textColor">@color/colorBlack</item>
         <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="LaunchDetailsSubCaptionText">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="LaunchDetailsCardView">
+        <item name="android:elevation">@dimen/elevation</item>
+        <item name="android:layout_marginTop">@dimen/layout_margin</item>
+        <item name="android:layout_marginStart">@dimen/layout_margin</item>
+        <item name="android:layout_marginEnd">@dimen/layout_margin</item>
     </style>
 
 </resources>

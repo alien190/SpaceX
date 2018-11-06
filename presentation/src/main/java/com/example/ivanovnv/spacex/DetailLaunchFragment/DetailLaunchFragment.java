@@ -45,17 +45,6 @@ public class DetailLaunchFragment extends Fragment {
     public CollapsingToolbarLayout mCollapsingToolbarLayout;
     private int mFlightNumberInt;
 
-    @BindView(R.id.tv_details2)
-    public TextView mDetails2;
-
-    @BindView(R.id.tv_details3)
-    public TextView mDetails3;
-
-    @BindView(R.id.tv_details4)
-    public TextView mDetails4;
-
-    @BindView(R.id.tv_details5)
-    public TextView mDetails5;
 
     @Inject
     ILaunchService mLaunchService;
@@ -114,10 +103,6 @@ public class DetailLaunchFragment extends Fragment {
             mMissionName.setText(domainLaunch.getMission_name());
             mCollapsingToolbarLayout.setTitle(domainLaunch.getMission_name());
             mDetails.setText(domainLaunch.getDetails());
-            mDetails2.setText(domainLaunch.getDetails());
-            mDetails3.setText(domainLaunch.getDetails());
-            mDetails4.setText(domainLaunch.getDetails());
-            mDetails5.setText(domainLaunch.getDetails());
             mLaunchDate.setText(domainLaunch.getLaunch_date_utc());
         }
     }

@@ -500,6 +500,7 @@ public class ServerResponse {
         private String article_link;
         private String video_link;
 
+
         public String getIssion_patch() {
             return mission_patch;
         }
