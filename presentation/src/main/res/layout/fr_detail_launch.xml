@@ -9,6 +9,9 @@
         <variable
             name="vm"
             type="com.example.ivanovnv.spacex.detailLaunchFragment.DetailLaunchViewModel" />
+
+        <import type="android.view.View" />
+
     </data>
 
     <android.support.design.widget.CoordinatorLayout
@@ -26,14 +29,13 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:background="@color/colorWhite"
-                android:textAlignment="center"
+                app:collapsedTitleGravity="center_horizontal"
                 app:collapsedTitleTextAppearance="@style/collapsedToolbarText"
                 app:contentScrim="@color/colorWhite"
-                app:expandedTitleGravity="bottom"
+                app:expandedTitleGravity="bottom|center_horizontal"
                 app:expandedTitleTextAppearance="@style/expandedToolbarText"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-                app:title="@{vm.missionName}"
-                >
+                app:title="@{vm.missionName}">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -61,9 +63,9 @@
                         android:layout_gravity="center_horizontal"
                         android:ellipsize="end"
                         android:lines="1"
+                        android:text="@{vm.missionName}"
                         android:textAlignment="center"
                         android:textAppearance="@style/collapsedToolbarText"
-                        android:text="@{vm.missionName}"
                         tools:text="Mission Name" />
 
                 </LinearLayout>
@@ -109,7 +111,7 @@
                             android:id="@+id/tv_launch_date"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@{vm.missionDate}"/>
+                            android:text="@{vm.missionDate}" />
                     </LinearLayout>
 
                 </android.support.v7.widget.CardView>
@@ -117,7 +119,8 @@
                 <android.support.v7.widget.CardView
                     style="@style/LaunchDetailsCardView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    bind:visibilityValue="@{vm.canMissionDetailsShow}">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -135,7 +138,7 @@
                             android:id="@+id/tv_details"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@{vm.missionDetails}"/>
+                            android:text="@{vm.missionDetails}" />
                     </LinearLayout>
 
                 </android.support.v7.widget.CardView>
@@ -146,7 +149,8 @@
                     style="@style/LaunchDetailsCardView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/layout_margin">
+                    android:layout_marginBottom="@dimen/layout_margin"
+                    bind:visibilityValue="@{vm.canLinksSectionShow}">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -166,7 +170,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/article"
-                            android:textAlignment="textStart" />
+                            android:textAlignment="textStart"
+                            bind:visibilityValue="@{vm.canArticleShow}" />
 
                         <android.support.design.button.MaterialButton
                             android:id="@+id/btn_press_release"
@@ -174,7 +179,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/press_release"
-                            android:textAlignment="textStart" />
+                            android:textAlignment="textStart"
+                            bind:visibilityValue="@{vm.canPressReleaseShow}" />
 
                         <android.support.design.button.MaterialButton
                             android:id="@+id/btn_youtube"
@@ -182,7 +188,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/youtube"
-                            android:textAlignment="textStart" />
+                            android:textAlignment="textStart"
+                            bind:visibilityValue="@{vm.canYouTubeShow}" />
 
                         <android.support.design.button.MaterialButton
                             android:id="@+id/btn_wikipedia"
@@ -190,7 +197,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/wikipedia"
-                            android:textAlignment="textStart" />
+                            android:textAlignment="textStart"
+                            bind:visibilityValue="@{vm.canWikipediaShow}" />
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
 

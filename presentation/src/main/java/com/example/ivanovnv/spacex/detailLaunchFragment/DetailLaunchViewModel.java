@@ -22,11 +22,54 @@ public class DetailLaunchViewModel extends ViewModel {
     private MutableLiveData<String> mMissionName = new MutableLiveData<>();
     private MutableLiveData<String> mMissionDetails = new MutableLiveData<>();
     private MutableLiveData<String> mMissionDate = new MutableLiveData<>();
+    private MutableLiveData<String> mArticleLink = new MutableLiveData<>();
+    private MutableLiveData<Boolean> mCanArticleShow = new MutableLiveData<>();
+    private MutableLiveData<String> mWikipediaLink = new MutableLiveData<>();
+    private MutableLiveData<Boolean> mCanWikipediaShow = new MutableLiveData<>();
+    private MutableLiveData<String> mYouTubeLink = new MutableLiveData<>();
+    private MutableLiveData<Boolean> mCanYouTubeShow = new MutableLiveData<>();
+    private MutableLiveData<String> mPressReleaseLink = new MutableLiveData<>();
+    private MutableLiveData<Boolean> mCanPressReleaseShow = new MutableLiveData<>();
+    private MutableLiveData<Boolean> mCanLinksSectionShow = new MutableLiveData<>();
+    private MutableLiveData<Boolean> mCanMissionDetailsShow = new MutableLiveData<>();
+    private MutableLiveData<Boolean> mIsLoadDone = new MutableLiveData<>();
 
 
     public DetailLaunchViewModel(ILaunchService launchService, Integer flightNumber) {
         mLaunchService = launchService;
         mFlightNumber = flightNumber;
+        mIsLoadDone.postValue(true);
+        initVisibilitySubscribers();
+    }
+
+    private void initVisibilitySubscribers() {
+            mArticleLink.observeForever(v -> mCanArticleShow.postValue(checkLinkValue(v)));
+            mYouTubeLink.observeForever(v -> mCanYouTubeShow.postValue(checkLinkValue(v)));
+            mWikipediaLink.observeForever(v -> mCanWikipediaShow.postValue(checkLinkValue(v)));
+            mPressReleaseLink.observeForever(v -> mCanPressReleaseShow.postValue(checkLinkValue(v)));
+            mMissionDetails.observeForever(v -> mCanMissionDetailsShow.postValue(checkLinkValue(v)));
+            mCanArticleShow.observeForever(this::checkLinksSectionShow);
+            mCanYouTubeShow.observeForever(this::checkLinksSectionShow);
+            mCanWikipediaShow.observeForever(this::checkLinksSectionShow);
+            mCanPressReleaseShow.observeForever(this::checkLinksSectionShow);
+    }
+
+    private Boolean checkLinkValue(String value) {
+        return value != null && !value.isEmpty();
+    }
+
+
+    private void checkLinksSectionShow(Boolean b) {
+        mCanLinksSectionShow.postValue(
+                checkBooleanValue(mCanPressReleaseShow)
+                        || checkBooleanValue(mCanYouTubeShow)
+                        || checkBooleanValue(mCanArticleShow)
+                        || checkBooleanValue(mCanWikipediaShow)
+        );
+    }
+
+    private Boolean checkBooleanValue(MutableLiveData<Boolean> value) {
+        return value != null && value.getValue() != null && value.getValue();
     }
 
     public void loadLaunch() {
@@ -41,9 +84,11 @@ public class DetailLaunchViewModel extends ViewModel {
         mDomainLaunch = domainLaunch;
         if (domainLaunch != null) {
             mMissionImage.postValue(DbBitmapUtility.getImage(domainLaunch.getImage()));
-            mMissionName.setValue(domainLaunch.getMission_name());
-            mMissionDetails.setValue(domainLaunch.getDetails());
-            mMissionDate.setValue(domainLaunch.getLaunch_date_utc());
+            mMissionName.postValue(domainLaunch.getMission_name());
+            mMissionDetails.postValue(domainLaunch.getDetails());
+            mMissionDate.postValue(domainLaunch.getLaunch_date_utc());
+            mArticleLink.postValue(domainLaunch.getArticle_link());
+            mIsLoadDone.postValue(true);
         }
     }
 
@@ -73,5 +118,50 @@ public class DetailLaunchViewModel extends ViewModel {
 
     public Integer getFlightNumber() {
         return mFlightNumber;
+    }
+
+    public MutableLiveData<String> getArticleLink() {
+        return mArticleLink;
+    }
+
+    public MutableLiveData<Boolean> getCanArticleShow() {
+        return mCanArticleShow;
+    }
+
+    public MutableLiveData<String> getWikipediaLink() {
+        return mWikipediaLink;
+    }
+
+    public MutableLiveData<Boolean> getCanWikipediaShow() {
+        return mCanWikipediaShow;
+    }
+
+    public MutableLiveData<String> getYouTubeLink() {
+        return mYouTubeLink;
+    }
+
+    public MutableLiveData<Boolean> getCanYouTubeShow() {
+        return mCanYouTubeShow;
+    }
+
+    public MutableLiveData<String> getPressReleaseLink() {
+        return mPressReleaseLink;
+    }
+
+    public MutableLiveData<Boolean> getCanPressReleaseShow() {
+        return mCanPressReleaseShow;
+    }
+
+    public MutableLiveData<Boolean> getCanLinksSectionShow() {
+        return mCanLinksSectionShow;
+    }
+
+
+    public MutableLiveData<Boolean> getCanMissionDetailsShow() {
+        return mCanMissionDetailsShow;
+    }
+
+    public MutableLiveData<Boolean> getIsLoadDone() {
+        return mIsLoadDone;
     }
 }
