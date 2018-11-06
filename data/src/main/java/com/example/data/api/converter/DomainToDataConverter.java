@@ -30,6 +30,9 @@ public final class DomainToDataConverter {
             dataLaunch.setImageId(launch.getImageId());
             dataLaunch.setImage(launch.getImage());
             dataLaunch.setPresskit(launch.getPresskit());
+            dataLaunch.setArticle_link(launch.getArticle_link());
+            dataLaunch.setVideo_link(launch.getVideo_link());
+            dataLaunch.setWikipedia(launch.getWikipedia());
 
             return dataLaunch;
         } else {

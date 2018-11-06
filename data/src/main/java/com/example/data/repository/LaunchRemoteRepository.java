@@ -92,7 +92,7 @@ public class LaunchRemoteRepository implements ILaunchRepository {
     public Single<DomainLaunch> getPressKitPdf(DomainLaunch domainLaunch) {
         return Single.fromCallable(() -> {
             InputStream inputStream = loadPdf(domainLaunch.getPresskit());
-            domainLaunch.setPresskitStream(inputStream);
+           // domainLaunch.setPresskitStream(inputStream);
             return domainLaunch;
         }).subscribeOn(Schedulers.io());
 

@@ -59,6 +59,15 @@ public class DataLaunch {
     @ColumnInfo(name = "presskit")
     private String presskit;
 
+    @ColumnInfo(name = "article_link")
+    private String article_link;
+
+    @ColumnInfo(name = "video_link")
+    private String video_link;
+
+    @ColumnInfo(name = "wikipedia")
+    private String wikipedia;
+
 
     public int getFlight_number() {
         return flight_number;
@@ -176,6 +185,30 @@ public class DataLaunch {
         this.presskit = presskit;
     }
 
+    public String getArticle_link() {
+        return article_link;
+    }
+
+    public void setArticle_link(String article_link) {
+        this.article_link = article_link;
+    }
+
+    public String getVideo_link() {
+        return video_link;
+    }
+
+    public void setVideo_link(String video_link) {
+        this.video_link = video_link;
+    }
+
+    public String getWikipedia() {
+        return wikipedia;
+    }
+
+    public void setWikipedia(String wikipedia) {
+        this.wikipedia = wikipedia;
+    }
+
     public DataLaunch(ServerResponse serverResponse) {
         flight_number = serverResponse.getFlight_number();
         launch_year = serverResponse.getLaunch_year();
@@ -187,6 +220,9 @@ public class DataLaunch {
         rocket_name = serverResponse.getRocket().getRocket_name();
         launch_date_utc = serverResponse.getLaunch_date_utc();
         presskit = serverResponse.getLinks().getPresskit();
+        article_link = serverResponse.getLinks().getArticle_link();
+        video_link = serverResponse.getLinks().getVideo_link();
+        wikipedia = serverResponse.getLinks().getWikipedia();
 
         payload_mass_kg_sum = 0;
         payload_mass_lbs_sum = 0;

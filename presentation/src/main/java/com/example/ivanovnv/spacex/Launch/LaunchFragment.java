@@ -13,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.ivanovnv.spacex.DetailLaunchFragment.DetailLaunchFragment;
+import com.example.ivanovnv.spacex.detailLaunchFragment.DetailLaunchFragment;
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.common.LaunchLayoutManager;
 import com.example.ivanovnv.spacex.di.launchFragment.LaunchFragmentModule;

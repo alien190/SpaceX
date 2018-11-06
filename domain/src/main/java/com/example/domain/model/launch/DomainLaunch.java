@@ -18,7 +18,9 @@ public class DomainLaunch {
     private byte[] image;
     private int imageId;
     private String presskit;
-    private InputStream presskitStream;
+    private String article_link;
+    private String video_link;
+    private String wikipedia;
 
     public int getFlight_number() {
         return flight_number;
@@ -133,12 +135,28 @@ public class DomainLaunch {
         this.presskit = presskit;
     }
 
-    public InputStream getPresskitStream() {
-        return presskitStream;
+    public String getArticle_link() {
+        return article_link;
     }
 
-    public void setPresskitStream(InputStream presskitStream) {
-        this.presskitStream = presskitStream;
+    public void setArticle_link(String article_link) {
+        this.article_link = article_link;
+    }
+
+    public String getVideo_link() {
+        return video_link;
+    }
+
+    public void setVideo_link(String video_link) {
+        this.video_link = video_link;
+    }
+
+    public String getWikipedia() {
+        return wikipedia;
+    }
+
+    public void setWikipedia(String wikipedia) {
+        this.wikipedia = wikipedia;
     }
 
     public DomainLaunch() {

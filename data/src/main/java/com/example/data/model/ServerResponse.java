@@ -499,6 +499,7 @@ public class ServerResponse {
         private String presskit;
         private String article_link;
         private String video_link;
+        private String wikipedia;
 
 
         public String getIssion_patch() {
@@ -571,6 +572,14 @@ public class ServerResponse {
 
         public void setMission_patch_small(String mission_patch_small) {
             this.mission_patch_small = mission_patch_small;
+        }
+
+        public String getWikipedia() {
+            return wikipedia;
+        }
+
+        public void setWikipedia(String wikipedia) {
+            this.wikipedia = wikipedia;
         }
     }
 }
