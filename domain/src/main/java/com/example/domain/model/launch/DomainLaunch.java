@@ -15,6 +15,7 @@ public class DomainLaunch {
     private String launch_date_utc;
     private byte[] image;
     private int imageId;
+    private String presskit;
 
     public int getFlight_number() {
         return flight_number;
@@ -121,6 +122,13 @@ public class DomainLaunch {
         this.imageId = imageId;
     }
 
+    public String getPresskit() {
+        return presskit;
+    }
+
+    public void setPresskit(String presskit) {
+        this.presskit = presskit;
+    }
 
     public DomainLaunch() {
     }

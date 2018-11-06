@@ -29,6 +29,7 @@ public final class DataToDomainConverter {
             domainLaunch.setDetails(launch.getDetails());
             domainLaunch.setImageId(launch.getImageId());
             domainLaunch.setImage(launch.getImage());
+            domainLaunch.setPresskit(launch.getPresskit());
             return domainLaunch;
         }
         return null;

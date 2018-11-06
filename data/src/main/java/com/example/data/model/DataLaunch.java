@@ -51,11 +51,13 @@ public class DataLaunch {
     @ColumnInfo(name = "launch_date_utc")
     private String launch_date_utc;
 
-    //@ColumnInfo(name = "image", typeAffinity = ColumnInfo.BLOB)
     private byte[] image;
 
     @ColumnInfo(name = "imageId")
     private int imageId = 0;
+
+    @ColumnInfo(name = "presskit")
+    private String presskit;
 
 
     public int getFlight_number() {
@@ -166,6 +168,13 @@ public class DataLaunch {
         this.image = image;
     }
 
+    public String getPresskit() {
+        return presskit;
+    }
+
+    public void setPresskit(String presskit) {
+        this.presskit = presskit;
+    }
 
     public DataLaunch(ServerResponse serverResponse) {
         flight_number = serverResponse.getFlight_number();
@@ -177,6 +186,7 @@ public class DataLaunch {
         details = serverResponse.getDetails();
         rocket_name = serverResponse.getRocket().getRocket_name();
         launch_date_utc = serverResponse.getLaunch_date_utc();
+        presskit = serverResponse.getLinks().getPresskit();
 
         payload_mass_kg_sum = 0;
         payload_mass_lbs_sum = 0;
