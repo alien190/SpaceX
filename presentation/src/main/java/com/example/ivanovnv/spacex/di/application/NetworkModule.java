@@ -23,7 +23,7 @@ public class NetworkModule extends Module {
 
 
     public NetworkModule() {
-        mLaunchRepositoryRemote = new LaunchRemoteRepository(provideApi());
+        mLaunchRepositoryRemote = new LaunchRemoteRepository(provideApi(), provideOkHttpClient());
         bind(ILaunchRepository.class).withName(ILaunchRepository.REMOTE).toInstance(mLaunchRepositoryRemote);
     }
 

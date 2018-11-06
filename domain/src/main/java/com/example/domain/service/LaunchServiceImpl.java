@@ -102,4 +102,12 @@ public class LaunchServiceImpl implements ILaunchService {
 //    private Flowable<DomainLaunch> loadMissionImage(Flowable<DomainLaunch> domainLaunch){
 //        domainLaunch.
 //    }
+
+    @Override
+    public Single<DomainLaunch> getLaunchByFlightNumberWithPressKit(int flightNumber) {
+        return getLaunchByFlightNumber(flightNumber)
+                .flatMap(mRemoteRepository::getPressKitPdf)
+                .subscribeOn(Schedulers.io());
+    }
+
 }

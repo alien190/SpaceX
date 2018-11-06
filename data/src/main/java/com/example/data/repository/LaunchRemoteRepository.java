@@ -9,18 +9,27 @@ import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.repository.ILaunchRepository;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.CacheControl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import timber.log.Timber;
 
 public class LaunchRemoteRepository implements ILaunchRepository {
 
     private SpaceXAPI mApi;
+    private OkHttpClient mOkHttpClient;
 
-    public LaunchRemoteRepository(SpaceXAPI mApi) {
+    public LaunchRemoteRepository(SpaceXAPI mApi, OkHttpClient okHttpClient) {
         this.mApi = mApi;
+        this.mOkHttpClient = okHttpClient;
     }
 
     @Override
@@ -78,5 +87,24 @@ public class LaunchRemoteRepository implements ILaunchRepository {
     public Boolean deleteUnusedImages() {
         //do nothing
         return true;
+    }
+
+    public Single<DomainLaunch> getPressKitPdf(DomainLaunch domainLaunch) {
+        return Single.fromCallable(() -> {
+            InputStream inputStream = loadPdf(domainLaunch.getPresskit());
+            domainLaunch.setPresskitStream(inputStream);
+            return domainLaunch;
+        }).subscribeOn(Schedulers.io());
+
+    }
+
+    private InputStream loadPdf(String url) throws IOException {
+        Request request = new Request.Builder()
+                .cacheControl(new CacheControl.Builder()
+                        .maxStale(30, TimeUnit.DAYS)
+                        .build())
+                .url(url)
+                .build();
+        return mOkHttpClient.newCall(request).execute().body().byteStream();
     }
 }

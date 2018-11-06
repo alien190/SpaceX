@@ -7,6 +7,7 @@ import com.example.data.model.DataImage;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.repository.ILaunchRepository;
 
+import java.io.InputStream;
 import java.util.List;
 
 import io.reactivex.Flowable;
@@ -72,5 +73,11 @@ public class LaunchLocalRepository implements ILaunchRepository {
         Timber.d("deleteUnusedImages");
         mLaunchDao.deleteUnusedImages();
         return true;
+    }
+
+    @Override
+    public Single<DomainLaunch> getPressKitPdf(DomainLaunch domainLaunch) {
+        //do nothing
+        return null;
     }
 }

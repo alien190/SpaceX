@@ -9,6 +9,7 @@ import com.facebook.stetho.Stetho;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
+import okhttp3.Request;
 import timber.log.Timber;
 import toothpick.Scope;
 import toothpick.Toothpick;
@@ -22,12 +23,13 @@ public class App extends Application {
             Timber.plant(new Timber.DebugTree());
         }
 
-        Picasso.Builder builder = new Picasso.Builder(this);
-        builder.downloader(new OkHttp3Downloader(this, Integer.MAX_VALUE));
-        Picasso built = builder.build();
-        built.setIndicatorsEnabled(true);
-        built.setLoggingEnabled(true);
-        Picasso.setSingletonInstance(built);
+        //Picasso.Builder builder = new Picasso.Builder(this);
+//        builder.downloader(new OkHttp3Downloader(this, Integer.MAX_VALUE));
+//        Picasso built = builder.build();
+//        built.setIndicatorsEnabled(true);
+//        built.setLoggingEnabled(true);
+        //Picasso.setSingletonInstance(built);
+        //Picasso.setSingletonInstance(builder.build());
 
 
         Stetho.initializeWithDefaults(this);

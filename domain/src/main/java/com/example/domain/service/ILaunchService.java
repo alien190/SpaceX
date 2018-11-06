@@ -20,4 +20,6 @@ public interface ILaunchService {
     Maybe<Boolean> refreshLaunches();
 
     Single<DomainLaunch> getLaunchByFlightNumber(int flightNumber);
+
+    Single<DomainLaunch> getLaunchByFlightNumberWithPressKit(int flightNumber);
 }

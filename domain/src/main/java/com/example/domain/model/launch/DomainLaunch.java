@@ -1,5 +1,7 @@
 package com.example.domain.model.launch;
 
+import java.io.InputStream;
+
 public class DomainLaunch {
 
     private int flight_number;
@@ -16,6 +18,7 @@ public class DomainLaunch {
     private byte[] image;
     private int imageId;
     private String presskit;
+    private InputStream presskitStream;
 
     public int getFlight_number() {
         return flight_number;
@@ -128,6 +131,14 @@ public class DomainLaunch {
 
     public void setPresskit(String presskit) {
         this.presskit = presskit;
+    }
+
+    public InputStream getPresskitStream() {
+        return presskitStream;
+    }
+
+    public void setPresskitStream(InputStream presskitStream) {
+        this.presskitStream = presskitStream;
     }
 
     public DomainLaunch() {

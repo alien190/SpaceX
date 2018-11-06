@@ -1,5 +1,6 @@
 package com.example.ivanovnv.spacex.DetailLaunchFragment;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +16,9 @@ import com.example.data.utils.DbBitmapUtility;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spacex.R;
+import com.github.barteksc.pdfviewer.PDFView;
+
+import java.io.InputStream;
 
 import javax.inject.Inject;
 
@@ -33,9 +37,10 @@ public class DetailLaunchFragment extends Fragment {
 //    private TextView mLaunchDate;
 //    private TextView mDetails;
     private int mFlightNumberInt;
+    private PDFView mPDFViewer;
 
     @Inject
-    ILaunchService launchService;
+    ILaunchService mLaunchService;
 
     private Disposable mDisposable;
 
@@ -71,6 +76,7 @@ public class DetailLaunchFragment extends Fragment {
 //        mRocketName = view.findViewById(R.id.tv_rocket_name);
 //        mLaunchDate = view.findViewById(R.id.tv_launch_date);
 //        mDetails = view.findViewById(R.id.tv_details);
+        mPDFViewer = view.findViewById(R.id.pdf_viewer);
 
         Scope scope = Toothpick.openScope("Application");
         Toothpick.inject(this, scope);
@@ -79,9 +85,9 @@ public class DetailLaunchFragment extends Fragment {
         try {
             mFlightNumberInt = args.getInt(FLIGHT_NUMBER_KEY);
             mImageView.setTransitionName("TransitionName" + String.valueOf(mFlightNumberInt));
-            mDisposable = launchService.getLaunchByFlightNumber(mFlightNumberInt)
+            mDisposable = mLaunchService.getLaunchByFlightNumberWithPressKit(mFlightNumberInt)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::showImage, Timber::d);
+                    .subscribe(this::showLaunch, Timber::d);
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -90,9 +96,16 @@ public class DetailLaunchFragment extends Fragment {
     }
 
 
-    private void showImage(DomainLaunch domainLaunch) {
+    private void showLaunch(DomainLaunch domainLaunch) {
         if (domainLaunch != null) {
             mImageView.setImageBitmap(DbBitmapUtility.getImage(domainLaunch.getImage()));
+            InputStream pressKitStream = domainLaunch.getPresskitStream();
+            if (pressKitStream != null) {
+                mPDFViewer.fromStream(pressKitStream)
+                        .onError(t -> Timber.d(t, "mPDFViewer.onError"))
+                        .onLoad(nbPages -> Timber.d("mPDFViewer.onComplete, pages:%d", nbPages))
+                        .load();
+            }
         }
     }
 

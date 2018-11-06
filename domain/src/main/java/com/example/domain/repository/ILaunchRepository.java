@@ -2,6 +2,7 @@ package com.example.domain.repository;
 
 import com.example.domain.model.launch.DomainLaunch;
 
+import java.io.InputStream;
 import java.util.List;
 
 import io.reactivex.Flowable;
@@ -30,4 +31,6 @@ public interface ILaunchRepository {
     int getImageId(DomainLaunch domainLaunch);
 
     Boolean deleteUnusedImages();
+
+    Single<DomainLaunch> getPressKitPdf(DomainLaunch domainLaunch);
 }
