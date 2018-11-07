@@ -1,9 +1,9 @@
-package com.example.ivanovnv.spacex.di.detailLaunchFragment;
+package com.example.ivanovnv.spacex.di.detailLaunch;
 
 import android.support.v4.app.Fragment;
 
-import com.example.ivanovnv.spacex.detailLaunchFragment.DetailLaunchViewModel;
-import com.example.ivanovnv.spacex.Launch.LaunchAdapter;
+import com.example.ivanovnv.spacex.detailLaunch.DetailLaunchViewModel;
+import com.example.ivanovnv.spacex.launch.LaunchAdapter;
 import com.example.ivanovnv.spacex.common.LaunchLayoutManager;
 
 import toothpick.config.Module;

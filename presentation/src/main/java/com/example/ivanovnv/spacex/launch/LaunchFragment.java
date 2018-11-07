@@ -1,4 +1,4 @@
-package com.example.ivanovnv.spacex.Launch;
+package com.example.ivanovnv.spacex.launch;
 
 
 import android.os.Bundle;
@@ -13,10 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.ivanovnv.spacex.detailLaunchFragment.DetailLaunchFragment;
+import com.example.ivanovnv.spacex.detailLaunch.DetailLaunchFragment;
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.common.LaunchLayoutManager;
-import com.example.ivanovnv.spacex.di.launchFragment.LaunchFragmentModule;
+import com.example.ivanovnv.spacex.di.launch.LaunchFragmentModule;
 
 import javax.inject.Inject;
 

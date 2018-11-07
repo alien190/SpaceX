@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 
-import com.example.ivanovnv.spacex.detailLaunchFragment.DetailLaunchFragment;
+import com.example.ivanovnv.spacex.detailLaunch.DetailLaunchFragment;
 import com.example.ivanovnv.spacex.R;
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.Legend;

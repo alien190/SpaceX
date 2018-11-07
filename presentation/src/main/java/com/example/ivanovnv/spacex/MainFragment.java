@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.ivanovnv.spacex.Launch.LaunchFragment;
+import com.example.ivanovnv.spacex.launch.LaunchFragment;
 
 public class MainFragment extends Fragment {
 

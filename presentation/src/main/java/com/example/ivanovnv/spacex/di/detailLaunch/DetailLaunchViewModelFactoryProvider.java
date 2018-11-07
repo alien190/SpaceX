@@ -1,4 +1,4 @@
-package com.example.ivanovnv.spacex.di.detailLaunchFragment;
+package com.example.ivanovnv.spacex.di.detailLaunch;
 
 import com.example.domain.service.ILaunchService;
 

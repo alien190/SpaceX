@@ -1,4 +1,4 @@
-package com.example.ivanovnv.spacex.Launch;
+package com.example.ivanovnv.spacex.launch;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

@@ -9,11 +9,12 @@
     <string name="mission_name">Название миссии: </string>
     <string name="rocket_name">Название ракеты: </string>
     <string name="launch_date_utc">Дата запуска (UTC): </string>
-    <string name="press_release">Пресс релиз</string>
-    <string name="wikipedia"> Сатья в Википедии</string>
+    <string name="press_release">Пресс-релиз</string>
+    <string name="wikipedia">Статья в Википедии</string>
     <string name="youtube">Видео на YouTube</string>
     <string name="launch_time">Момент старта</string>
     <string name="mission_description">Описание миссии</string>
     <string name="external_links">Внешние ссылки</string>
     <string name="article">Статья</string>
+    <string name="mission_photo">Фотографии</string>
 </resources>

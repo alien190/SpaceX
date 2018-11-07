@@ -1,4 +1,4 @@
-package com.example.ivanovnv.spacex.Launch;
+package com.example.ivanovnv.spacex.launch;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
@@ -9,10 +9,8 @@ import com.example.domain.service.ILaunchService;
 
 import java.util.List;
 
-import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class LaunchViewModel extends ViewModel {

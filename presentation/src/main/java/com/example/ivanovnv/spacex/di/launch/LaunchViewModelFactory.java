@@ -1,12 +1,11 @@
-package com.example.ivanovnv.spacex.di.launchFragment;
+package com.example.ivanovnv.spacex.di.launch;
 
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
 import com.example.domain.service.ILaunchService;
-import com.example.ivanovnv.spacex.detailLaunchFragment.DetailLaunchViewModel;
-import com.example.ivanovnv.spacex.Launch.LaunchViewModel;
+import com.example.ivanovnv.spacex.launch.LaunchViewModel;
 
 public class LaunchViewModelFactory implements ViewModelProvider.Factory {
 

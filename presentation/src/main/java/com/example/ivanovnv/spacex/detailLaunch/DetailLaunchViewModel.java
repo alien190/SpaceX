@@ -1,4 +1,4 @@
-package com.example.ivanovnv.spacex.detailLaunchFragment;
+package com.example.ivanovnv.spacex.detailLaunch;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
@@ -7,6 +7,9 @@ import android.graphics.Bitmap;
 import com.example.data.utils.DbBitmapUtility;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.service.ILaunchService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -34,6 +37,8 @@ public class DetailLaunchViewModel extends ViewModel {
     private MutableLiveData<Boolean> mCanMissionDetailsShow = new MutableLiveData<>();
     private MutableLiveData<Boolean> mIsLoadDone = new MutableLiveData<>();
     private MutableLiveData<String> mExternalLinkForOpen = new MutableLiveData<>();
+    private MutableLiveData<Boolean> mCanPhotosShow = new MutableLiveData<>();
+    private MutableLiveData<List<String>> mPhotos = new MutableLiveData<>();
 
 
     public DetailLaunchViewModel(ILaunchService launchService, Integer flightNumber) {
@@ -49,6 +54,7 @@ public class DetailLaunchViewModel extends ViewModel {
         mWikipediaLink.observeForever(v -> mCanWikipediaShow.postValue(checkLinkValue(v)));
         mPressReleaseLink.observeForever(v -> mCanPressReleaseShow.postValue(checkLinkValue(v)));
         mMissionDetails.observeForever(v -> mCanMissionDetailsShow.postValue(checkLinkValue(v)));
+        mPhotos.observeForever(l -> mCanPhotosShow.postValue(checkListValue(l)));
         mCanArticleShow.observeForever(this::checkLinksSectionShow);
         mCanYouTubeShow.observeForever(this::checkLinksSectionShow);
         mCanWikipediaShow.observeForever(this::checkLinksSectionShow);
@@ -59,6 +65,9 @@ public class DetailLaunchViewModel extends ViewModel {
         return value != null && !value.isEmpty();
     }
 
+    private Boolean checkListValue(List<String> list) {
+        return list != null && !list.isEmpty();
+    }
 
     private void checkLinksSectionShow(Boolean b) {
         mCanLinksSectionShow.postValue(
@@ -92,6 +101,7 @@ public class DetailLaunchViewModel extends ViewModel {
             mYouTubeLink.postValue(checkStringValue(domainLaunch.getVideo_link()));
             mPressReleaseLink.postValue(checkStringValue(domainLaunch.getPresskit()));
             mWikipediaLink.postValue(checkStringValue(domainLaunch.getWikipedia()));
+            mPhotos.postValue(new ArrayList<>(domainLaunch.getFlickr_images()));
             mIsLoadDone.postValue(true);
         }
     }
@@ -179,5 +189,13 @@ public class DetailLaunchViewModel extends ViewModel {
 
     public MutableLiveData<String> getExternalLinkForOpen() {
         return mExternalLinkForOpen;
+    }
+
+    public MutableLiveData<Boolean> getCanPhotosShow() {
+        return mCanPhotosShow;
+    }
+
+    public MutableLiveData<List<String>> getPhotos() {
+        return mPhotos;
     }
 }

@@ -1,4 +1,4 @@
-package com.example.ivanovnv.spacex.Launch;
+package com.example.ivanovnv.spacex.launch;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;

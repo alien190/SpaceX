@@ -1,4 +1,4 @@
-package com.example.ivanovnv.spacex.detailLaunchFragment;
+package com.example.ivanovnv.spacex.detailLaunch;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,9 +14,7 @@ import android.view.ViewGroup;
 
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.databinding.DetailLaunchBinding;
-import com.example.ivanovnv.spacex.di.detailLaunchFragment.DetailLaunchFragmentModule;
-
-import java.sql.DataTruncation;
+import com.example.ivanovnv.spacex.di.detailLaunch.DetailLaunchFragmentModule;
 
 import javax.inject.Inject;
 
