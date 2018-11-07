@@ -17,6 +17,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import toothpick.Scope;
+import toothpick.Toothpick;
+
 public class CustomBindingAdapter {
 
     @BindingAdapter("bind:imageBitmap")
@@ -42,16 +45,15 @@ public class CustomBindingAdapter {
 
     @BindingAdapter("bind:source")
     public static void setRecyclerViewSource(RecyclerView recyclerView, List<String> stringList) {
-        //todo сделать инжект
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(recyclerView.getContext());
+        Scope scope = Toothpick.openScope("DetailLaunchFragment");
+        LinearLayoutManager linearLayoutManager = scope.getInstance(LinearLayoutManager.class);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(linearLayoutManager);
-        PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
+        PagerSnapHelper pagerSnapHelper = scope.getInstance(PagerSnapHelper.class);
         recyclerView.setOnFlingListener(null);
         pagerSnapHelper.attachToRecyclerView(recyclerView);
-        PhotosListAdapter photosListAdapter = new PhotosListAdapter();
+        PhotosListAdapter photosListAdapter = scope.getInstance(PhotosListAdapter.class);
         photosListAdapter.submitList(stringList);
         recyclerView.setAdapter(photosListAdapter);
-
     }
 }

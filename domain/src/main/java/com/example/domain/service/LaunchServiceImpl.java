@@ -110,4 +110,8 @@ public class LaunchServiceImpl implements ILaunchService {
                 .subscribeOn(Schedulers.io());
     }
 
+    @Override
+    public Single<byte[]> loadImage(String url) {
+        return Single.fromCallable(() -> mRemoteRepository.loadImage(url)).subscribeOn(Schedulers.io());
+    }
 }
