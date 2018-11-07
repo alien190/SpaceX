@@ -64,7 +64,7 @@ public class LaunchRemoteRepository implements ILaunchRepository {
     public byte[] loadImage(String url) {
         try {
             if (url != null && !url.isEmpty()) {
-                Bitmap bitmap = Picasso.get().load(url).get();
+                Bitmap bitmap = Picasso.get().load(url).resize(1200, 0).get();
                 return DbBitmapUtility.getBytes(bitmap);
             }
         } catch (Throwable throwable) {

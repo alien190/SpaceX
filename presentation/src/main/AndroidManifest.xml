@@ -23,6 +23,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Analytics.DetailAnalyticsActivity"/>
+        <activity android:name=".imageZoom.ImageZoomActivity"/>
     </application>
 
 </manifest>

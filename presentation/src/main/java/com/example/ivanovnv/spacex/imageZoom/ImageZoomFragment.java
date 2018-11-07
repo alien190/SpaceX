@@ -1,6 +1,8 @@
 package com.example.ivanovnv.spacex.imageZoom;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,24 +14,41 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
+import com.example.data.utils.DbBitmapUtility;
+import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spacex.R;
+import com.example.ivanovnv.spacex.di.imageZoom.ImageZoomModule;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 import toothpick.Toothpick;
 
 public class ImageZoomFragment extends Fragment {
 
-    private ImageView mImageView;
+
     private View mView;
     @Inject
-    protected ResultDetailsViewModel mViewModel;
+    @Named(ImageZoomModule.IMAGE_NAME)
+    Bitmap mImage;
+    @Inject
+    protected ILaunchService mLaunchService;
     private ScaleGestureDetector mScaleGestureDetector;
     private GestureDetector mGestureDetector;
-
+    private Disposable mDisposable;
     private float mScaleFactor = 1.0f;
+    @BindView(R.id.ivZoom)
+    ImageView mImageView;
+    @BindView(R.id.progress_bar)
+    ProgressBar mProgressBar;
+    private Bitmap mBitmap;
 
     public static ImageZoomFragment newInstance() {
 
@@ -44,23 +63,62 @@ public class ImageZoomFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fr_image_zoom, container, false);
-        Toothpick.inject(this, Toothpick.openScope("ResultDetail"));
-        mImageView = mView.findViewById(R.id.ivZoom);
-        mImageView.setImageBitmap(ScreenshotMaker.fromBase64(mViewModel.getScreenShotBase64().getValue()));
+        ButterKnife.bind(this, mView);
+        Toothpick.inject(this, Toothpick.openScope("ImageZoom"));
+        mImageView.setImageBitmap(mImage);
+        // loadImage();
         mScaleGestureDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
         mGestureDetector = new GestureDetector(getContext(), new ClickListener());
+
         return mView;
     }
+
+//    private void loadImage() {
+//        mDisposable = mLaunchService.loadImage(mImageUrl)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .doOnSubscribe(this::onSubscribe)
+//                .doFinally(this::onFinally)
+//                .subscribe(this::showImage, Timber::d);
+//    }
+
+
+//    private void onSubscribe(Disposable disposable) {
+//        mProgressBar.setVisibility(View.VISIBLE);
+//        mImageView.setImageResource(R.drawable.ic_rocket_stub);
+//    }
+//
+//    private void onFinally() {
+//        mProgressBar.setVisibility(View.GONE);
+//    }
+//
+//    private void showImage(byte[] bytes) {
+//        Bitmap bitmap = DbBitmapUtility.getImage(bytes);
+//        if (mBitmap != null && mBitmap != bitmap) {
+//            mBitmap.recycle();
+//        }
+//        mBitmap = bitmap;
+//        mImageView.setImageBitmap(mBitmap);
+//    }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onResume() {
         super.onResume();
-        mView.setOnClickListener(view1 -> getActivity().onBackPressed());
+        mView.setOnClickListener(this::onBackPressed);
         mView.setOnTouchListener((view, motionEvent) -> {
             mGestureDetector.onTouchEvent(motionEvent);
             return mScaleGestureDetector.onTouchEvent(motionEvent);
         });
+    }
+
+    private void onBackPressed(View view) {
+        Activity activity = getActivity();
+        if (activity != null) {
+            if (mDisposable != null) {
+                mDisposable.dispose();
+            }
+            activity.onBackPressed();
+        }
     }
 
     @Override
@@ -78,7 +136,7 @@ public class ImageZoomFragment extends Fragment {
             mScaleFactor = Math.max(1f, Math.min(mScaleFactor, 10.0f));
             mImageView.setScaleX(mScaleFactor);
             mImageView.setScaleY(mScaleFactor);
-            Timber.d("pivot pivotY=%d, scaleY=%d", mImageView.getPivotY(), mImageView.getScaleY());
+            Timber.d("pivot pivotY=%f, scaleY=%f", mImageView.getPivotY(), mImageView.getScaleY());
             return true;
         }
     }

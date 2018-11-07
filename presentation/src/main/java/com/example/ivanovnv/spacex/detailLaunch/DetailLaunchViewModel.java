@@ -8,19 +8,23 @@ import com.example.data.utils.DbBitmapUtility;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.service.ILaunchService;
 
+import org.reactivestreams.Subscription;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import timber.log.Timber;
 
 public class DetailLaunchViewModel extends ViewModel {
 
     private ILaunchService mLaunchService;
     private Integer mFlightNumber;
-    private Disposable mDisposable;
-    private DomainLaunch mDomainLaunch;
+    private CompositeDisposable mDisposable = new CompositeDisposable();
+    private DomainLaunch mDomainLaunch = null;
     private MutableLiveData<Bitmap> mMissionImage = new MutableLiveData<>();
     private MutableLiveData<String> mMissionName = new MutableLiveData<>();
     private MutableLiveData<String> mMissionDetails = new MutableLiveData<>();
@@ -38,7 +42,9 @@ public class DetailLaunchViewModel extends ViewModel {
     private MutableLiveData<Boolean> mIsLoadDone = new MutableLiveData<>();
     private MutableLiveData<String> mExternalLinkForOpen = new MutableLiveData<>();
     private MutableLiveData<Boolean> mCanPhotosShow = new MutableLiveData<>();
-    private MutableLiveData<List<String>> mPhotos = new MutableLiveData<>();
+    private MutableLiveData<List<String>> mPhotosUrls = new MutableLiveData<>();
+    private MutableLiveData<List<Bitmap>> mPhotos = new MutableLiveData<>();
+    private MutableLiveData<Boolean> mIsRefreshPhotos = new MutableLiveData<>();
 
 
     public DetailLaunchViewModel(ILaunchService launchService, Integer flightNumber) {
@@ -54,11 +60,33 @@ public class DetailLaunchViewModel extends ViewModel {
         mWikipediaLink.observeForever(v -> mCanWikipediaShow.postValue(checkLinkValue(v)));
         mPressReleaseLink.observeForever(v -> mCanPressReleaseShow.postValue(checkLinkValue(v)));
         mMissionDetails.observeForever(v -> mCanMissionDetailsShow.postValue(checkLinkValue(v)));
-        mPhotos.observeForever(l -> mCanPhotosShow.postValue(checkListValue(l)));
+        mPhotosUrls.observeForever(this::loadPhotos);
         mCanArticleShow.observeForever(this::checkLinksSectionShow);
         mCanYouTubeShow.observeForever(this::checkLinksSectionShow);
         mCanWikipediaShow.observeForever(this::checkLinksSectionShow);
         mCanPressReleaseShow.observeForever(this::checkLinksSectionShow);
+    }
+
+    private void loadPhotos(List<String> urls) {
+        if (checkListValue(urls)) {
+            mDisposable.add(mLaunchService.loadImages(urls)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe(subscription -> mIsRefreshPhotos.postValue(true))
+                    .subscribe(this::setPhoto, throwable -> {
+                        mIsRefreshPhotos.postValue(false);
+                        Timber.d(throwable);
+                    }, () -> mIsRefreshPhotos.postValue(false)));
+        }
+    }
+
+    private void setPhoto(byte[] bytes) {
+        List<Bitmap> bitmapList = mPhotos.getValue();
+        if (bitmapList == null) {
+            bitmapList = new ArrayList<>();
+        }
+        bitmapList.add(DbBitmapUtility.getImage(bytes));
+        mPhotos.postValue(bitmapList);
+        mCanPhotosShow.postValue(true);
     }
 
     private Boolean checkLinkValue(String value) {
@@ -83,10 +111,16 @@ public class DetailLaunchViewModel extends ViewModel {
     }
 
     public void loadLaunch() {
+        if (mDomainLaunch == null) {
+            loadLaunchForced();
+        }
+    }
+
+    public void loadLaunchForced() {
         if (mFlightNumber != null) {
-            mDisposable = mLaunchService.getLaunchByFlightNumber(mFlightNumber)
+            mDisposable.add(mLaunchService.getLaunchByFlightNumber(mFlightNumber)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::setLaunch, Timber::d);
+                    .subscribe(this::setLaunch, Timber::d));
         }
     }
 
@@ -101,7 +135,7 @@ public class DetailLaunchViewModel extends ViewModel {
             mYouTubeLink.postValue(checkStringValue(domainLaunch.getVideo_link()));
             mPressReleaseLink.postValue(checkStringValue(domainLaunch.getPresskit()));
             mWikipediaLink.postValue(checkStringValue(domainLaunch.getWikipedia()));
-            mPhotos.postValue(new ArrayList<>(domainLaunch.getFlickr_images()));
+            mPhotosUrls.postValue(new ArrayList<>(domainLaunch.getFlickr_images()));
             mIsLoadDone.postValue(true);
         }
     }
@@ -178,7 +212,6 @@ public class DetailLaunchViewModel extends ViewModel {
         return mCanLinksSectionShow;
     }
 
-
     public MutableLiveData<Boolean> getCanMissionDetailsShow() {
         return mCanMissionDetailsShow;
     }
@@ -195,7 +228,15 @@ public class DetailLaunchViewModel extends ViewModel {
         return mCanPhotosShow;
     }
 
-    public MutableLiveData<List<String>> getPhotos() {
+    public MutableLiveData<List<String>> getPhotosUrls() {
+        return mPhotosUrls;
+    }
+
+    public MutableLiveData<List<Bitmap>> getPhotos() {
         return mPhotos;
+    }
+
+    public MutableLiveData<Boolean> getIsRefreshPhotos() {
+        return mIsRefreshPhotos;
     }
 }

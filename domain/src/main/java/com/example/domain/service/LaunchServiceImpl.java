@@ -112,6 +112,21 @@ public class LaunchServiceImpl implements ILaunchService {
 
     @Override
     public Single<byte[]> loadImage(String url) {
-        return Single.fromCallable(() -> mRemoteRepository.loadImage(url)).subscribeOn(Schedulers.io());
+        return Single.fromCallable(() -> loadImageFromRemoteRepository(url)).subscribeOn(Schedulers.io());
+    }
+
+    private byte[] loadImageFromRemoteRepository(String url) {
+        return mRemoteRepository.loadImage(url);
+    }
+
+    @Override
+    public Flowable<byte[]> loadImages(List<String> urls) {
+        return Flowable.just(urls)
+                .subscribeOn(Schedulers.io())
+                .flatMap(Flowable::fromIterable)
+                .parallel(CONCURRENT_THREADS_NUMBER)
+                .runOn(Schedulers.io())
+                .map(this::loadImageFromRemoteRepository)
+                .sequentialDelayError();
     }
 }

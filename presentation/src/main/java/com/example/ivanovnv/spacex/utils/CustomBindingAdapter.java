@@ -2,18 +2,17 @@ package com.example.ivanovnv.spacex.utils;
 
 import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
-import android.support.v7.recyclerview.extensions.ListAdapter;
-import android.support.v7.widget.CardView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ImageView;
 
 import com.example.ivanovnv.spacex.detailLaunch.PhotosListAdapter;
-import com.squareup.picasso.Picasso;
+import com.example.ivanovnv.spacex.di.imageZoom.ImageZoomModule;
+import com.example.ivanovnv.spacex.imageZoom.ImageZoomActivity;
 
 import java.util.List;
 
@@ -44,16 +43,45 @@ public class CustomBindingAdapter {
     }
 
     @BindingAdapter("bind:source")
-    public static void setRecyclerViewSource(RecyclerView recyclerView, List<String> stringList) {
-        Scope scope = Toothpick.openScope("DetailLaunchFragment");
-        LinearLayoutManager linearLayoutManager = scope.getInstance(LinearLayoutManager.class);
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        recyclerView.setLayoutManager(linearLayoutManager);
+    public static void setRecyclerViewSource(RecyclerView recyclerView, List<Bitmap> bitmapList) {
+        RecyclerView.Adapter adapter = recyclerView.getAdapter();
+        if (adapter == null) {
+            Scope scope = Toothpick.openScope("DetailLaunchFragment");
+            initLayoutManager(scope, recyclerView);
+            initPagerSnapHelper(scope, recyclerView);
+            initPhotoListAdapter(scope, recyclerView, bitmapList);
+        } else {
+            if (bitmapList != null) {
+                ((PhotosListAdapter) adapter).submitList(bitmapList);
+                recyclerView.requestLayout();
+            }
+        }
+    }
+
+    private static void initPhotoListAdapter(Scope scope, RecyclerView recyclerView, List<Bitmap> bitmapList) {
+        PhotosListAdapter photosListAdapter = scope.getInstance(PhotosListAdapter.class);
+        photosListAdapter.setOnItemClickListener(image -> {
+            Toothpick.closeScope("ImageZoom");
+            Scope imageZoomScope = Toothpick.openScopes("Application", "ImageZoom");
+            imageZoomScope.installModules(new ImageZoomModule(image));
+            ImageZoomActivity.start(recyclerView.getContext());
+        });
+        photosListAdapter.submitList(bitmapList);
+        recyclerView.setAdapter(photosListAdapter);
+    }
+
+    private static void initLayoutManager(Scope scope, RecyclerView recyclerView) {
+        //LinearLayoutManager linearLayoutManager = scope.getInstance(LinearLayoutManager.class);
+        //linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        //recyclerView.setLayoutManager(linearLayoutManager);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(recyclerView.getContext(), 2);
+        gridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(gridLayoutManager);
+    }
+
+    private static void initPagerSnapHelper(Scope scope, RecyclerView recyclerView) {
         PagerSnapHelper pagerSnapHelper = scope.getInstance(PagerSnapHelper.class);
         recyclerView.setOnFlingListener(null);
         pagerSnapHelper.attachToRecyclerView(recyclerView);
-        PhotosListAdapter photosListAdapter = scope.getInstance(PhotosListAdapter.class);
-        photosListAdapter.submitList(stringList);
-        recyclerView.setAdapter(photosListAdapter);
     }
 }

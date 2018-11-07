@@ -22,4 +22,6 @@ public interface ILaunchService {
     Single<DomainLaunch> getLaunchByFlightNumberWithPressKit(int flightNumber);
 
     Single<byte[]> loadImage(String url);
+
+    Flowable<byte[]> loadImages(List<String> urls);
 }
