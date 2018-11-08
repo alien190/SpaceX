@@ -13,6 +13,8 @@ public interface ILaunchService {
 
     Flowable<List<DomainLaunch>> getLaunchesLive();
 
+    Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(String filter);
+
     void insertLaunches(List<DomainLaunch> domainLaunches);
 
     Maybe<Boolean> refreshLaunches();

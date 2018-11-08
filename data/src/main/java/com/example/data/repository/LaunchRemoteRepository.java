@@ -114,4 +114,9 @@ public class LaunchRemoteRepository implements ILaunchRepository {
                 .build();
         return mOkHttpClient.newCall(request).execute().body().byteStream();
     }
+
+    @Override
+    public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(String filter) {
+        return null;
+    }
 }

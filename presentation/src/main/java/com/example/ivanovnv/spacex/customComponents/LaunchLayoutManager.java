@@ -1,12 +1,9 @@
-package com.example.ivanovnv.spacex.common;
+package com.example.ivanovnv.spacex.customComponents;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.View;
-
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import timber.log.Timber;
 

@@ -1,7 +1,6 @@
 package com.example.ivanovnv.spacex.launch;
 
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,14 +9,14 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
-import android.transition.TransitionInflater;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ivanovnv.spacex.detailLaunch.DetailLaunchFragment;
 import com.example.ivanovnv.spacex.R;
-import com.example.ivanovnv.spacex.common.LaunchLayoutManager;
+import com.example.ivanovnv.spacex.customComponents.LaunchLayoutManager;
 import com.example.ivanovnv.spacex.di.launch.LaunchFragmentModule;
 
 import javax.inject.Inject;
@@ -31,14 +30,15 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
 
     private static String TAG = LaunchFragment.class.getSimpleName();
 
-    @BindView(R.id.swipelayout)
+    @BindView(R.id.swipeLayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
-
     @BindView(R.id.rv_main)
     RecyclerView mRecyclerView;
+    @BindView(R.id.searchView)
+    SearchView mSearchView;
 
     @Inject
-    LaunchViewModel viewModel;
+    ILaunchListViewModel mLaunchListViewModel;
     @Inject
     LaunchAdapter mAdapter;
     @Inject
@@ -63,9 +63,9 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
         scope.installModules(new LaunchFragmentModule(this));
         Toothpick.inject(this, scope);
 
-        viewModel.getLaunches().observe(this, mAdapter::updateLaunches);
-        viewModel.getOnRefreshListener().observe(this, mSwipeRefreshLayout::setOnRefreshListener);
-        viewModel.getIsLoadData().observe(this, mSwipeRefreshLayout::setRefreshing);
+        mLaunchListViewModel.getLaunches().observe(this, mAdapter::updateLaunches);
+        mLaunchListViewModel.getOnRefreshListener().observe(this, mSwipeRefreshLayout::setOnRefreshListener);
+        mLaunchListViewModel.getIsLoadInProgress().observe(this, mSwipeRefreshLayout::setRefreshing);
 
         return view;
     }
@@ -75,10 +75,9 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
     public void onStart() {
         super.onStart();
         mRecyclerView.setLayoutManager(mLaunchLayoutManager);
-        //mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter.setItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
-
+        mSearchView.setOnQueryTextListener(mLaunchListViewModel);
     }
 
     @Override
@@ -86,6 +85,7 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
         mRecyclerView.setLayoutManager(null);
         mAdapter.setItemClickListener(null);
         mRecyclerView.setAdapter(null);
+        mSearchView.setOnQueryTextListener(null);
         super.onStop();
     }
 
@@ -105,13 +105,6 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
                     .addToBackStack(TAG)
                     .commit();
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        //  mRecyclerView.setAdapter(null);
-//        mRecyclerView.setLayoutManager(null);
-        super.onDestroy();
     }
 
 }

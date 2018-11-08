@@ -7,7 +7,7 @@ import android.support.v7.widget.PagerSnapHelper;
 import com.example.ivanovnv.spacex.detailLaunch.DetailLaunchViewModel;
 import com.example.ivanovnv.spacex.detailLaunch.PhotosListAdapter;
 import com.example.ivanovnv.spacex.launch.LaunchAdapter;
-import com.example.ivanovnv.spacex.common.LaunchLayoutManager;
+import com.example.ivanovnv.spacex.customComponents.LaunchLayoutManager;
 
 import toothpick.config.Module;
 

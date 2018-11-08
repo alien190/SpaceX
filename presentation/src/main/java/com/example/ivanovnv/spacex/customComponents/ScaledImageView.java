@@ -1,4 +1,4 @@
-package com.example.ivanovnv.spacex.common;
+package com.example.ivanovnv.spacex.customComponents;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

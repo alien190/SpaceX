@@ -17,6 +17,8 @@ public interface ILaunchRepository {
 
     Flowable<List<DomainLaunch>> getLaunchesLive();
 
+    Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(String filter);
+
     Single<Boolean> insertLaunches(List<DomainLaunch> domainLaunches);
 
     Long insertLaunch(DomainLaunch domainLaunch);

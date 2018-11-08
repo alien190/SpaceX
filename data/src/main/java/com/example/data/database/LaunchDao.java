@@ -1,9 +1,11 @@
 package com.example.data.database;
 
+import android.arch.persistence.db.SupportSQLiteQuery;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.RawQuery;
 
 import com.example.data.model.DataImage;
 import com.example.data.model.DataLaunch;
@@ -31,6 +33,9 @@ public interface LaunchDao {
     @Query("SELECT DataLaunch.*, DataImage.image FROM DataLaunch,DataImage WHERE DataLaunch.imageId=DataImage.id ORDER BY launch_date_unix DESC")
     Flowable<List<DataLaunch>> getLaunchesLive();
 
+    //@Query("SELECT DataLaunch.*, DataImage.image FROM DataLaunch,DataImage WHERE DataLaunch.imageId=DataImage.id AND :filter ORDER BY launch_date_unix DESC")
+    @RawQuery(observedEntities = {DataLaunch.class, DataImage.class})
+    Flowable<List<DataLaunch>> getLaunchesLiveWithFilter(SupportSQLiteQuery query);
 
     @Query("SELECT * FROM DataLaunch WHERE flight_number < :lastFlightNumber ORDER BY launch_date_unix DESC LIMIT :returnCount")
     List<DataLaunch> getLaunchesInRange(int lastFlightNumber, int returnCount);

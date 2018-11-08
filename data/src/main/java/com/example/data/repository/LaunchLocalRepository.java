@@ -1,8 +1,11 @@
 package com.example.data.repository;
 
+import android.arch.persistence.db.SimpleSQLiteQuery;
+
 import com.example.data.api.converter.DataToDomainConverter;
 import com.example.data.api.converter.DomainToDataConverter;
 import com.example.data.database.LaunchDao;
+import com.example.data.database.LaunchDataBase;
 import com.example.data.model.DataImage;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.repository.ILaunchRepository;
@@ -14,7 +17,7 @@ import io.reactivex.Flowable;
 import io.reactivex.Single;
 import timber.log.Timber;
 
-public  class LaunchLocalRepository implements ILaunchRepository {
+public class LaunchLocalRepository implements ILaunchRepository {
 
     LaunchDao mLaunchDao;
 
@@ -84,5 +87,19 @@ public  class LaunchLocalRepository implements ILaunchRepository {
     public Single<DomainLaunch> getPressKitPdf(DomainLaunch domainLaunch) {
         //do nothing
         return null;
+    }
+
+    @Override
+    public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(String filter) {
+        String filterQuery = "";
+        if (filter != null && !filter.isEmpty()) {
+            filterQuery = "AND mission_name LIKE '%" + filter + "%'";
+        }
+        String query = "SELECT DataLaunch.*, DataImage.image FROM DataLaunch,DataImage WHERE DataLaunch.imageId=DataImage.id "
+                + filterQuery
+                + " ORDER BY launch_date_unix DESC";
+        return mLaunchDao
+                .getLaunchesLiveWithFilter(new SimpleSQLiteQuery(query))
+                .map(DataToDomainConverter::convertLaunchList);
     }
 }

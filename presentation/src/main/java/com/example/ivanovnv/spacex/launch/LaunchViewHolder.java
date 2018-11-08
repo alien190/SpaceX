@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.example.data.utils.DbBitmapUtility;
 import com.example.domain.model.launch.DomainLaunch;
-import com.example.ivanovnv.spacex.common.LaunchItemView;
+import com.example.ivanovnv.spacex.customComponents.LaunchItemView;
 
 
 public class LaunchViewHolder extends RecyclerView.ViewHolder {

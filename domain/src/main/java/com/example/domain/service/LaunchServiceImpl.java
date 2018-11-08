@@ -32,18 +32,14 @@ public class LaunchServiceImpl implements ILaunchService {
         mLocalRepository.insertLaunches(domainLaunches);
     }
 
-//    @Override
-//    public Single<Boolean> refreshLaunches() {
-//        return mRemoteRepository.getLaunches()
-//                .subscribeOn(Schedulers.io())
-//                .doOnSuccess(this::insertLaunches)
-//                .map(domainLaunches -> true);
-//
-//    }
-
     @Override
     public Flowable<List<DomainLaunch>> getLaunchesLive() {
         return mLocalRepository.getLaunchesLive().subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(String filter) {
+        return mLocalRepository.getLaunchesLiveWithFilter(filter).subscribeOn(Schedulers.io());
     }
 
     @Override
