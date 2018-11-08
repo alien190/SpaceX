@@ -17,4 +17,7 @@
     <string name="external_links">Внешние ссылки</string>
     <string name="article">Статья</string>
     <string name="mission_photo">Фотографии</string>
+    <string name="launches_menu_item">Запуски</string>
+    <string name="analytics_menu_item">Аналитика</string>
+    <string name="settings_menu_item">Настройки</string>
 </resources>

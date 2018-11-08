@@ -14,15 +14,18 @@ public class DbBitmapUtility {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
             return stream.toByteArray();
+        } else {
+            throw new IllegalArgumentException("source bitmap is null");
         }
-        return null;
     }
 
     // convert from byte array to bitmap
     public static Bitmap getImage(byte[] image) {
         if (image != null) {
             return BitmapFactory.decodeByteArray(image, 0, image.length);
+        } else {
+            throw new IllegalArgumentException("source bytes is null");
         }
-        return null;
+
     }
 }

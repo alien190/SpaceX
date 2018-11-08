@@ -1,6 +1,7 @@
 package com.example.ivanovnv.spacex.launch;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,9 +67,9 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
         viewModel.getOnRefreshListener().observe(this, mSwipeRefreshLayout::setOnRefreshListener);
         viewModel.getIsLoadData().observe(this, mSwipeRefreshLayout::setRefreshing);
 
-
         return view;
     }
+
 
     @Override
     public void onStart() {

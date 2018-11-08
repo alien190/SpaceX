@@ -11,6 +11,7 @@ import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class LaunchViewModel extends ViewModel {
@@ -31,7 +32,7 @@ public class LaunchViewModel extends ViewModel {
         mOnRefreshListener.postValue(this::loadLaunches);
         //  mLaunchAdapter.postValue(launchAdapter);
         compositeDisposable.add(launchService.getLaunchesLive()
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .subscribe(mLaunches::postValue));
 
         // loadLaunches();
@@ -39,7 +40,9 @@ public class LaunchViewModel extends ViewModel {
 
     @Override
     protected void onCleared() {
-        compositeDisposable.dispose();
+        //compositeDisposable.dispose();
+        compositeDisposable.clear();
+        mIsLoadData.postValue(false);
         super.onCleared();
     }
 
@@ -48,8 +51,9 @@ public class LaunchViewModel extends ViewModel {
 //    }
 
     private void loadLaunches() {
-        mIsLoadData.postValue(true);
+
         compositeDisposable.add(mLaunchService.refreshLaunches()
+                .doOnSubscribe(s -> mIsLoadData.postValue(true))
                 .doOnComplete(() -> mIsLoadData.postValue(false))
                 .doOnError(throwable -> {
                     mIsLoadData.postValue(false);

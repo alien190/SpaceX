@@ -61,16 +61,23 @@ public class LaunchRemoteRepository implements ILaunchRepository {
     }
 
     @Override
-    public byte[] loadImage(String url) {
-        try {
-            if (url != null && !url.isEmpty()) {
-                Bitmap bitmap = Picasso.get().load(url).resize(1200, 0).get();
-                return DbBitmapUtility.getBytes(bitmap);
-            }
-        } catch (Throwable throwable) {
-            Timber.d(throwable);
+    public byte[] loadImage(String url) throws Exception {
+        if (url != null && !url.isEmpty()) {
+            Bitmap bitmap = Picasso.get().load(url).get();
+            return DbBitmapUtility.getBytes(bitmap);
+        } else {
+            throw new IllegalArgumentException("URL is null or empty");
         }
-        return null;
+    }
+
+    @Override
+    public byte[] loadImageWithResize(String url, int width, int height) throws Exception {
+        if (url != null && !url.isEmpty()) {
+            Bitmap bitmap = Picasso.get().load(url).resize(width, height).get();
+            return DbBitmapUtility.getBytes(bitmap);
+        } else {
+            throw new IllegalArgumentException("URL is null or empty");
+        }
     }
 
     @Override

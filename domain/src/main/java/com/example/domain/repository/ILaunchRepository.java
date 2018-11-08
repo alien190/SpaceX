@@ -2,6 +2,7 @@ package com.example.domain.repository;
 
 import com.example.domain.model.launch.DomainLaunch;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -24,7 +25,9 @@ public interface ILaunchRepository {
 
     //Single<List<DomainLaunch>> getLaunchFromCacheForUpdate();
 
-    byte[] loadImage(String url);
+    byte[] loadImage(String url) throws Exception;
+
+    byte[] loadImageWithResize(String url, int width, int height) throws Exception;
 
     int insertImage(byte[] bytes);
 

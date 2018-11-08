@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.transition.TransitionInflater;
 import android.util.Log;
@@ -14,13 +15,9 @@ import android.view.ViewGroup;
 
 import com.example.ivanovnv.spacex.launch.LaunchFragment;
 
-public class MainFragment extends Fragment {
+import timber.log.Timber;
 
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-    private View view;
-    private static final String TAG = MainFragment.class.getSimpleName();
-    private ViewPagerAdapter mViewPagerAdapter;
+public class MainFragment extends Fragment {
 
     public static MainFragment newInstance() {
 
@@ -28,56 +25,24 @@ public class MainFragment extends Fragment {
 
         MainFragment fragment = new MainFragment();
         fragment.setArguments(args);
-        //fragment.setRetainInstance(true);
         return fragment;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView: ");
-        if (view == null) {
-            view = inflater.inflate(R.layout.fr_main, container, false);
-
-            viewPager = view.findViewById(R.id.viewpager);
-            setupViewPager(viewPager);
-
-            tabLayout = view.findViewById(R.id.tablayout);
-            tabLayout.setupWithViewPager(viewPager);
+        View View = inflater.inflate(R.layout.fr_main, container, false);
+        FragmentManager fragmentManager = getFragmentManager();
+        if (fragmentManager != null) {
+            fragmentManager
+                    .beginTransaction()
+                    .replace(R.id.container, LaunchFragment.newInstance())
+                    .commit();
         }
-
         setExitTransition(TransitionInflater.from(getContext()).inflateTransition(R.transition.launch_list_exit_transition));
-
-        return view;
-
+        return View;
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy: ");
-
-    }
-
-    private void setupViewPager(ViewPager viewPager) {
-
-        //FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        mViewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
-
-//        Fragment launchFragment = null;
-//
-//        List<Fragment> fragments = fragmentManager.getFragments();
-//        for (Fragment fragment : fragments) {
-//            if (fragment instanceof LaunchFragment) launchFragment = fragment;
-//        }
-//
-//        if (launchFragment == null) launchFragment = LaunchFragment.newInstance();
-
-        mViewPagerAdapter.addFragment(LaunchFragment.newInstance(), getString(R.string.launches));
-        // mViewPagerAdapter.addFragment(AnalyticsFragment.newInstance(), getString(R.string.analytics));
-        viewPager.setAdapter(mViewPagerAdapter);
-        //mViewPagerAdapter.notifyDataSetChanged();
-    }
 }
 
 

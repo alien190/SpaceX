@@ -23,5 +23,5 @@ public interface ILaunchService {
 
     Single<byte[]> loadImage(String url);
 
-    Flowable<byte[]> loadImages(List<String> urls);
+    Flowable<byte[]> loadImagesWithResize(List<String> urls);
 }

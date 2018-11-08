@@ -108,4 +108,9 @@ public class DetailLaunchFragment extends Fragment {
         super.onDestroy();
     }
 
+    @Override
+    public void onStop() {
+        mDetailLaunchViewModel.clearDisposable();
+        super.onStop();
+    }
 }

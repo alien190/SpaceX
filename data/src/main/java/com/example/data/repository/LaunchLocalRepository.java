@@ -14,7 +14,7 @@ import io.reactivex.Flowable;
 import io.reactivex.Single;
 import timber.log.Timber;
 
-public class LaunchLocalRepository implements ILaunchRepository {
+public  class LaunchLocalRepository implements ILaunchRepository {
 
     LaunchDao mLaunchDao;
 
@@ -54,6 +54,11 @@ public class LaunchLocalRepository implements ILaunchRepository {
     @Override
     public byte[] loadImage(String url) {
         return null;
+    }
+
+    @Override
+    public byte[] loadImageWithResize(String url, int width, int height) throws Exception {
+        return new byte[0];
     }
 
     @Override

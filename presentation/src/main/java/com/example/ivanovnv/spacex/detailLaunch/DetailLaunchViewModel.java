@@ -8,15 +8,12 @@ import com.example.data.utils.DbBitmapUtility;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.service.ILaunchService;
 
-import org.reactivestreams.Subscription;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class DetailLaunchViewModel extends ViewModel {
@@ -69,8 +66,8 @@ public class DetailLaunchViewModel extends ViewModel {
 
     private void loadPhotos(List<String> urls) {
         if (checkListValue(urls)) {
-            mDisposable.add(mLaunchService.loadImages(urls)
-                    .observeOn(AndroidSchedulers.mainThread())
+            mDisposable.add(mLaunchService.loadImagesWithResize(urls)
+                    .observeOn(Schedulers.io())
                     .doOnSubscribe(subscription -> mIsRefreshPhotos.postValue(true))
                     .subscribe(this::setPhoto, throwable -> {
                         mIsRefreshPhotos.postValue(false);
@@ -150,10 +147,15 @@ public class DetailLaunchViewModel extends ViewModel {
 
     @Override
     protected void onCleared() {
+        clearDisposable();
+        super.onCleared();
+    }
+
+    public void clearDisposable() {
         if (mDisposable != null) {
             mDisposable.dispose();
+            mDisposable.clear();
         }
-        super.onCleared();
     }
 
     public MutableLiveData<Bitmap> getMissionImage() {
