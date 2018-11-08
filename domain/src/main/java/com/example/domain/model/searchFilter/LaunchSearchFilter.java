@@ -3,11 +3,18 @@ package com.example.domain.model.searchFilter;
 public class LaunchSearchFilter {
 
     private String mValue;
-    private SearchTypes mType;
+    private SearchType mType;
 
-    public LaunchSearchFilter(String value, SearchTypes type) {
+    public LaunchSearchFilter(String value, SearchType type) {
         mValue = value;
         mType = type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof LaunchSearchFilter
+                && mType == ((LaunchSearchFilter) o).getType()
+                && mValue == ((LaunchSearchFilter) o).getValue();
     }
 
     public String getValue() {
@@ -18,11 +25,11 @@ public class LaunchSearchFilter {
         mValue = value;
     }
 
-    public SearchTypes getType() {
+    public SearchType getType() {
         return mType;
     }
 
-    public void setType(SearchTypes type) {
+    public void setType(SearchType type) {
         mType = type;
     }
 }

@@ -8,7 +8,7 @@ import com.example.domain.model.launch.DomainLaunch;
 
 import java.util.List;
 
-public interface ILaunchListViewModel extends SearchView.OnQueryTextListener {
+public interface ILaunchListViewModel {
     MutableLiveData<List<DomainLaunch>> getLaunches();
     MutableLiveData<SwipeRefreshLayout.OnRefreshListener> getOnRefreshListener();
     MutableLiveData<Boolean> getIsLoadInProgress();

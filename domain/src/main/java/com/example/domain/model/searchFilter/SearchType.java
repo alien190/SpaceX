@@ -1,5 +1,5 @@
 package com.example.domain.model.searchFilter;
 
-public enum SearchTypes {
+public enum SearchType {
     BY_NAME
 }

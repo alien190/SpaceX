@@ -1,6 +1,7 @@
 package com.example.ivanovnv.spacex.di.detailLaunch;
 
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 
@@ -25,7 +26,7 @@ public class DetailLaunchFragmentModule extends Module {
         bind(LaunchAdapter.class).toInstance(new LaunchAdapter());
         bind(LaunchLayoutManager.class).toInstance(new LaunchLayoutManager());
         bind(Integer.class).withName(FLIGHT_NUMBER_NAME).toInstance(mFlightNumber);
-        bind(LinearLayoutManager.class).toInstance(new LinearLayoutManager(mFragment.getContext()));
+        bind(GridLayoutManager.class).toInstance(new GridLayoutManager(mFragment.getContext(), 2));
         bind(PhotosListAdapter.class).toInstance(new PhotosListAdapter());
         bind(PagerSnapHelper.class).toInstance(new PagerSnapHelper());
     }

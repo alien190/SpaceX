@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,8 +33,7 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
     SwipeRefreshLayout mSwipeRefreshLayout;
     @BindView(R.id.rv_main)
     RecyclerView mRecyclerView;
-    @BindView(R.id.searchView)
-    SearchView mSearchView;
+
 
     @Inject
     ILaunchListViewModel mLaunchListViewModel;
@@ -56,12 +54,12 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fr_launches_list, container, false);
-        ButterKnife.bind(this, view);
-
         Scope scope = Toothpick.openScopes("Application", "LaunchFragment");
         scope.installModules(new LaunchFragmentModule(this));
         Toothpick.inject(this, scope);
+
+        View view = inflater.inflate(R.layout.fr_launches_list, container, false);
+        ButterKnife.bind(this, view);
 
         mLaunchListViewModel.getLaunches().observe(this, mAdapter::updateLaunches);
         mLaunchListViewModel.getOnRefreshListener().observe(this, mSwipeRefreshLayout::setOnRefreshListener);
@@ -77,7 +75,6 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
         mRecyclerView.setLayoutManager(mLaunchLayoutManager);
         mAdapter.setItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
-        mSearchView.setOnQueryTextListener(mLaunchListViewModel);
     }
 
     @Override
@@ -85,7 +82,6 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
         mRecyclerView.setLayoutManager(null);
         mAdapter.setItemClickListener(null);
         mRecyclerView.setAdapter(null);
-        mSearchView.setOnQueryTextListener(null);
         super.onStop();
     }
 

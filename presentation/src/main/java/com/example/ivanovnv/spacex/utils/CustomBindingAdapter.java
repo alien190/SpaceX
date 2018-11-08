@@ -71,10 +71,7 @@ public class CustomBindingAdapter {
     }
 
     private static void initLayoutManager(Scope scope, RecyclerView recyclerView) {
-        //LinearLayoutManager linearLayoutManager = scope.getInstance(LinearLayoutManager.class);
-        //linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        //recyclerView.setLayoutManager(linearLayoutManager);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(recyclerView.getContext(), 2);
+        GridLayoutManager gridLayoutManager = scope.getInstance(GridLayoutManager.class);
         gridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(gridLayoutManager);
     }
