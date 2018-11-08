@@ -23,21 +23,22 @@ public class LaunchViewModel extends ViewModel implements ILaunchListViewModel, 
     private MutableLiveData<SwipeRefreshLayout.OnRefreshListener> mOnRefreshListener = new MutableLiveData<>();
     private MutableLiveData<List<DomainLaunch>> mLaunches = new MutableLiveData<>();
     private MutableLiveData<List<LaunchSearchFilter>> mSearchFilter = new MutableLiveData<>();
+    private MutableLiveData<String> mSearchByNameQuery = new MutableLiveData<>();
     private ILaunchService mLaunchService;
-    private String mSearchByNameQuery = "";
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
 
     public LaunchViewModel(ILaunchService launchService) {
         mLaunchService = launchService;
         mOnRefreshListener.postValue(this::refreshLaunches);
-        loadLaunches();
+        loadLaunches(null);
     }
 
-    private void loadLaunches() {
-        compositeDisposable.add(mLaunchService.getLaunchesLiveWithFilter(mSearchByNameQuery)
-                .observeOn(Schedulers.io())
-                .subscribe(mLaunches::postValue, Timber::d));
+    private void loadLaunches(List<LaunchSearchFilter> launchSearchFilter) {
+        compositeDisposable.add(
+                mLaunchService.getLaunchesLiveWithFilter(launchSearchFilter)
+                        .observeOn(Schedulers.io())
+                        .subscribe(mLaunches::postValue, Timber::d));
     }
 
     @Override
@@ -58,34 +59,32 @@ public class LaunchViewModel extends ViewModel implements ILaunchListViewModel, 
                 .subscribe(b -> mIsLoadData.postValue(false), Timber::d));
     }
 
-
-    private void setSearchByNameQuery(String query) {
-        mSearchByNameQuery = query;
-        loadLaunches();
-    }
-
     @Override
     public boolean onQueryTextSubmit(String s) {
-        addNewFilterToList(s, SearchType.BY_NAME);
+        List<LaunchSearchFilter> filterList = getCurrentSearchFilter();
+        addNewFilterToList(filterList, s, SearchType.BY_NAME);
+        mSearchFilter.postValue(filterList);
+        mSearchByNameQuery.postValue("");
         return true;
     }
 
     @Override
     public boolean onQueryTextChange(String s) {
-        setSearchByNameQuery(s);
+        List<LaunchSearchFilter> filterList = new ArrayList<>(getCurrentSearchFilter());
+        addNewFilterToList(filterList, s, SearchType.BY_NAME);
+        loadLaunches(filterList);
+        mSearchByNameQuery.postValue(s);
         return true;
     }
 
-    private void addNewFilterToList(String value, SearchType type) {
-        List<LaunchSearchFilter> filterList;
+    private void addNewFilterToList(List<LaunchSearchFilter> filterList, String value, SearchType type) {
         if (value != null && !value.isEmpty()) {
-            filterList = mSearchFilter.getValue();
             boolean isFound = false;
             if (filterList == null) {
                 filterList = new ArrayList<>();
             } else {
                 for (LaunchSearchFilter filter : filterList) {
-                    if (filter.getType() == type && filter.getValue().equals(value)) {
+                    if (filter.getType() == type && (filter.getValue().contains(value))) {
                         isFound = true;
                         break;
                     }
@@ -96,9 +95,25 @@ public class LaunchViewModel extends ViewModel implements ILaunchListViewModel, 
                 if (!filterList.contains(filter)) {
                     filterList.add(filter);
                 }
-                mSearchFilter.postValue(filterList);
             }
         }
+    }
+
+    private List<LaunchSearchFilter> getCurrentSearchFilter() {
+        List<LaunchSearchFilter> filterList;
+        filterList = mSearchFilter.getValue();
+        if (filterList == null) {
+            filterList = new ArrayList<>();
+        }
+        return filterList;
+    }
+
+    @Override
+    public void onSearchFilterItemRemoved(LaunchSearchFilter item) {
+        List<LaunchSearchFilter> filterList = getCurrentSearchFilter();
+        filterList.remove(item);
+        loadLaunches(filterList);
+        mSearchFilter.postValue(filterList);
     }
 
     public MutableLiveData<SwipeRefreshLayout.OnRefreshListener> getOnRefreshListener() {
@@ -115,5 +130,9 @@ public class LaunchViewModel extends ViewModel implements ILaunchListViewModel, 
 
     public MutableLiveData<List<LaunchSearchFilter>> getSearchFilter() {
         return mSearchFilter;
+    }
+
+    public MutableLiveData<String> getSearchByNameQuery() {
+        return mSearchByNameQuery;
     }
 }

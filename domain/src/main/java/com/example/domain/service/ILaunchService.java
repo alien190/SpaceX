@@ -1,6 +1,7 @@
 package com.example.domain.service;
 
 import com.example.domain.model.launch.DomainLaunch;
+import com.example.domain.model.searchFilter.LaunchSearchFilter;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface ILaunchService {
 
     Flowable<List<DomainLaunch>> getLaunchesLive();
 
-    Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(String filter);
+    Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(List<LaunchSearchFilter> launchSearchFilterList);
 
     void insertLaunches(List<DomainLaunch> domainLaunches);
 

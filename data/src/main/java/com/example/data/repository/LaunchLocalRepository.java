@@ -8,6 +8,7 @@ import com.example.data.database.LaunchDao;
 import com.example.data.database.LaunchDataBase;
 import com.example.data.model.DataImage;
 import com.example.domain.model.launch.DomainLaunch;
+import com.example.domain.model.searchFilter.LaunchSearchFilter;
 import com.example.domain.repository.ILaunchRepository;
 
 import java.io.InputStream;
@@ -90,16 +91,38 @@ public class LaunchLocalRepository implements ILaunchRepository {
     }
 
     @Override
-    public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(String filter) {
-        String filterQuery = "";
-        if (filter != null && !filter.isEmpty()) {
-            filterQuery = "AND mission_name LIKE '%" + filter + "%'";
-        }
-        String query = "SELECT DataLaunch.*, DataImage.image FROM DataLaunch,DataImage WHERE DataLaunch.imageId=DataImage.id "
-                + filterQuery
-                + " ORDER BY launch_date_unix DESC";
+    public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(List<LaunchSearchFilter> launchSearchFilterList) {
+        String query = "SELECT DataLaunch.*, DataImage.image FROM DataLaunch,DataImage WHERE DataLaunch.imageId=DataImage.id"
+                + generateSqlWhereFromFilterList(launchSearchFilterList)
+                + "ORDER BY launch_date_unix DESC";
+        Timber.d("SQL query: %s", query);
         return mLaunchDao
                 .getLaunchesLiveWithFilter(new SimpleSQLiteQuery(query))
                 .map(DataToDomainConverter::convertLaunchList);
+    }
+
+    private String generateSqlWhereFromFilterList(List<LaunchSearchFilter> launchSearchFilterList) {
+        if (launchSearchFilterList == null || launchSearchFilterList.isEmpty()) {
+            return " ";
+        } else {
+            StringBuilder retValueBuilder = new StringBuilder();
+            String filter = "";
+            //boolean first = true;
+            for (LaunchSearchFilter launchSearchFilter : launchSearchFilterList) {
+//                if (!first) {
+//                    retValueBuilder.append(" AND ");
+//                }
+                switch (launchSearchFilter.getType()) {
+                    case BY_NAME: {
+                        filter = "mission_name LIKE '%" + launchSearchFilter.getValue() + "%'";
+                        break;
+                    }
+                }
+                retValueBuilder.append(" AND ");
+                retValueBuilder.append(filter);
+//                first = false;
+            }
+            return retValueBuilder.toString();
+        }
     }
 }

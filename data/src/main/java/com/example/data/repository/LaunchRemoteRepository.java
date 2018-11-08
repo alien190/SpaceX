@@ -6,6 +6,7 @@ import com.example.data.api.SpaceXAPI;
 import com.example.data.api.converter.DataToDomainConverter;
 import com.example.data.utils.DbBitmapUtility;
 import com.example.domain.model.launch.DomainLaunch;
+import com.example.domain.model.searchFilter.LaunchSearchFilter;
 import com.example.domain.repository.ILaunchRepository;
 import com.squareup.picasso.Picasso;
 
@@ -116,7 +117,7 @@ public class LaunchRemoteRepository implements ILaunchRepository {
     }
 
     @Override
-    public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(String filter) {
+    public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(List<LaunchSearchFilter> launchSearchFilterList) {
         return null;
     }
 }

@@ -24,6 +24,6 @@
             android:id="@+id/search_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/layout_margin" />
+            android:padding="@dimen/layout_margin"/>
     </LinearLayout>
 </android.support.v7.widget.CardView>

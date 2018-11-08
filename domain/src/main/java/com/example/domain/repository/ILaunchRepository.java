@@ -1,6 +1,7 @@
 package com.example.domain.repository;
 
 import com.example.domain.model.launch.DomainLaunch;
+import com.example.domain.model.searchFilter.LaunchSearchFilter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,15 +18,13 @@ public interface ILaunchRepository {
 
     Flowable<List<DomainLaunch>> getLaunchesLive();
 
-    Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(String filter);
+    Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(List<LaunchSearchFilter> launchSearchFilterList);
 
     Single<Boolean> insertLaunches(List<DomainLaunch> domainLaunches);
 
     Long insertLaunch(DomainLaunch domainLaunch);
 
     Single<DomainLaunch> getLaunchByFlightNumber(int flightNumber);
-
-    //Single<List<DomainLaunch>> getLaunchFromCacheForUpdate();
 
     byte[] loadImage(String url) throws Exception;
 

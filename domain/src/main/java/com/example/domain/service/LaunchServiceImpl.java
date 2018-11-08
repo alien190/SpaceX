@@ -1,6 +1,7 @@
 package com.example.domain.service;
 
 import com.example.domain.model.launch.DomainLaunch;
+import com.example.domain.model.searchFilter.LaunchSearchFilter;
 import com.example.domain.repository.ILaunchRepository;
 
 import java.io.IOException;
@@ -38,8 +39,8 @@ public class LaunchServiceImpl implements ILaunchService {
     }
 
     @Override
-    public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(String filter) {
-        return mLocalRepository.getLaunchesLiveWithFilter(filter).subscribeOn(Schedulers.io());
+    public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(List<LaunchSearchFilter> launchSearchFilterList) {
+        return mLocalRepository.getLaunchesLiveWithFilter(launchSearchFilterList).subscribeOn(Schedulers.io());
     }
 
     @Override

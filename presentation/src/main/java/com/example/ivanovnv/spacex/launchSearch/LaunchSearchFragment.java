@@ -4,15 +4,16 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.domain.model.searchFilter.LaunchSearchFilter;
 import com.example.ivanovnv.spacex.R;
+import com.example.ivanovnv.spacex.customComponents.SearchFilterLayoutManager;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ import toothpick.Scope;
 import toothpick.Toothpick;
 
 
-public class LaunchSearchFragment extends Fragment {
+public class LaunchSearchFragment extends Fragment implements SearchFilterAdapter.IOnItemRemoveCallback {
 
     @BindView(R.id.searchView)
     SearchView mSearchView;
@@ -34,9 +35,11 @@ public class LaunchSearchFragment extends Fragment {
     @Inject
     ILaunchSearchViewModel mSearchViewModel;
     @Inject
-    LinearLayoutManager mLayoutManager;
+    SearchFilterLayoutManager mLayoutManager;
     @Inject
-    SearchFilterListAdapter mListAdapter;
+    SearchFilterAdapter mListAdapter;
+    @Inject
+    protected ItemTouchHelper mItemTouchHelper;
 
 
     public static LaunchSearchFragment newInstance() {
@@ -56,34 +59,45 @@ public class LaunchSearchFragment extends Fragment {
         Scope scope = Toothpick.openScope("LaunchFragment");
         Toothpick.inject(this, scope);
 
-        mSearchViewModel.getSearchFilter().observe(this, this::setSearchFilterList);
+        mSearchViewModel.getSearchFilter().observe(this, mListAdapter::submitList);
+        mSearchViewModel.getSearchByNameQuery().observe(this, this::setSearchQuery);
 
         return view;
     }
 
-    private void setSearchFilterList(List<LaunchSearchFilter> searchFilterList) {
-        if (searchFilterList != null && !searchFilterList.isEmpty()) {
-            mSearchRecycler.setVisibility(View.VISIBLE);
-            mSearchRecycler.requestLayout();
+    private void setSearchQuery(String newQuery) {
+        if (newQuery == null) {
+            mSearchView.setQuery("", false);
         } else {
-            mSearchRecycler.setVisibility(View.GONE);
+            if (!newQuery.equals(String.valueOf(mSearchView.getQuery()))) {
+                mSearchView.setQuery(newQuery, false);
+            }
         }
-        mListAdapter.submitList(searchFilterList);
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        mListAdapter.setOnItemRemoveCallback(this);
         mSearchView.setOnQueryTextListener(mSearchViewModel);
         mSearchRecycler.setLayoutManager(mLayoutManager);
         mSearchRecycler.setAdapter(mListAdapter);
+        mItemTouchHelper.attachToRecyclerView(mSearchRecycler);
     }
 
     @Override
     public void onStop() {
+        mListAdapter.setOnItemRemoveCallback(null);
         mSearchView.setOnQueryTextListener(null);
         mSearchRecycler.setLayoutManager(null);
         mSearchRecycler.setAdapter(null);
+        mItemTouchHelper.attachToRecyclerView(null);
         super.onStop();
     }
+
+    @Override
+    public void onItemRemove(LaunchSearchFilter item) {
+        mSearchViewModel.onSearchFilterItemRemoved(item);
+    }
 }
+

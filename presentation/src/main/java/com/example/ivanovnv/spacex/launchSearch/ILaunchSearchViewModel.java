@@ -10,4 +10,8 @@ import java.util.List;
 public interface ILaunchSearchViewModel extends SearchView.OnQueryTextListener {
 
     MutableLiveData<List<LaunchSearchFilter>> getSearchFilter();
+
+    MutableLiveData<String> getSearchByNameQuery();
+
+    void onSearchFilterItemRemoved(LaunchSearchFilter item);
 }
