@@ -14,7 +14,7 @@ public interface ILaunchService {
 
     Flowable<List<DomainLaunch>> getLaunchesLive();
 
-    Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(List<LaunchSearchFilter> launchSearchFilterList);
+    Single<List<DomainLaunch>> getLaunchesWithFilter(List<LaunchSearchFilter> launchSearchFilterList);
 
     void insertLaunches(List<DomainLaunch> domainLaunches);
 

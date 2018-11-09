@@ -53,9 +53,13 @@ public class LaunchViewModel extends ViewModel
                     mIsLoadData.postValue(false);
                     Timber.d(throwable);
                 })
-                .subscribe(b -> mIsLoadData.postValue(false), Timber::d));
+                .subscribe(this::onLaunchesRefreshed, Timber::d));
     }
 
+    private void onLaunchesRefreshed(Boolean value) {
+        mIsLoadData.postValue(false);
+        loadLaunchesWithQueryText(mSearchByNameQuery.getValue());
+    }
     @Override
     public boolean onQueryTextSubmit(String s) {
         List<LaunchSearchFilter> filterList = getCurrentSearchFilter();
@@ -116,7 +120,7 @@ public class LaunchViewModel extends ViewModel
 
     private void loadLaunches(List<LaunchSearchFilter> launchSearchFilter) {
         compositeDisposable.add(
-                mLaunchService.getLaunchesLiveWithFilter(launchSearchFilter)
+                mLaunchService.getLaunchesWithFilter(launchSearchFilter)
                         .observeOn(Schedulers.io())
                         .subscribe(mLaunches::postValue, Timber::d));
     }

@@ -88,7 +88,7 @@ public class LaunchLocalRepository implements ILaunchRepository {
     }
 
     @Override
-    public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(List<LaunchSearchFilter> launchSearchFilterList) {
+    public Single<List<DomainLaunch>> getLaunchesWithFilter(List<LaunchSearchFilter> launchSearchFilterList) {
         String filter = generateSqlWhereFromFilterList(launchSearchFilterList);
         if (!filter.isEmpty()) {
             filter = " AND (" + filter + ") ";

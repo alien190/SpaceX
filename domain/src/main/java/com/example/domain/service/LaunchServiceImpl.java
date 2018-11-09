@@ -5,14 +5,12 @@ import com.example.domain.model.searchFilter.LaunchSearchFilter;
 import com.example.domain.model.searchFilter.LaunchSearchType;
 import com.example.domain.repository.ILaunchRepository;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class LaunchServiceImpl implements ILaunchService {
@@ -42,8 +40,8 @@ public class LaunchServiceImpl implements ILaunchService {
     }
 
     @Override
-    public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(List<LaunchSearchFilter> launchSearchFilterList) {
-        return mLocalRepository.getLaunchesLiveWithFilter(launchSearchFilterList).subscribeOn(Schedulers.io());
+    public Single<List<DomainLaunch>> getLaunchesWithFilter(List<LaunchSearchFilter> launchSearchFilterList) {
+        return mLocalRepository.getLaunchesWithFilter(launchSearchFilterList).subscribeOn(Schedulers.io());
     }
 
     @Override

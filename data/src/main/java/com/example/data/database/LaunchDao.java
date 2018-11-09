@@ -34,8 +34,9 @@ public interface LaunchDao {
     Flowable<List<DataLaunch>> getLaunchesLive();
 
     //@Query("SELECT DataLaunch.*, DataImage.image FROM DataLaunch,DataImage WHERE DataLaunch.imageId=DataImage.id AND :filter ORDER BY launch_date_unix DESC")
-    @RawQuery(observedEntities = {DataLaunch.class, DataImage.class})
-    Flowable<List<DataLaunch>> getLaunchesLiveWithFilter(SupportSQLiteQuery query);
+    //@RawQuery(observedEntities = {DataLaunch.class, DataImage.class})
+    @RawQuery
+    Single<List<DataLaunch>> getLaunchesLiveWithFilter(SupportSQLiteQuery query);
 
     @Query("SELECT * FROM DataLaunch WHERE flight_number < :lastFlightNumber ORDER BY launch_date_unix DESC LIMIT :returnCount")
     List<DataLaunch> getLaunchesInRange(int lastFlightNumber, int returnCount);

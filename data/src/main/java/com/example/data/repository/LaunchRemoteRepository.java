@@ -115,8 +115,8 @@ public class LaunchRemoteRepository implements ILaunchRepository {
     }
 
     @Override
-    public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(List<LaunchSearchFilter> launchSearchFilterList) {
-        return Flowable.error(getError());
+    public Single<List<DomainLaunch>> getLaunchesWithFilter(List<LaunchSearchFilter> launchSearchFilterList) {
+        return Single.error(getError());
     }
 
     @Override
