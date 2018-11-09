@@ -11,6 +11,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.example.domain.model.searchFilter.LaunchSearchFilter;
 import com.example.ivanovnv.spacex.R;
@@ -32,6 +33,8 @@ public class LaunchSearchFragment extends Fragment {
     SearchView mSearchView;
     @BindView(R.id.search_recycler)
     RecyclerView mSearchRecycler;
+    @BindView(R.id.btn_add_filter)
+    ImageButton mAddSearchFilterButton;
 
     @Inject
     ILaunchSearchViewModel mSearchViewModel;
@@ -101,6 +104,7 @@ public class LaunchSearchFragment extends Fragment {
         mSearchRecycler.setLayoutManager(mLayoutManager);
         mSearchRecycler.setAdapter(mListAdapter);
         mItemTouchHelper.attachToRecyclerView(mSearchRecycler);
+        mAddSearchFilterButton.setOnClickListener((view) -> showEditDialogFragment(new LaunchSearchFilter()));
     }
 
     @Override
@@ -111,6 +115,7 @@ public class LaunchSearchFragment extends Fragment {
         mSearchRecycler.setLayoutManager(null);
         mSearchRecycler.setAdapter(null);
         mItemTouchHelper.attachToRecyclerView(null);
+        mAddSearchFilterButton.setOnClickListener(null);
         super.onStop();
     }
 

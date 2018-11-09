@@ -13,12 +13,15 @@ import com.example.ivanovnv.spacex.launchSearch.touchHelper.ItemTouchAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterViewHolder> implements ItemTouchAdapter {
 
     private List<LaunchSearchFilter> mLaunchSearchFilterList;
     private IOnFilterItemRemoveCallback mOnItemRemoveCallback;
     private IOnFilterItemClickListener mOnItemClickListener;
 
+    @Inject
     public SearchFilterAdapter() {
         mLaunchSearchFilterList = new ArrayList<>();
     }

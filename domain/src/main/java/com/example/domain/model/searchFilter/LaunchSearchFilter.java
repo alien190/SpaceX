@@ -4,12 +4,18 @@ public class LaunchSearchFilter {
 
     private String mValue;
     private LaunchSearchType mType;
-    private boolean isSelected;
+    private boolean mIsSelected;
+
+    public LaunchSearchFilter() {
+        mValue = "";
+        mIsSelected = false;
+        mType = LaunchSearchType.EMPTY;
+    }
 
     public LaunchSearchFilter(String value, LaunchSearchType type) {
         mValue = value;
         mType = type;
-        isSelected = false;
+        mIsSelected = false;
     }
 
     @Override
@@ -36,10 +42,10 @@ public class LaunchSearchFilter {
     }
 
     public boolean isSelected() {
-        return isSelected;
+        return mIsSelected;
     }
 
     public void setSelected(boolean selected) {
-        isSelected = selected;
+        mIsSelected = selected;
     }
 }
