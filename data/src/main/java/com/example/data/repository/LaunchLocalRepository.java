@@ -2,16 +2,14 @@ package com.example.data.repository;
 
 import android.arch.persistence.db.SimpleSQLiteQuery;
 
-import com.example.data.api.converter.DataToDomainConverter;
-import com.example.data.api.converter.DomainToDataConverter;
+import com.example.data.utils.converter.DataToDomainConverter;
+import com.example.data.utils.converter.DomainToDataConverter;
 import com.example.data.database.LaunchDao;
-import com.example.data.database.LaunchDataBase;
 import com.example.data.model.DataImage;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.searchFilter.LaunchSearchFilter;
 import com.example.domain.repository.ILaunchRepository;
 
-import java.io.InputStream;
 import java.util.List;
 
 import io.reactivex.Flowable;
@@ -62,7 +60,7 @@ public class LaunchLocalRepository implements ILaunchRepository {
 
     @Override
     public byte[] loadImageWithResize(String url, int width, int height) throws Exception {
-        return new byte[0];
+        return null;
     }
 
     @Override
@@ -86,8 +84,7 @@ public class LaunchLocalRepository implements ILaunchRepository {
 
     @Override
     public Single<DomainLaunch> getPressKitPdf(DomainLaunch domainLaunch) {
-        //do nothing
-        return null;
+        return Single.error(getError());
     }
 
     @Override
@@ -107,22 +104,26 @@ public class LaunchLocalRepository implements ILaunchRepository {
         } else {
             StringBuilder retValueBuilder = new StringBuilder();
             String filter = "";
-            //boolean first = true;
             for (LaunchSearchFilter launchSearchFilter : launchSearchFilterList) {
-//                if (!first) {
-//                    retValueBuilder.append(" AND ");
-//                }
                 switch (launchSearchFilter.getType()) {
-                    case BY_NAME: {
+                    case BY_MISSION_NAME: {
                         filter = "mission_name LIKE '%" + launchSearchFilter.getValue() + "%'";
                         break;
                     }
                 }
                 retValueBuilder.append(" AND ");
                 retValueBuilder.append(filter);
-//                first = false;
             }
             return retValueBuilder.toString();
         }
+    }
+
+    private Throwable getError() {
+        return new Throwable("do nothing");
+    }
+
+    @Override
+    public Single<List<String>> getListRocketNames() {
+        return mLaunchDao.getListRocketNames();
     }
 }

@@ -1,4 +1,4 @@
-package com.example.ivanovnv.spacex.detailLaunch;
+package com.example.ivanovnv.spacex.launchDetail;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,25 +14,25 @@ import android.view.ViewGroup;
 
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.databinding.DetailLaunchBinding;
-import com.example.ivanovnv.spacex.di.detailLaunch.DetailLaunchFragmentModule;
+import com.example.ivanovnv.spacex.di.launchDetail.LaunchDetailFragmentModule;
 
 import javax.inject.Inject;
 
 import toothpick.Scope;
 import toothpick.Toothpick;
 
-public class DetailLaunchFragment extends Fragment {
-    private static final String FLIGHT_NUMBER_KEY = "com.example.ivanovnv.spacex.DetailLaunchFragment.KEY";
+public class LaunchDetailFragment extends Fragment {
+    private static final String FLIGHT_NUMBER_KEY = "com.example.ivanovnv.spacex.LaunchDetailFragment.KEY";
 
     @Inject
-    DetailLaunchViewModel mDetailLaunchViewModel;
+    LaunchDetailViewModel mDetailLaunchViewModel;
 
 
-    public static DetailLaunchFragment newInstance(int flightNumber) {
+    public static LaunchDetailFragment newInstance(int flightNumber) {
 
         Bundle args = new Bundle();
         args.putInt(FLIGHT_NUMBER_KEY, flightNumber);
-        DetailLaunchFragment fragment = new DetailLaunchFragment();
+        LaunchDetailFragment fragment = new LaunchDetailFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -89,9 +89,9 @@ public class DetailLaunchFragment extends Fragment {
     }
 
     private void injectToothpick(int flightNumber) {
-        Toothpick.closeScope("DetailLaunchFragment");
-        Scope scope = Toothpick.openScopes("Application", "DetailLaunchFragment");
-        scope.installModules(new DetailLaunchFragmentModule(this, flightNumber));
+        Toothpick.closeScope("LaunchDetailFragment");
+        Scope scope = Toothpick.openScopes("Application", "LaunchDetailFragment");
+        scope.installModules(new LaunchDetailFragmentModule(this, flightNumber));
         Toothpick.inject(this, scope);
     }
 
@@ -104,7 +104,7 @@ public class DetailLaunchFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        Toothpick.closeScope("DetailLaunchFragment");
+        Toothpick.closeScope("LaunchDetailFragment");
         super.onDestroy();
     }
 

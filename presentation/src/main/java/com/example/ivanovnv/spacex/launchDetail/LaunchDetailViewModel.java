@@ -1,4 +1,4 @@
-package com.example.ivanovnv.spacex.detailLaunch;
+package com.example.ivanovnv.spacex.launchDetail;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
@@ -16,7 +16,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
-public class DetailLaunchViewModel extends ViewModel {
+public class LaunchDetailViewModel extends ViewModel {
 
     private ILaunchService mLaunchService;
     private Integer mFlightNumber;
@@ -44,7 +44,7 @@ public class DetailLaunchViewModel extends ViewModel {
     private MutableLiveData<Boolean> mIsRefreshPhotos = new MutableLiveData<>();
 
 
-    public DetailLaunchViewModel(ILaunchService launchService, Integer flightNumber) {
+    public LaunchDetailViewModel(ILaunchService launchService, Integer flightNumber) {
         mLaunchService = launchService;
         mFlightNumber = flightNumber;
         mIsLoadDone.postValue(true);

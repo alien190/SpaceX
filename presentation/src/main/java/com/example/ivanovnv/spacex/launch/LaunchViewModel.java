@@ -6,7 +6,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.searchFilter.LaunchSearchFilter;
-import com.example.domain.model.searchFilter.SearchType;
+import com.example.domain.model.searchFilter.LaunchSearchType;
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spacex.launchSearch.ILaunchSearchViewModel;
 
@@ -24,6 +24,7 @@ public class LaunchViewModel extends ViewModel implements ILaunchListViewModel, 
     private MutableLiveData<List<DomainLaunch>> mLaunches = new MutableLiveData<>();
     private MutableLiveData<List<LaunchSearchFilter>> mSearchFilter = new MutableLiveData<>();
     private MutableLiveData<String> mSearchByNameQuery = new MutableLiveData<>();
+    private MutableLiveData<LaunchSearchFilter> mSearchFilterItemForEdit = new MutableLiveData<>();
     private ILaunchService mLaunchService;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
@@ -56,7 +57,7 @@ public class LaunchViewModel extends ViewModel implements ILaunchListViewModel, 
     @Override
     public boolean onQueryTextSubmit(String s) {
         List<LaunchSearchFilter> filterList = getCurrentSearchFilter();
-        addNewFilterToList(filterList, s, SearchType.BY_NAME);
+        addNewFilterToList(filterList, s, LaunchSearchType.BY_MISSION_NAME);
         mSearchFilter.postValue(filterList);
         mSearchByNameQuery.postValue("");
         return true;
@@ -70,13 +71,6 @@ public class LaunchViewModel extends ViewModel implements ILaunchListViewModel, 
     }
 
 
-    private void loadLaunches(List<LaunchSearchFilter> launchSearchFilter) {
-        compositeDisposable.add(
-                mLaunchService.getLaunchesLiveWithFilter(launchSearchFilter)
-                        .observeOn(Schedulers.io())
-                        .subscribe(mLaunches::postValue, Timber::d));
-    }
-
     @Override
     public void onFilterItemRemove(LaunchSearchFilter item) {
         removeSearchFilterItem(item);
@@ -85,17 +79,26 @@ public class LaunchViewModel extends ViewModel implements ILaunchListViewModel, 
 
     @Override
     public void onFilterItemClick(LaunchSearchFilter item) {
-        removeSearchFilterItem(item);
-        if (item.getType() == SearchType.BY_NAME) {
+        if (item.getType() == LaunchSearchType.BY_MISSION_NAME) {
+            removeSearchFilterItem(item);
             mSearchByNameQuery.postValue(item.getValue());
             loadLaunchesWithQueryText(item.getValue());
+        } else {
+            mSearchFilterItemForEdit.postValue(item);
         }
     }
 
     private void loadLaunchesWithQueryText(String query) {
         List<LaunchSearchFilter> filterList = new ArrayList<>(getCurrentSearchFilter());
-        addNewFilterToList(filterList, query, SearchType.BY_NAME);
+        addNewFilterToList(filterList, query, LaunchSearchType.BY_MISSION_NAME);
         loadLaunches(filterList);
+    }
+
+    private void loadLaunches(List<LaunchSearchFilter> launchSearchFilter) {
+        compositeDisposable.add(
+                mLaunchService.getLaunchesLiveWithFilter(launchSearchFilter)
+                        .observeOn(Schedulers.io())
+                        .subscribe(mLaunches::postValue, Timber::d));
     }
 
     private List<LaunchSearchFilter> getCurrentSearchFilter() {
@@ -107,7 +110,7 @@ public class LaunchViewModel extends ViewModel implements ILaunchListViewModel, 
         return filterList;
     }
 
-    private void addNewFilterToList(List<LaunchSearchFilter> filterList, String value, SearchType type) {
+    private void addNewFilterToList(List<LaunchSearchFilter> filterList, String value, LaunchSearchType type) {
         if (value != null && !value.isEmpty()) {
             boolean isFound = false;
             if (filterList == null) {
@@ -153,5 +156,10 @@ public class LaunchViewModel extends ViewModel implements ILaunchListViewModel, 
 
     public MutableLiveData<String> getSearchByNameQuery() {
         return mSearchByNameQuery;
+    }
+
+    @Override
+    public MutableLiveData<LaunchSearchFilter> getSearchFilterItemForEdit() {
+        return mSearchFilterItemForEdit;
     }
 }

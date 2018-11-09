@@ -2,14 +2,17 @@ package com.example.domain.service;
 
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.searchFilter.LaunchSearchFilter;
+import com.example.domain.model.searchFilter.LaunchSearchType;
 import com.example.domain.repository.ILaunchRepository;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class LaunchServiceImpl implements ILaunchService {
@@ -126,5 +129,25 @@ public class LaunchServiceImpl implements ILaunchService {
                 .runOn(Schedulers.io())
                 .map(url -> mRemoteRepository.loadImageWithResize(url, 1200, 0))
                 .sequentialDelayError();
+    }
+
+    @Override
+    public Single<List<LaunchSearchFilter>> getRocketNamesFilterList() {
+        return mLocalRepository.getListRocketNames()
+                .subscribeOn(Schedulers.io())
+                .map(this::createLaunchSearchFilterListRocketNames);
+    }
+
+    public List<LaunchSearchFilter> createLaunchSearchFilterListRocketNames(List<String> stringList) throws Exception {
+        return createLaunchSearchFilterList(stringList, LaunchSearchType.BY_ROCKET_NAME);
+    }
+
+
+    public List<LaunchSearchFilter> createLaunchSearchFilterList(List<String> stringList, LaunchSearchType type) throws Exception {
+        List<LaunchSearchFilter> launchSearchFilterList = new ArrayList<>();
+        for (String value : stringList) {
+            launchSearchFilterList.add(new LaunchSearchFilter(value, type));
+        }
+        return launchSearchFilterList;
     }
 }

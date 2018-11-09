@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.inject.Inject;
+
 public class LaunchAdapter extends RecyclerView.Adapter<LaunchViewHolder> {
 
     private List<DomainLaunch> mLaunches = new ArrayList<>();

@@ -65,4 +65,7 @@ public interface LaunchDao {
             "IN (SELECT DataImage.id FROM DataImage LEFT JOIN DataLaunch " +
             "ON DataImage.id = DataLaunch.imageId WHERE flight_number is NULL)")
     void deleteUnusedImages();
+
+    @Query("SELECT rocket_name FROM DataLaunch GROUP BY rocket_name")
+    Single<List<String>> getListRocketNames();
 }

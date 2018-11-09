@@ -1,7 +1,7 @@
 package com.example.data.api;
 
 import com.example.data.BuildConfig;
-import com.example.data.api.converter.DataConverterFactory;
+import com.example.data.utils.converter.DataConverterFactory;
 import com.google.gson.Gson;
 
 import okhttp3.OkHttpClient;

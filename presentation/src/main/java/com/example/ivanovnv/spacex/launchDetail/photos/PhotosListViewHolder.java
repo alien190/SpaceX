@@ -1,4 +1,4 @@
-package com.example.ivanovnv.spacex.detailLaunch;
+package com.example.ivanovnv.spacex.launchDetail.photos;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;

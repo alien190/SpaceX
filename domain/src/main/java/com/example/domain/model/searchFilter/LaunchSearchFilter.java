@@ -3,11 +3,13 @@ package com.example.domain.model.searchFilter;
 public class LaunchSearchFilter {
 
     private String mValue;
-    private SearchType mType;
+    private LaunchSearchType mType;
+    private boolean isSelected;
 
-    public LaunchSearchFilter(String value, SearchType type) {
+    public LaunchSearchFilter(String value, LaunchSearchType type) {
         mValue = value;
         mType = type;
+        isSelected = false;
     }
 
     @Override
@@ -25,11 +27,19 @@ public class LaunchSearchFilter {
         mValue = value;
     }
 
-    public SearchType getType() {
+    public LaunchSearchType getType() {
         return mType;
     }
 
-    public void setType(SearchType type) {
+    public void setType(LaunchSearchType type) {
         mType = type;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 }

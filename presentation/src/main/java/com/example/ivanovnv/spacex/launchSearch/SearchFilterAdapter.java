@@ -65,7 +65,9 @@ public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterViewHo
 
     public void submitList(List<LaunchSearchFilter> searchFilterList) {
         mLaunchSearchFilterList.clear();
-        mLaunchSearchFilterList.addAll(searchFilterList);
+        if (searchFilterList != null) {
+            mLaunchSearchFilterList.addAll(searchFilterList);
+        }
         notifyDataSetChanged();
     }
 
@@ -77,11 +79,11 @@ public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterViewHo
         mOnItemClickListener = onItemClickListener;
     }
 
-    interface IOnFilterItemRemoveCallback {
+    public interface IOnFilterItemRemoveCallback {
         void onFilterItemRemove(LaunchSearchFilter item);
     }
 
-    interface IOnFilterItemClickListener {
+    public interface IOnFilterItemClickListener {
         void onFilterItemClick(LaunchSearchFilter item);
     }
 }

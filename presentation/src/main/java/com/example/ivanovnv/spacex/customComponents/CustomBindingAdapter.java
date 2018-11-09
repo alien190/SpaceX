@@ -1,4 +1,4 @@
-package com.example.ivanovnv.spacex.utils;
+package com.example.ivanovnv.spacex.customComponents;
 
 import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
@@ -7,12 +7,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewParent;
 import android.widget.ImageView;
 
-import com.example.ivanovnv.spacex.detailLaunch.PhotosListAdapter;
+import com.example.domain.model.searchFilter.LaunchSearchFilter;
+import com.example.ivanovnv.spacex.launchDetail.photos.PhotosListAdapter;
 import com.example.ivanovnv.spacex.di.imageZoom.ImageZoomModule;
 import com.example.ivanovnv.spacex.imageZoom.ImageZoomActivity;
+import com.example.ivanovnv.spacex.launchSearch.SearchFilterAdapter;
 
 import java.util.List;
 
@@ -42,12 +43,12 @@ public class CustomBindingAdapter {
         }
     }
 
-    @BindingAdapter("bind:source")
-    public static void setRecyclerViewSource(RecyclerView recyclerView, List<Bitmap> bitmapList) {
+    @BindingAdapter("bind:photoSource")
+    public static void setRecyclerViewPhotoSource(RecyclerView recyclerView, List<Bitmap> bitmapList) {
         RecyclerView.Adapter adapter = recyclerView.getAdapter();
         if (adapter == null) {
-            Scope scope = Toothpick.openScope("DetailLaunchFragment");
-            initLayoutManager(scope, recyclerView);
+            Scope scope = Toothpick.openScope("LaunchDetailFragment");
+            initPhotoLayoutManager(scope, recyclerView);
             initPagerSnapHelper(scope, recyclerView);
             initPhotoListAdapter(scope, recyclerView, bitmapList);
         } else {
@@ -70,7 +71,7 @@ public class CustomBindingAdapter {
         recyclerView.setAdapter(photosListAdapter);
     }
 
-    private static void initLayoutManager(Scope scope, RecyclerView recyclerView) {
+    private static void initPhotoLayoutManager(Scope scope, RecyclerView recyclerView) {
         GridLayoutManager gridLayoutManager = scope.getInstance(GridLayoutManager.class);
         gridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -81,4 +82,36 @@ public class CustomBindingAdapter {
         recyclerView.setOnFlingListener(null);
         pagerSnapHelper.attachToRecyclerView(recyclerView);
     }
+
+    @BindingAdapter({"bind:filterItemSource", "bind:onItemClickListener", "bind:scopeName"})
+    public static void setRecyclerViewFilterItemSource(RecyclerView recyclerView,
+                                                       List<LaunchSearchFilter> launchSearchFilterList,
+                                                       SearchFilterAdapter.IOnFilterItemClickListener onFilterItemClickListener,
+                                                       String scopeName) {
+        RecyclerView.Adapter adapter = recyclerView.getAdapter();
+        if (adapter == null) {
+            Scope scope = Toothpick.openScope(scopeName);
+            initFilterItemLayoutManager(scope, recyclerView);
+            initFilterItemAdapter(scope, recyclerView, launchSearchFilterList, onFilterItemClickListener);
+        } else {
+            ((SearchFilterAdapter) adapter).submitList(launchSearchFilterList);
+            recyclerView.requestLayout();
+        }
+    }
+
+    private static void initFilterItemLayoutManager(Scope scope, RecyclerView recyclerView) {
+        SearchFilterLayoutManager searchFilterLayoutManager = scope.getInstance(SearchFilterLayoutManager.class);
+        recyclerView.setLayoutManager(searchFilterLayoutManager);
+    }
+
+    private static void initFilterItemAdapter(Scope scope,
+                                              RecyclerView recyclerView,
+                                              List<LaunchSearchFilter> launchSearchFilterList,
+                                              SearchFilterAdapter.IOnFilterItemClickListener onFilterItemClickListener) {
+        SearchFilterAdapter searchFilterAdapter = scope.getInstance(SearchFilterAdapter.class);
+        searchFilterAdapter.setOnFilterItemClickListener(onFilterItemClickListener);
+        searchFilterAdapter.submitList(launchSearchFilterList);
+        recyclerView.setAdapter(searchFilterAdapter);
+    }
+
 }

@@ -37,4 +37,6 @@ public interface ILaunchRepository {
     Boolean deleteUnusedImages();
 
     Single<DomainLaunch> getPressKitPdf(DomainLaunch domainLaunch);
+
+    Single<List<String>> getListRocketNames();
 }

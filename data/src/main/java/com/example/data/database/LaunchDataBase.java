@@ -3,10 +3,9 @@ package com.example.data.database;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
-import android.arch.persistence.room.TypeConverter;
 import android.arch.persistence.room.TypeConverters;
 
-import com.example.data.api.converter.StringListConverter;
+import com.example.data.utils.converter.StringListConverter;
 import com.example.data.model.DataImage;
 import com.example.data.model.DataLaunch;
 

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -14,6 +15,8 @@ import android.view.ViewGroup;
 import com.example.domain.model.searchFilter.LaunchSearchFilter;
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.customComponents.SearchFilterLayoutManager;
+import com.example.ivanovnv.spacex.di.launchSearchFilter.LaunchSearchFilterFragmentModule;
+import com.example.ivanovnv.spacex.launchSearchFilter.LaunchSearchFilterDialogFragment;
 
 import javax.inject.Inject;
 
@@ -59,8 +62,24 @@ public class LaunchSearchFragment extends Fragment {
 
         mSearchViewModel.getSearchFilter().observe(this, mListAdapter::submitList);
         mSearchViewModel.getSearchByNameQuery().observe(this, this::setSearchQuery);
+        mSearchViewModel.getSearchFilterItemForEdit().observe(this, this::showEditDialogFragment);
 
         return view;
+    }
+
+    private void showEditDialogFragment(LaunchSearchFilter launchSearchFilter) {
+        FragmentManager fragmentManager = getFragmentManager();
+        if (fragmentManager != null) {
+            String scopeName = "LaunchSearchFilter";
+            Toothpick.closeScope(scopeName);
+            Scope scope = Toothpick.openScopes("Application", scopeName);
+            scope.installModules(new LaunchSearchFilterFragmentModule(this, launchSearchFilter));
+            LaunchSearchFilterDialogFragment launchSearchFilterDialogFragment =
+                    LaunchSearchFilterDialogFragment.newInstance(scopeName);
+            launchSearchFilterDialogFragment.show(fragmentManager, scopeName);
+        } else {
+            throw new RuntimeException("getFragmentManager() return null");
+        }
     }
 
     private void setSearchQuery(String newQuery) {

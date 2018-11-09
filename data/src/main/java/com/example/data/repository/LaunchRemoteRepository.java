@@ -3,7 +3,7 @@ package com.example.data.repository;
 import android.graphics.Bitmap;
 
 import com.example.data.api.SpaceXAPI;
-import com.example.data.api.converter.DataToDomainConverter;
+import com.example.data.utils.converter.DataToDomainConverter;
 import com.example.data.utils.DbBitmapUtility;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.searchFilter.LaunchSearchFilter;
@@ -21,7 +21,6 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.CacheControl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import timber.log.Timber;
 
 public class LaunchRemoteRepository implements ILaunchRepository {
 
@@ -40,13 +39,12 @@ public class LaunchRemoteRepository implements ILaunchRepository {
 
     @Override
     public Single<Boolean> insertLaunches(List<DomainLaunch> launches) {
-        //do nothing
-        return null;
+        return Single.error(getError());
     }
 
     @Override
     public Flowable<List<DomainLaunch>> getLaunchesLive() {
-        return null;
+        return Flowable.error(getError());
     }
 
     @Override
@@ -94,7 +92,7 @@ public class LaunchRemoteRepository implements ILaunchRepository {
     @Override
     public Boolean deleteUnusedImages() {
         //do nothing
-        return true;
+        return false;
     }
 
     public Single<DomainLaunch> getPressKitPdf(DomainLaunch domainLaunch) {
@@ -118,6 +116,15 @@ public class LaunchRemoteRepository implements ILaunchRepository {
 
     @Override
     public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(List<LaunchSearchFilter> launchSearchFilterList) {
-        return null;
+        return Flowable.error(getError());
+    }
+
+    @Override
+    public Single<List<String>> getListRocketNames() {
+        return Single.error(getError());
+    }
+
+    private Throwable getError() {
+        return new Throwable("do nothing");
     }
 }

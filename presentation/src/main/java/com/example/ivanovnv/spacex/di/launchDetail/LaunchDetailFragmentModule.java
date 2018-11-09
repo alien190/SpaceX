@@ -1,27 +1,26 @@
-package com.example.ivanovnv.spacex.di.detailLaunch;
+package com.example.ivanovnv.spacex.di.launchDetail;
 
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 
-import com.example.ivanovnv.spacex.detailLaunch.DetailLaunchViewModel;
-import com.example.ivanovnv.spacex.detailLaunch.PhotosListAdapter;
+import com.example.ivanovnv.spacex.launchDetail.LaunchDetailViewModel;
+import com.example.ivanovnv.spacex.launchDetail.photos.PhotosListAdapter;
 import com.example.ivanovnv.spacex.launch.LaunchAdapter;
 import com.example.ivanovnv.spacex.customComponents.LaunchLayoutManager;
 
 import toothpick.config.Module;
 
-public class DetailLaunchFragmentModule extends Module {
+public class LaunchDetailFragmentModule extends Module {
     public static final String FLIGHT_NUMBER_NAME = "FLIGHT_NUMBER";
     private Fragment mFragment;
     private Integer mFlightNumber;
 
-    public DetailLaunchFragmentModule(Fragment fragment, Integer flightNumber) {
+    public LaunchDetailFragmentModule(Fragment fragment, Integer flightNumber) {
         mFragment = fragment;
         mFlightNumber = flightNumber;
-        bind(DetailLaunchViewModel.class).toProvider(DetailLaunchViewModelProvider.class).providesSingletonInScope();
-        bind(DetailLaunchViewModelFactory.class).toProvider(DetailLaunchViewModelFactoryProvider.class).providesSingletonInScope();
+        bind(LaunchDetailViewModel.class).toProvider(LaunchDetailViewModelProvider.class).providesSingletonInScope();
+        bind(LaunchDetailViewModelFactory.class).toProvider(LaunchDetailViewModelFactoryProvider.class).providesSingletonInScope();
         bind(Fragment.class).toInstance(mFragment);
         bind(LaunchAdapter.class).toInstance(new LaunchAdapter());
         bind(LaunchLayoutManager.class).toInstance(new LaunchLayoutManager());

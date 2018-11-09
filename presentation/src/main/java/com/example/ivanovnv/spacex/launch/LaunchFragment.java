@@ -13,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.ivanovnv.spacex.detailLaunch.DetailLaunchFragment;
+import com.example.ivanovnv.spacex.launchDetail.LaunchDetailFragment;
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.customComponents.LaunchLayoutManager;
 import com.example.ivanovnv.spacex.di.launch.LaunchFragmentModule;
@@ -97,7 +97,7 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
                         .addSharedElement(sharedView, sharedView.getTransitionName());
             }
             fragmentTransaction
-                    .replace(R.id.fragment_container, DetailLaunchFragment.newInstance(flightNumber))
+                    .replace(R.id.fragment_container, LaunchDetailFragment.newInstance(flightNumber))
                     .addToBackStack(TAG)
                     .commit();
         }

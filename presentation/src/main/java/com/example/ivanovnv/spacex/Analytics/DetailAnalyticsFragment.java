@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 
-import com.example.ivanovnv.spacex.detailLaunch.DetailLaunchFragment;
+import com.example.ivanovnv.spacex.launchDetail.LaunchDetailFragment;
 import com.example.ivanovnv.spacex.R;
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.Legend;
@@ -262,7 +262,7 @@ public class DetailAnalyticsFragment extends Fragment implements OnChartGestureL
             int flightNumber = (int) mFlightNumbersMap.get((int) highlight.getX());
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, DetailLaunchFragment.newInstance(flightNumber))
+                    .replace(R.id.fragment_container, LaunchDetailFragment.newInstance(flightNumber))
                     .addToBackStack(DetailAnalyticsFragment.class.getSimpleName())
                     .commit();
         } catch (Throwable t) {

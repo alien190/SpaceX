@@ -8,7 +8,7 @@
 
         <variable
             name="vm"
-            type="com.example.ivanovnv.spacex.detailLaunch.DetailLaunchViewModel" />
+            type="com.example.ivanovnv.spacex.launchDetail.LaunchDetailViewModel" />
 
         <import type="android.view.View" />
 
@@ -226,7 +226,7 @@
                         <android.support.v7.widget.RecyclerView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            bind:source="@{vm.photos}" />
+                            bind:photoSource="@{vm.photos}" />
                     </LinearLayout>
 
                     <ProgressBar

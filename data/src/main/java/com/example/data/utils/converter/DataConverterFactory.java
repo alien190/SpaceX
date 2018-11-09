@@ -1,4 +1,4 @@
-package com.example.data.api.converter;
+package com.example.data.utils.converter;
 
 import android.support.annotation.Nullable;
 
