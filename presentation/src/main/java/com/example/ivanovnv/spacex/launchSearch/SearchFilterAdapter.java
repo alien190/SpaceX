@@ -1,5 +1,6 @@
 package com.example.ivanovnv.spacex.launchSearch;
 
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterViewHo
     private List<LaunchSearchFilter> mLaunchSearchFilterList;
     private IOnFilterItemRemoveCallback mOnItemRemoveCallback;
     private IOnFilterItemClickListener mOnItemClickListener;
+    private boolean mCanChoice;
 
     @Inject
     public SearchFilterAdapter() {
@@ -29,7 +31,14 @@ public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterViewHo
     @NonNull
     @Override
     public SearchFilterViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.li_search_filter, viewGroup, false);
+        View view;
+        @LayoutRes int layoutResId;
+        if (mCanChoice) {
+            layoutResId = R.layout.li_search_filter_choice;
+        } else {
+            layoutResId = R.layout.li_search_filter_action;
+        }
+        view = LayoutInflater.from(viewGroup.getContext()).inflate(layoutResId, viewGroup, false);
         return new SearchFilterViewHolder(view);
     }
 
@@ -88,5 +97,9 @@ public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterViewHo
 
     public interface IOnFilterItemClickListener {
         void onFilterItemClick(LaunchSearchFilter item);
+    }
+
+    public void setCanChoice(boolean canChoice) {
+        mCanChoice = canChoice;
     }
 }

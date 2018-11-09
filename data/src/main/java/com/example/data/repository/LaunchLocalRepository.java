@@ -89,8 +89,15 @@ public class LaunchLocalRepository implements ILaunchRepository {
 
     @Override
     public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(List<LaunchSearchFilter> launchSearchFilterList) {
+        String filter = generateSqlWhereFromFilterList(launchSearchFilterList);
+        if (!filter.isEmpty()) {
+            filter = " AND (" + filter + ") ";
+        } else {
+            filter = " ";
+        }
+
         String query = "SELECT DataLaunch.*, DataImage.image FROM DataLaunch,DataImage WHERE DataLaunch.imageId=DataImage.id"
-                + generateSqlWhereFromFilterList(launchSearchFilterList)
+                + filter
                 + "ORDER BY launch_date_unix DESC";
         Timber.d("SQL query: %s", query);
         return mLaunchDao
@@ -100,23 +107,30 @@ public class LaunchLocalRepository implements ILaunchRepository {
 
     private String generateSqlWhereFromFilterList(List<LaunchSearchFilter> launchSearchFilterList) {
         if (launchSearchFilterList == null || launchSearchFilterList.isEmpty()) {
-            return " ";
+            return "";
         } else {
             StringBuilder retValueBuilder = new StringBuilder();
             String filter = "";
             for (LaunchSearchFilter launchSearchFilter : launchSearchFilterList) {
                 switch (launchSearchFilter.getType()) {
                     case BY_MISSION_NAME: {
-                        filter = "mission_name LIKE '%" + launchSearchFilter.getValue() + "%'";
+                        filter = "mission_name LIKE '%" + launchSearchFilter.getValue() + "%' ";
+                        break;
+                    }
+                    case BY_ROCKET_NAME: {
+                        filter = "rocket_name LIKE '%" + launchSearchFilter.getValue() + "%' ";
                         break;
                     }
                 }
-                retValueBuilder.append(" AND ");
+                if (!retValueBuilder.toString().isEmpty()) {
+                    retValueBuilder.append(" OR ");
+                }
                 retValueBuilder.append(filter);
             }
             return retValueBuilder.toString();
         }
     }
+
 
     private Throwable getError() {
         return new Throwable("do nothing");

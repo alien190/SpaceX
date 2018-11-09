@@ -10,6 +10,7 @@ import com.example.ivanovnv.spacex.customComponents.LaunchLayoutManager;
 import com.example.ivanovnv.spacex.launchSearch.ILaunchSearchViewModel;
 import com.example.ivanovnv.spacex.launchSearch.SearchFilterAdapter;
 import com.example.ivanovnv.spacex.launchSearch.touchHelper.ItemTouchAdapter;
+import com.example.ivanovnv.spacex.launchSearchFilter.ILaunchSearchFilterCallback;
 
 import toothpick.config.Module;
 
@@ -23,6 +24,7 @@ public class LaunchFragmentModule extends Module {
 
         bind(ILaunchListViewModel.class).toProvider(LaunchViewModelProvider.class).providesSingletonInScope();
         bind(ILaunchSearchViewModel.class).toProvider(LaunchViewModelProvider.class).providesSingletonInScope();
+        bind(ILaunchSearchFilterCallback.class).toProvider(LaunchViewModelProvider.class).providesSingletonInScope();
         bind(Fragment.class).toInstance(mFragment);
         bind(LaunchAdapter.class).toInstance(new LaunchAdapter());
         bind(LaunchLayoutManager.class).toInstance(new LaunchLayoutManager());

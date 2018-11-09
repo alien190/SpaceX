@@ -71,17 +71,20 @@ public class LaunchSearchFragment extends Fragment {
     }
 
     private void showEditDialogFragment(LaunchSearchFilter launchSearchFilter) {
-        FragmentManager fragmentManager = getFragmentManager();
-        if (fragmentManager != null) {
-            String scopeName = "LaunchSearchFilter";
-            Toothpick.closeScope(scopeName);
-            Scope scope = Toothpick.openScopes("Application", scopeName);
-            scope.installModules(new LaunchSearchFilterFragmentModule(this, launchSearchFilter));
-            LaunchSearchFilterDialogFragment launchSearchFilterDialogFragment =
-                    LaunchSearchFilterDialogFragment.newInstance(scopeName);
-            launchSearchFilterDialogFragment.show(fragmentManager, scopeName);
-        } else {
-            throw new RuntimeException("getFragmentManager() return null");
+        if (launchSearchFilter != null) {
+            mSearchViewModel.getSearchFilterItemForEdit().postValue(null);
+            FragmentManager fragmentManager = getFragmentManager();
+            if (fragmentManager != null) {
+                String scopeName = "LaunchSearchFilter";
+                Toothpick.closeScope(scopeName);
+                Scope scope = Toothpick.openScopes("LaunchFragment", scopeName);
+                scope.installModules(new LaunchSearchFilterFragmentModule(this, launchSearchFilter));
+                LaunchSearchFilterDialogFragment launchSearchFilterDialogFragment =
+                        LaunchSearchFilterDialogFragment.newInstance(scopeName);
+                launchSearchFilterDialogFragment.show(fragmentManager, scopeName);
+            } else {
+                throw new RuntimeException("getFragmentManager() return null");
+            }
         }
     }
 

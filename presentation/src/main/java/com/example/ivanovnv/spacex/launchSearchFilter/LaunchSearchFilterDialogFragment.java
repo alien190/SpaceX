@@ -8,7 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.domain.model.searchFilter.LaunchSearchFilter;
 import com.example.ivanovnv.spacex.databinding.SearchFilterItemBinding;
+
+import javax.inject.Inject;
 
 import toothpick.Scope;
 import toothpick.Toothpick;
@@ -16,8 +19,10 @@ import toothpick.Toothpick;
 public class LaunchSearchFilterDialogFragment extends DialogFragment {
     private static final String SCOPE_NAME_KEY = "LaunchSearchFilterDialogFragment.ScopeName";
 
-    public static LaunchSearchFilterDialogFragment newInstance(String scopeName) {
+    @Inject
+    ILaunchSearchFilterViewModel mViewModel;
 
+    public static LaunchSearchFilterDialogFragment newInstance(String scopeName) {
         Bundle args = new Bundle();
 
         LaunchSearchFilterDialogFragment fragment = new LaunchSearchFilterDialogFragment();
@@ -35,13 +40,28 @@ public class LaunchSearchFilterDialogFragment extends DialogFragment {
             if (scopeName != null && !scopeName.isEmpty()) {
                 SearchFilterItemBinding searchFilterItemBinding = SearchFilterItemBinding.inflate(inflater);
                 Scope scope = Toothpick.openScope(scopeName);
+                initViewModel(scope);
                 searchFilterItemBinding.setScopeName(scopeName);
-                searchFilterItemBinding.setVm(scope.getInstance(LaunchSearchFilterViewModel.class));
+                searchFilterItemBinding.setVm(mViewModel);
                 searchFilterItemBinding.setLifecycleOwner(this);
                 searchFilterItemBinding.executePendingBindings();
                 return searchFilterItemBinding.getRoot();
             }
         }
         throw new IllegalArgumentException("Scope name can't be null or empty");
+    }
+
+    private void initViewModel(Scope scope) {
+        Toothpick.inject(this, scope);
+        mViewModel.setLaunchSearchFilterForEdit(scope.getInstance(LaunchSearchFilter.class));
+        mViewModel.initListRocketNames();
+        mViewModel.getCloseDialog().observe(this, this::onClose);
+    }
+
+    private void onClose(Boolean canClose) {
+        if (canClose != null && canClose) {
+            mViewModel.getCloseDialog().postValue(false);
+            dismiss();
+        }
     }
 }

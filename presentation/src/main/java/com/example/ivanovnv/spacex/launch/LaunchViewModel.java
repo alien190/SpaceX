@@ -9,6 +9,7 @@ import com.example.domain.model.searchFilter.LaunchSearchFilter;
 import com.example.domain.model.searchFilter.LaunchSearchType;
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spacex.launchSearch.ILaunchSearchViewModel;
+import com.example.ivanovnv.spacex.launchSearchFilter.ILaunchSearchFilterCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,8 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
-public class LaunchViewModel extends ViewModel implements ILaunchListViewModel, ILaunchSearchViewModel {
+public class LaunchViewModel extends ViewModel
+        implements ILaunchListViewModel, ILaunchSearchViewModel, ILaunchSearchFilterCallback {
 
     private MutableLiveData<Boolean> mIsLoadData = new MutableLiveData<>();
     private MutableLiveData<SwipeRefreshLayout.OnRefreshListener> mOnRefreshListener = new MutableLiveData<>();
@@ -88,6 +90,24 @@ public class LaunchViewModel extends ViewModel implements ILaunchListViewModel, 
         }
     }
 
+    @Override
+    public void onFilterEditFinished(LaunchSearchFilter oldItem, List<LaunchSearchFilter> newItems) {
+        removeSearchFilterItem(oldItem);
+        addNewFilterItemsToCurrentList(newItems);
+    }
+
+    private void addNewFilterItemsToCurrentList(List<LaunchSearchFilter> newItems) {
+        if (newItems != null && !newItems.isEmpty()) {
+            List<LaunchSearchFilter> filterList = getCurrentSearchFilter();
+            for (LaunchSearchFilter item : newItems) {
+                item.setSelected(false);
+                addNewFilterItemToList(filterList, item);
+            }
+            mSearchFilter.postValue(filterList);
+            loadLaunchesWithQueryText(mSearchByNameQuery.getValue());
+        }
+    }
+
     private void loadLaunchesWithQueryText(String query) {
         List<LaunchSearchFilter> filterList = new ArrayList<>(getCurrentSearchFilter());
         addNewFilterToList(filterList, query, LaunchSearchType.BY_MISSION_NAME);
@@ -110,32 +130,39 @@ public class LaunchViewModel extends ViewModel implements ILaunchListViewModel, 
         return filterList;
     }
 
+
     private void addNewFilterToList(List<LaunchSearchFilter> filterList, String value, LaunchSearchType type) {
         if (value != null && !value.isEmpty()) {
+            LaunchSearchFilter newItem = new LaunchSearchFilter(value, type);
+            addNewFilterItemToList(filterList, newItem);
+        }
+    }
+
+    private void addNewFilterItemToList(List<LaunchSearchFilter> filterList, LaunchSearchFilter newItem) {
+        if (newItem != null) {
             boolean isFound = false;
             if (filterList == null) {
                 filterList = new ArrayList<>();
             } else {
                 for (LaunchSearchFilter filter : filterList) {
-                    if (filter.getType() == type && (filter.getValue().contains(value))) {
+                    if (filter.getType() == newItem.getType() && (filter.getValue().contains(newItem.getValue()))) {
                         isFound = true;
                         break;
                     }
                 }
             }
             if (!isFound) {
-                LaunchSearchFilter filter = new LaunchSearchFilter(value, type);
-                if (!filterList.contains(filter)) {
-                    filterList.add(filter);
-                }
+                filterList.add(newItem);
             }
         }
     }
 
     private void removeSearchFilterItem(LaunchSearchFilter item) {
-        List<LaunchSearchFilter> filterList = getCurrentSearchFilter();
-        filterList.remove(item);
-        mSearchFilter.postValue(filterList);
+        if (item != null) {
+            List<LaunchSearchFilter> filterList = getCurrentSearchFilter();
+            filterList.remove(item);
+            mSearchFilter.postValue(filterList);
+        }
     }
 
     public MutableLiveData<SwipeRefreshLayout.OnRefreshListener> getOnRefreshListener() {
@@ -162,4 +189,5 @@ public class LaunchViewModel extends ViewModel implements ILaunchListViewModel, 
     public MutableLiveData<LaunchSearchFilter> getSearchFilterItemForEdit() {
         return mSearchFilterItemForEdit;
     }
+
 }
