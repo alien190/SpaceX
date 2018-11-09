@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -29,6 +30,7 @@ public class LaunchViewModel extends ViewModel
     private MutableLiveData<LaunchSearchFilter> mSearchFilterItemForEdit = new MutableLiveData<>();
     private ILaunchService mLaunchService;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private Disposable mLaunchLiveDisposable;
 
 
     public LaunchViewModel(ILaunchService launchService) {
@@ -104,7 +106,8 @@ public class LaunchViewModel extends ViewModel
                 addNewFilterItemToList(filterList, item);
             }
             mSearchFilter.postValue(filterList);
-            loadLaunchesWithQueryText(mSearchByNameQuery.getValue());
+            addNewFilterToList(filterList, mSearchByNameQuery.getValue(), LaunchSearchType.BY_MISSION_NAME);
+            loadLaunches(filterList);
         }
     }
 
@@ -115,10 +118,12 @@ public class LaunchViewModel extends ViewModel
     }
 
     private void loadLaunches(List<LaunchSearchFilter> launchSearchFilter) {
-        compositeDisposable.add(
-                mLaunchService.getLaunchesLiveWithFilter(launchSearchFilter)
-                        .observeOn(Schedulers.io())
-                        .subscribe(mLaunches::postValue, Timber::d));
+        if (mLaunchLiveDisposable != null) {
+            mLaunchLiveDisposable.dispose();
+        }
+        mLaunchLiveDisposable = mLaunchService.getLaunchesLiveWithFilter(launchSearchFilter)
+                .observeOn(Schedulers.io())
+                .subscribe(mLaunches::postValue, Timber::d);
     }
 
     private List<LaunchSearchFilter> getCurrentSearchFilter() {
