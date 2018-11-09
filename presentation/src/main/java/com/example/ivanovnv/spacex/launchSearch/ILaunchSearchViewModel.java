@@ -7,11 +7,12 @@ import com.example.domain.model.searchFilter.LaunchSearchFilter;
 
 import java.util.List;
 
-public interface ILaunchSearchViewModel extends SearchView.OnQueryTextListener {
+public interface ILaunchSearchViewModel extends
+        SearchView.OnQueryTextListener,
+        SearchFilterAdapter.IOnFilterItemRemoveCallback,
+        SearchFilterAdapter.IOnFilterItemClickListener {
 
     MutableLiveData<List<LaunchSearchFilter>> getSearchFilter();
 
     MutableLiveData<String> getSearchByNameQuery();
-
-    void onSearchFilterItemRemoved(LaunchSearchFilter item);
 }

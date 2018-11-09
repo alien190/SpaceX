@@ -45,7 +45,7 @@ public class LaunchItemViewModel extends ViewModel {
 
     public void onItemClick(String flightNumber) {
         if (mOnItemClickListener != null) {
-        //    mOnItemClickListener.onItemClick(Integer.valueOf(flightNumber));
+        //    mOnItemClickListener.onFilterItemClick(Integer.valueOf(flightNumber));
         }
     }
 }

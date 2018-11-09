@@ -16,7 +16,8 @@ import java.util.List;
 public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterViewHolder> implements ItemTouchAdapter {
 
     private List<LaunchSearchFilter> mLaunchSearchFilterList;
-    private IOnItemRemoveCallback mOnItemRemoveCallback;
+    private IOnFilterItemRemoveCallback mOnItemRemoveCallback;
+    private IOnFilterItemClickListener mOnItemClickListener;
 
     public SearchFilterAdapter() {
         mLaunchSearchFilterList = new ArrayList<>();
@@ -31,7 +32,7 @@ public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterViewHo
 
     @Override
     public void onBindViewHolder(@NonNull SearchFilterViewHolder searchFilterViewHolder, int i) {
-        searchFilterViewHolder.bind(getItem(i));
+        searchFilterViewHolder.bind(getItem(i), mOnItemClickListener);
     }
 
     LaunchSearchFilter getItem(int index) {
@@ -51,7 +52,7 @@ public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterViewHo
     public void onItemDismiss(int position) {
         if (checkPosition(position)) {
             if (mOnItemRemoveCallback != null) {
-                mOnItemRemoveCallback.onItemRemove(getItem(position));
+                mOnItemRemoveCallback.onFilterItemRemove(getItem(position));
             }
             mLaunchSearchFilterList.remove(position);
             notifyItemRemoved(position);
@@ -68,11 +69,19 @@ public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterViewHo
         notifyDataSetChanged();
     }
 
-    public void setOnItemRemoveCallback(IOnItemRemoveCallback onItemRemoveCallback) {
+    public void setOnFilterItemRemoveCallback(IOnFilterItemRemoveCallback onItemRemoveCallback) {
         mOnItemRemoveCallback = onItemRemoveCallback;
     }
 
-    interface IOnItemRemoveCallback {
-        void onItemRemove(LaunchSearchFilter item);
+    public void setOnFilterItemClickListener(IOnFilterItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
+    }
+
+    interface IOnFilterItemRemoveCallback {
+        void onFilterItemRemove(LaunchSearchFilter item);
+    }
+
+    interface IOnFilterItemClickListener {
+        void onFilterItemClick(LaunchSearchFilter item);
     }
 }

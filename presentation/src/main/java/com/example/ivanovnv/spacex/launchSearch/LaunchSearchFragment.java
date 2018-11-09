@@ -15,8 +15,6 @@ import com.example.domain.model.searchFilter.LaunchSearchFilter;
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.customComponents.SearchFilterLayoutManager;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -25,7 +23,7 @@ import toothpick.Scope;
 import toothpick.Toothpick;
 
 
-public class LaunchSearchFragment extends Fragment implements SearchFilterAdapter.IOnItemRemoveCallback {
+public class LaunchSearchFragment extends Fragment {
 
     @BindView(R.id.searchView)
     SearchView mSearchView;
@@ -78,7 +76,8 @@ public class LaunchSearchFragment extends Fragment implements SearchFilterAdapte
     @Override
     public void onStart() {
         super.onStart();
-        mListAdapter.setOnItemRemoveCallback(this);
+        mListAdapter.setOnFilterItemRemoveCallback(mSearchViewModel);
+        mListAdapter.setOnFilterItemClickListener(mSearchViewModel);
         mSearchView.setOnQueryTextListener(mSearchViewModel);
         mSearchRecycler.setLayoutManager(mLayoutManager);
         mSearchRecycler.setAdapter(mListAdapter);
@@ -87,7 +86,8 @@ public class LaunchSearchFragment extends Fragment implements SearchFilterAdapte
 
     @Override
     public void onStop() {
-        mListAdapter.setOnItemRemoveCallback(null);
+        mListAdapter.setOnFilterItemRemoveCallback(null);
+        mListAdapter.setOnFilterItemClickListener(null);
         mSearchView.setOnQueryTextListener(null);
         mSearchRecycler.setLayoutManager(null);
         mSearchRecycler.setAdapter(null);
@@ -95,9 +95,5 @@ public class LaunchSearchFragment extends Fragment implements SearchFilterAdapte
         super.onStop();
     }
 
-    @Override
-    public void onItemRemove(LaunchSearchFilter item) {
-        mSearchViewModel.onSearchFilterItemRemoved(item);
-    }
 }
 

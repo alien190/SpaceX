@@ -34,12 +34,6 @@ public class LaunchViewModel extends ViewModel implements ILaunchListViewModel, 
         loadLaunches(null);
     }
 
-    private void loadLaunches(List<LaunchSearchFilter> launchSearchFilter) {
-        compositeDisposable.add(
-                mLaunchService.getLaunchesLiveWithFilter(launchSearchFilter)
-                        .observeOn(Schedulers.io())
-                        .subscribe(mLaunches::postValue, Timber::d));
-    }
 
     @Override
     protected void onCleared() {
@@ -70,11 +64,47 @@ public class LaunchViewModel extends ViewModel implements ILaunchListViewModel, 
 
     @Override
     public boolean onQueryTextChange(String s) {
-        List<LaunchSearchFilter> filterList = new ArrayList<>(getCurrentSearchFilter());
-        addNewFilterToList(filterList, s, SearchType.BY_NAME);
-        loadLaunches(filterList);
+        loadLaunchesWithQueryText(s);
         mSearchByNameQuery.postValue(s);
         return true;
+    }
+
+
+    private void loadLaunches(List<LaunchSearchFilter> launchSearchFilter) {
+        compositeDisposable.add(
+                mLaunchService.getLaunchesLiveWithFilter(launchSearchFilter)
+                        .observeOn(Schedulers.io())
+                        .subscribe(mLaunches::postValue, Timber::d));
+    }
+
+    @Override
+    public void onFilterItemRemove(LaunchSearchFilter item) {
+        removeSearchFilterItem(item);
+        loadLaunchesWithQueryText(mSearchByNameQuery.getValue());
+    }
+
+    @Override
+    public void onFilterItemClick(LaunchSearchFilter item) {
+        removeSearchFilterItem(item);
+        if (item.getType() == SearchType.BY_NAME) {
+            mSearchByNameQuery.postValue(item.getValue());
+            loadLaunchesWithQueryText(item.getValue());
+        }
+    }
+
+    private void loadLaunchesWithQueryText(String query) {
+        List<LaunchSearchFilter> filterList = new ArrayList<>(getCurrentSearchFilter());
+        addNewFilterToList(filterList, query, SearchType.BY_NAME);
+        loadLaunches(filterList);
+    }
+
+    private List<LaunchSearchFilter> getCurrentSearchFilter() {
+        List<LaunchSearchFilter> filterList;
+        filterList = mSearchFilter.getValue();
+        if (filterList == null) {
+            filterList = new ArrayList<>();
+        }
+        return filterList;
     }
 
     private void addNewFilterToList(List<LaunchSearchFilter> filterList, String value, SearchType type) {
@@ -99,20 +129,9 @@ public class LaunchViewModel extends ViewModel implements ILaunchListViewModel, 
         }
     }
 
-    private List<LaunchSearchFilter> getCurrentSearchFilter() {
-        List<LaunchSearchFilter> filterList;
-        filterList = mSearchFilter.getValue();
-        if (filterList == null) {
-            filterList = new ArrayList<>();
-        }
-        return filterList;
-    }
-
-    @Override
-    public void onSearchFilterItemRemoved(LaunchSearchFilter item) {
+    private void removeSearchFilterItem(LaunchSearchFilter item) {
         List<LaunchSearchFilter> filterList = getCurrentSearchFilter();
         filterList.remove(item);
-        loadLaunches(filterList);
         mSearchFilter.postValue(filterList);
     }
 
