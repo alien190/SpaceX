@@ -21,6 +21,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.CacheControl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import timber.log.Timber;
 
 public class LaunchRemoteRepository implements ILaunchRepository {
 
@@ -72,7 +73,11 @@ public class LaunchRemoteRepository implements ILaunchRepository {
     @Override
     public byte[] loadImageWithResize(String url, int width, int height) throws Exception {
         if (url != null && !url.isEmpty()) {
-            Bitmap bitmap = Picasso.get().load(url).resize(width, height).get();
+            Bitmap bitmap = Picasso.get()
+                    .load(url)
+                    .tag("loadImageWithResize")
+                    .resize(width, height)
+                    .get();
             return DbBitmapUtility.getBytes(bitmap);
         } else {
             throw new IllegalArgumentException("URL is null or empty");
@@ -126,5 +131,11 @@ public class LaunchRemoteRepository implements ILaunchRepository {
 
     private Throwable getError() {
         return new Throwable("do nothing");
+    }
+
+    @Override
+    public void cancelLoadImages() {
+        Timber.d("cancelLoadImages");
+        Picasso.get().cancelTag("loadImageWithResize");
     }
 }

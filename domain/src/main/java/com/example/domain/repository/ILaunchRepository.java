@@ -39,4 +39,6 @@ public interface ILaunchRepository {
     Single<DomainLaunch> getPressKitPdf(DomainLaunch domainLaunch);
 
     Single<List<String>> getListRocketNames();
+
+    void cancelLoadImages();
 }

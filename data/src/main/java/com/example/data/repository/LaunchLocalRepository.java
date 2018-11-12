@@ -132,12 +132,17 @@ public class LaunchLocalRepository implements ILaunchRepository {
     }
 
 
-    private Throwable getError() {
-        return new Throwable("do nothing");
-    }
-
     @Override
     public Single<List<String>> getListRocketNames() {
         return mLaunchDao.getListRocketNames();
+    }
+
+    @Override
+    public void cancelLoadImages() {
+        //do nothing
+    }
+
+    private Throwable getError() {
+        return new Throwable("do nothing");
     }
 }

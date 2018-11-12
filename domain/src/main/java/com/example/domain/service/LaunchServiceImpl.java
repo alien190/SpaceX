@@ -12,6 +12,7 @@ import java.util.List;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
@@ -128,7 +129,8 @@ public class LaunchServiceImpl implements ILaunchService {
                 .parallel(CONCURRENT_THREADS_NUMBER)
                 .runOn(Schedulers.io())
                 .map(url -> mRemoteRepository.loadImageWithResize(url, 1200, 0))
-                .sequentialDelayError();
+                .sequentialDelayError()
+                .doOnCancel(() -> mRemoteRepository.cancelLoadImages());
     }
 
     @Override
