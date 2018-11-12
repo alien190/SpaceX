@@ -98,4 +98,9 @@ public class LaunchSearchFilterViewModel extends ViewModel implements ILaunchSea
     public MutableLiveData<Boolean> getCloseDialog() {
         return mCloseDialog;
     }
+
+    @Override
+    public void onFilterItemCloseClick(LaunchSearchFilter item) {
+        //do nothing
+    }
 }

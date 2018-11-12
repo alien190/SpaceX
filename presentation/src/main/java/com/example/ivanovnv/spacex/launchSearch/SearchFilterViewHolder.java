@@ -24,6 +24,7 @@ public class SearchFilterViewHolder extends RecyclerView.ViewHolder {
         mLaunchSearchFilter = item;
         mChip.setText(item.getValue());
         mChip.setOnClickListener(this::onClick);
+        mChip.setOnCloseIconClickListener(this::onCloseIconClick);
         mChip.setSelected(item.isSelected());
     }
 
@@ -33,4 +34,9 @@ public class SearchFilterViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    private void onCloseIconClick(View view) {
+        if (mItemClickListener != null) {
+            mItemClickListener.onFilterItemCloseClick(mLaunchSearchFilter);
+        }
+    }
 }

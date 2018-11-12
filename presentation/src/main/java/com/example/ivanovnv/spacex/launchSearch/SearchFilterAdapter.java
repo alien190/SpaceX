@@ -97,6 +97,7 @@ public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterViewHo
 
     public interface IOnFilterItemClickListener {
         void onFilterItemClick(LaunchSearchFilter item);
+        void onFilterItemCloseClick(LaunchSearchFilter item);
     }
 
     public void setCanChoice(boolean canChoice) {

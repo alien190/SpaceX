@@ -47,6 +47,7 @@ public class LaunchViewModel extends ViewModel
         super.onCleared();
     }
 
+
     private void refreshLaunches() {
         compositeDisposable.add(mLaunchService.refreshLaunches()
                 .doOnSubscribe(s -> mIsLoadData.postValue(true))
@@ -74,6 +75,10 @@ public class LaunchViewModel extends ViewModel
         return true;
     }
 
+    @Override
+    public void onFilterItemCloseClick(LaunchSearchFilter item) {
+        onFilterItemRemove(item);
+    }
 
     @Override
     public void onFilterItemRemove(LaunchSearchFilter item) {
@@ -161,6 +166,8 @@ public class LaunchViewModel extends ViewModel
             }
         }
     }
+
+
 
     private void removeSearchFilterItem(LaunchSearchFilter item) {
         if (item != null) {
