@@ -121,6 +121,10 @@ public class LaunchLocalRepository implements ILaunchRepository {
                         filter = "rocket_name LIKE '%" + launchSearchFilter.getValue() + "%' ";
                         break;
                     }
+                    case BY_LAUNCH_YEAR: {
+                        filter = "launch_year LIKE '%" + launchSearchFilter.getValue() + "%' ";
+                        break;
+                    }
                 }
                 if (!retValueBuilder.toString().isEmpty()) {
                     retValueBuilder.append(" OR ");
@@ -135,6 +139,11 @@ public class LaunchLocalRepository implements ILaunchRepository {
     @Override
     public Single<List<String>> getListRocketNames() {
         return mLaunchDao.getListRocketNames();
+    }
+
+    @Override
+    public Single<List<String>> getListLaunchYears() {
+        return mLaunchDao.getListLaunchYears();
     }
 
     @Override

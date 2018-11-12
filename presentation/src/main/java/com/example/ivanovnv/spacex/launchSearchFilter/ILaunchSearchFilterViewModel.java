@@ -10,13 +10,15 @@ import java.util.List;
 public interface ILaunchSearchFilterViewModel extends SearchFilterAdapter.IOnFilterItemClickListener {
     MutableLiveData<List<LaunchSearchFilter>> getListRocketNames();
 
+    MutableLiveData<List<LaunchSearchFilter>> getListLaunchYears();
+
     MutableLiveData<Boolean> getCanChoice();
 
     MutableLiveData<Boolean> getCloseDialog();
 
     void onOkButtonClick();
 
-    void initListRocketNames();
+    void initLists();
 
     void setLaunchSearchFilterForEdit(LaunchSearchFilter launchSearchFilterForEdit);
 

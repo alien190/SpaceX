@@ -54,7 +54,7 @@ public class LaunchSearchFilterDialogFragment extends BottomSheetDialogFragment 
     private void initViewModel(Scope scope) {
         Toothpick.inject(this, scope);
         mViewModel.setLaunchSearchFilterForEdit(scope.getInstance(LaunchSearchFilter.class));
-        mViewModel.initListRocketNames();
+        mViewModel.initLists();
         mViewModel.getCloseDialog().observe(this, this::onClose);
     }
 

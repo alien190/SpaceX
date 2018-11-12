@@ -71,15 +71,10 @@ public class LaunchServiceImpl implements ILaunchService {
 
     private Flowable<DomainLaunch> updateImageIdFromDb(DomainLaunch domainLaunch) {
         return Flowable.fromCallable(() -> {
-            //try {
             int imageId = mLocalRepository.getImageId(domainLaunch);
             domainLaunch.setImageId(imageId);
-//            } catch (Throwable throwable) {
-//                throwable.printStackTrace();
-//            }
             return domainLaunch;
         });
-//        return Flowable.error(new Throwable("bla-bla-bla throwable"));
     }
 
     private Flowable<DomainLaunch> loadMissionImage(DomainLaunch domainLaunch) {
@@ -97,14 +92,6 @@ public class LaunchServiceImpl implements ILaunchService {
         });
     }
 
-//    private DomainLaunch setNonCache(DomainLaunch domainLaunch) {
-//        domainLaunch.setCache(false);
-//        return domainLaunch;
-//    }
-//    private Flowable<DomainLaunch> loadMissionImage(Flowable<DomainLaunch> domainLaunch){
-//        domainLaunch.
-//    }
-
     @Override
     public Single<DomainLaunch> getLaunchByFlightNumberWithPressKit(int flightNumber) {
         return getLaunchByFlightNumber(flightNumber)
@@ -116,10 +103,6 @@ public class LaunchServiceImpl implements ILaunchService {
     public Single<byte[]> loadImage(String url) {
         return Single.fromCallable(() -> mRemoteRepository.loadImage(url)).subscribeOn(Schedulers.io());
     }
-
-//    private byte[] loadImageFromRemoteRepository(String url) throws Exception {
-//        return mRemoteRepository.loadImage(url);
-//    }
 
     @Override
     public Flowable<byte[]> loadImagesWithResize(List<String> urls) {
@@ -140,8 +123,19 @@ public class LaunchServiceImpl implements ILaunchService {
                 .map(this::createLaunchSearchFilterListRocketNames);
     }
 
+    @Override
+    public Single<List<LaunchSearchFilter>> getLaunchYearsFilterList() {
+        return mLocalRepository.getListLaunchYears()
+                .subscribeOn(Schedulers.io())
+                .map(this::createLaunchSearchFilterListLaunchYears);
+    }
+
     public List<LaunchSearchFilter> createLaunchSearchFilterListRocketNames(List<String> stringList) throws Exception {
         return createLaunchSearchFilterList(stringList, LaunchSearchType.BY_ROCKET_NAME);
+    }
+
+    public List<LaunchSearchFilter> createLaunchSearchFilterListLaunchYears(List<String> stringList) throws Exception {
+        return createLaunchSearchFilterList(stringList, LaunchSearchType.BY_LAUNCH_YEAR);
     }
 
 

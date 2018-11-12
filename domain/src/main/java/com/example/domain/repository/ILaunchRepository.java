@@ -40,5 +40,7 @@ public interface ILaunchRepository {
 
     Single<List<String>> getListRocketNames();
 
+    Single<List<String>> getListLaunchYears();
+
     void cancelLoadImages();
 }

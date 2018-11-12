@@ -134,6 +134,11 @@ public class LaunchRemoteRepository implements ILaunchRepository {
     }
 
     @Override
+    public Single<List<String>> getListLaunchYears() {
+        return Single.error(getError());
+    }
+
+    @Override
     public void cancelLoadImages() {
         Timber.d("cancelLoadImages");
         Picasso.get().cancelTag("loadImageWithResize");

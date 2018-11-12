@@ -68,4 +68,7 @@ public interface LaunchDao {
 
     @Query("SELECT rocket_name FROM DataLaunch GROUP BY rocket_name")
     Single<List<String>> getListRocketNames();
+
+    @Query("SELECT launch_year FROM DataLaunch GROUP BY launch_year")
+    Single<List<String>> getListLaunchYears();
 }

@@ -20,6 +20,7 @@ public class LaunchSearchFilterViewModel extends ViewModel implements ILaunchSea
     private ILaunchService mLaunchService;
     private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     private MutableLiveData<List<LaunchSearchFilter>> mListRocketNames = new MutableLiveData<>();
+    private MutableLiveData<List<LaunchSearchFilter>> mListLaunchYears = new MutableLiveData<>();
     private MutableLiveData<Boolean> mCanChoice = new MutableLiveData<>();
     private MutableLiveData<Boolean> mCloseDialog = new MutableLiveData<>();
     private LaunchSearchFilter mLaunchSearchFilterForEdit;
@@ -32,16 +33,25 @@ public class LaunchSearchFilterViewModel extends ViewModel implements ILaunchSea
     }
 
     @Override
-    public void initListRocketNames() {
-        mCompositeDisposable.add(
+    public void initLists() {
+        mCompositeDisposable.addAll(
                 mLaunchService.getRocketNamesFilterList()
                         .observeOn(Schedulers.io())
-                        .subscribe(mListRocketNames::postValue, Timber::d));
+                        .subscribe(mListRocketNames::postValue, Timber::d),
+                mLaunchService.getLaunchYearsFilterList()
+                        .observeOn(Schedulers.io())
+                        .subscribe(mListLaunchYears::postValue, Timber::d)
+        );
     }
 
     @Override
     public MutableLiveData<List<LaunchSearchFilter>> getListRocketNames() {
         return mListRocketNames;
+    }
+
+    @Override
+    public MutableLiveData<List<LaunchSearchFilter>> getListLaunchYears() {
+        return mListLaunchYears;
     }
 
     @Override
@@ -74,7 +84,10 @@ public class LaunchSearchFilterViewModel extends ViewModel implements ILaunchSea
     }
 
     private List<LaunchSearchFilter> getSelectedFilterItemsOverAll() {
-        return getSelectedFilterItemsInList(mListRocketNames.getValue());
+        List<LaunchSearchFilter> retList = new ArrayList<>();
+        retList.addAll(getSelectedFilterItemsInList(mListRocketNames.getValue()));
+        retList.addAll(getSelectedFilterItemsInList(mListLaunchYears.getValue()));
+        return retList;
     }
 
     private List<LaunchSearchFilter> getSelectedFilterItemsInList(@Nullable List<LaunchSearchFilter> list) {
