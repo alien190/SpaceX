@@ -3,6 +3,7 @@ package com.example.ivanovnv.spacex.launchSearchFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,7 @@ import javax.inject.Inject;
 import toothpick.Scope;
 import toothpick.Toothpick;
 
-public class LaunchSearchFilterDialogFragment extends DialogFragment {
+public class LaunchSearchFilterDialogFragment extends BottomSheetDialogFragment {
     private static final String SCOPE_NAME_KEY = "LaunchSearchFilterDialogFragment.ScopeName";
 
     @Inject

@@ -58,15 +58,11 @@ public class SearchFilterLayoutManager extends RecyclerView.LayoutManager {
             if (isMeasuring) {
                 addView(view);
             }
-
-            //measureChildWithMargins(view, 0, 0);
             view.measure(0, 0);
 
             if (prevTop == 0) {
                 prevTop = lp.topMargin;
             }
-            //viewWidth = getDecoratedMeasuredWidth(view);
-            //viewHeight = getDecoratedMeasuredHeight(view);
             viewWidth = view.getMeasuredWidth();
             viewHeight = view.getMeasuredHeight();
 
