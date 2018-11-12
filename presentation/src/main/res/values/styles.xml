@@ -30,7 +30,7 @@
 
     <style name="LaunchDetailsCardView">
         <item name="android:elevation">@dimen/elevation</item>
-        <item name="android:layout_marginTop">@dimen/layout_margin</item>
+        <item name="android:layout_marginBottom">@dimen/layout_margin</item>
         <item name="android:layout_marginStart">@dimen/layout_margin</item>
         <item name="android:layout_marginEnd">@dimen/layout_margin</item>
     </style>

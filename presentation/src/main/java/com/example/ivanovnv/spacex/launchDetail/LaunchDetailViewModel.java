@@ -48,6 +48,7 @@ public class LaunchDetailViewModel extends ViewModel {
         mLaunchService = launchService;
         mFlightNumber = flightNumber;
         mIsLoadDone.postValue(true);
+        mCanPhotosShow.postValue(false);
         initVisibilitySubscribers();
     }
 
@@ -66,6 +67,7 @@ public class LaunchDetailViewModel extends ViewModel {
 
     private void loadPhotos(List<String> urls) {
         if (checkListValue(urls)) {
+            mCanPhotosShow.postValue(true);
             mDisposable.add(mLaunchService.loadImagesWithResize(urls)
                     .observeOn(Schedulers.io())
                     .doOnSubscribe(subscription -> mIsRefreshPhotos.postValue(true))
@@ -83,7 +85,6 @@ public class LaunchDetailViewModel extends ViewModel {
         }
         bitmapList.add(DbBitmapUtility.getImage(bytes));
         mPhotos.postValue(bitmapList);
-        mCanPhotosShow.postValue(true);
     }
 
     private Boolean checkLinkValue(String value) {
