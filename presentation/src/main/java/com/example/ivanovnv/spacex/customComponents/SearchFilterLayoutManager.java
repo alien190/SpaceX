@@ -9,6 +9,8 @@ import javax.inject.Inject;
 public class SearchFilterLayoutManager extends RecyclerView.LayoutManager {
 
     private int mPrevBottom;
+    private int mWidthSpecSize;
+
 
     @Inject
     public SearchFilterLayoutManager() {
@@ -22,9 +24,9 @@ public class SearchFilterLayoutManager extends RecyclerView.LayoutManager {
 
     @Override
     public void onMeasure(@NonNull RecyclerView.Recycler recycler, @NonNull RecyclerView.State state, int widthSpec, int heightSpec) {
-        int widthSpecSize = View.MeasureSpec.getSize(widthSpec);
+        mWidthSpecSize = View.MeasureSpec.getSize(widthSpec);
         layoutChildren(recycler, true);
-        setMeasuredDimension(widthSpecSize, mPrevBottom != 0 ? mPrevBottom + getPaddingBottom() : 0);
+        setMeasuredDimension(mWidthSpecSize, mPrevBottom != 0 ? mPrevBottom + getPaddingBottom() : 0);
     }
 
     @Override
@@ -68,7 +70,7 @@ public class SearchFilterLayoutManager extends RecyclerView.LayoutManager {
             viewWidth = view.getMeasuredWidth();
             viewHeight = view.getMeasuredHeight();
 
-            if (prevRight + viewWidth + lp.leftMargin < getWidth()) {
+            if (prevRight + viewWidth + lp.leftMargin < mWidthSpecSize) {
                 left = prevRight + lp.leftMargin;
                 top = prevTop;
                 right = left + viewWidth;
