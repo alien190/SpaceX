@@ -17,4 +17,6 @@ public interface ILaunchSearchViewModel extends
     MutableLiveData<String> getSearchByNameQuery();
 
     MutableLiveData<LaunchSearchFilter> getSearchFilterItemForEdit();
+
+    void submitTextSearch();
 }

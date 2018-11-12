@@ -61,11 +61,19 @@ public class LaunchViewModel extends ViewModel
 
     @Override
     public boolean onQueryTextSubmit(String s) {
+        submitTextSearch(s);
+        return true;
+    }
+
+    public void submitTextSearch() {
+        submitTextSearch(mSearchByNameQuery.getValue());
+    }
+
+    public void submitTextSearch(String s) {
         List<LaunchSearchFilter> filterList = getCurrentSearchFilter();
         addNewFilterToList(filterList, s, LaunchSearchType.BY_MISSION_NAME);
         mSearchFilter.postValue(filterList);
-        mSearchByNameQuery.postValue("");
-        return true;
+        mSearchByNameQuery.setValue("");
     }
 
     @Override
