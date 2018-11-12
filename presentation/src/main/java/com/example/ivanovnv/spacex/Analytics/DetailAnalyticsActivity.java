@@ -16,4 +16,14 @@ public class DetailAnalyticsActivity extends SingleFragmentActivity {
         Fragment fragment = DetailAnalyticsFragment.newInstance(intent.getExtras().getFloat(YEAR_KEY));
         return fragment;
     }
+
+    @Override
+    protected void openScope() {
+
+    }
+
+    @Override
+    protected void closeScope() {
+
+    }
 }

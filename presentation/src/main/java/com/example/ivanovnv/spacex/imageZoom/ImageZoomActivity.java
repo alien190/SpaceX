@@ -14,6 +14,16 @@ public class ImageZoomActivity extends SingleFragmentActivity {
         return ImageZoomFragment.newInstance();
     }
 
+    @Override
+    protected void openScope() {
+
+    }
+
+    @Override
+    protected void closeScope() {
+
+    }
+
     public static void start(Context context) {
         if (context != null) {
             Intent intent = new Intent(context, ImageZoomActivity.class);

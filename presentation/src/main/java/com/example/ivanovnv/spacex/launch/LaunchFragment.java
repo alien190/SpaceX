@@ -54,8 +54,7 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        Scope scope = Toothpick.openScopes("Application", "LaunchFragment");
-        scope.installModules(new LaunchFragmentModule(this));
+        Scope scope = Toothpick.openScope( "LaunchFragment");
         Toothpick.inject(this, scope);
 
         View view = inflater.inflate(R.layout.fr_launches_list, container, false);

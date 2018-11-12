@@ -1,6 +1,7 @@
 package com.example.ivanovnv.spacex.di.launch;
 
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
 import com.example.ivanovnv.spacex.customComponents.SearchFilterLayoutManager;
@@ -15,17 +16,15 @@ import com.example.ivanovnv.spacex.launchSearchFilter.ILaunchSearchFilterCallbac
 import toothpick.config.Module;
 
 public class LaunchFragmentModule extends Module {
-    private Fragment mFragment;
     private SearchFilterAdapter mSearchFilterListAdapter;
 
-    public LaunchFragmentModule(Fragment fragment) {
-        mFragment = fragment;
+    public LaunchFragmentModule(FragmentActivity activity) {
         mSearchFilterListAdapter = new SearchFilterAdapter();
 
         bind(ILaunchListViewModel.class).toProvider(LaunchViewModelProvider.class).providesSingletonInScope();
         bind(ILaunchSearchViewModel.class).toProvider(LaunchViewModelProvider.class).providesSingletonInScope();
         bind(ILaunchSearchFilterCallback.class).toProvider(LaunchViewModelProvider.class).providesSingletonInScope();
-        bind(Fragment.class).toInstance(mFragment);
+        bind(FragmentActivity.class).toInstance(activity);
         bind(LaunchAdapter.class).toInstance(new LaunchAdapter());
         bind(LaunchLayoutManager.class).toInstance(new LaunchLayoutManager());
         bind(LaunchViewModelFactory.class).toProvider(LaunchViewModelFactoryProvider.class);
