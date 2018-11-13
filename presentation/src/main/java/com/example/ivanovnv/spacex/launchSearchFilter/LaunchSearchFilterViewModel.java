@@ -3,9 +3,10 @@ package com.example.ivanovnv.spacex.launchSearchFilter;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.example.domain.model.searchFilter.LaunchSearchFilter;
-import com.example.domain.model.searchFilter.LaunchSearchType;
+import com.example.domain.model.searchFilter.SearchFilterItem;
+import com.example.domain.model.searchFilter.SearchFilterItemType;
 import com.example.domain.service.ILaunchService;
+import com.example.ivanovnv.spacex.currentPreferences.ICurrentPreferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,16 +20,19 @@ import timber.log.Timber;
 public class LaunchSearchFilterViewModel extends ViewModel implements ILaunchSearchFilterViewModel {
     private ILaunchService mLaunchService;
     private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
-    private MutableLiveData<List<LaunchSearchFilter>> mListRocketNames = new MutableLiveData<>();
-    private MutableLiveData<List<LaunchSearchFilter>> mListLaunchYears = new MutableLiveData<>();
+    private MutableLiveData<List<SearchFilterItem>> mListRocketNames = new MutableLiveData<>();
+    private MutableLiveData<List<SearchFilterItem>> mListLaunchYears = new MutableLiveData<>();
     private MutableLiveData<Boolean> mCanChoice = new MutableLiveData<>();
     private MutableLiveData<Boolean> mCloseDialog = new MutableLiveData<>();
-    private LaunchSearchFilter mLaunchSearchFilterForEdit;
+    private SearchFilterItem mLaunchSearchFilterForEdit;
     private ILaunchSearchFilterCallback mCallback;
+    private ICurrentPreferences mCurrentPreferences;
 
     public LaunchSearchFilterViewModel(ILaunchService launchService,
+                                       ICurrentPreferences currentPreferences,
                                        ILaunchSearchFilterCallback callback) {
         mLaunchService = launchService;
+        mCurrentPreferences = currentPreferences;
         mCallback = callback;
     }
 
@@ -45,24 +49,24 @@ public class LaunchSearchFilterViewModel extends ViewModel implements ILaunchSea
     }
 
     @Override
-    public MutableLiveData<List<LaunchSearchFilter>> getListRocketNames() {
+    public MutableLiveData<List<SearchFilterItem>> getListRocketNames() {
         return mListRocketNames;
     }
 
     @Override
-    public MutableLiveData<List<LaunchSearchFilter>> getListLaunchYears() {
+    public MutableLiveData<List<SearchFilterItem>> getListLaunchYears() {
         return mListLaunchYears;
     }
 
     @Override
-    public void onFilterItemClick(LaunchSearchFilter item) {
+    public void onFilterItemClick(SearchFilterItem item) {
         Boolean canChoice = mCanChoice.getValue();
         if (canChoice != null) {
             if (canChoice) {
                 item.setSelected(!item.isSelected());
             } else {
                 if (mCallback != null) {
-                    List<LaunchSearchFilter> list = new ArrayList<>();
+                    List<SearchFilterItem> list = new ArrayList<>();
                     list.add(item);
                     mCallback.onFilterEditFinished(mLaunchSearchFilterForEdit, list);
                 }
@@ -83,17 +87,17 @@ public class LaunchSearchFilterViewModel extends ViewModel implements ILaunchSea
         mCloseDialog.postValue(true);
     }
 
-    private List<LaunchSearchFilter> getSelectedFilterItemsOverAll() {
-        List<LaunchSearchFilter> retList = new ArrayList<>();
+    private List<SearchFilterItem> getSelectedFilterItemsOverAll() {
+        List<SearchFilterItem> retList = new ArrayList<>();
         retList.addAll(getSelectedFilterItemsInList(mListRocketNames.getValue()));
         retList.addAll(getSelectedFilterItemsInList(mListLaunchYears.getValue()));
         return retList;
     }
 
-    private List<LaunchSearchFilter> getSelectedFilterItemsInList(@Nullable List<LaunchSearchFilter> list) {
-        List<LaunchSearchFilter> retList = new ArrayList<>();
+    private List<SearchFilterItem> getSelectedFilterItemsInList(@Nullable List<SearchFilterItem> list) {
+        List<SearchFilterItem> retList = new ArrayList<>();
         if (list != null && !list.isEmpty()) {
-            for (LaunchSearchFilter item : list) {
+            for (SearchFilterItem item : list) {
                 if (item.isSelected()) {
                     retList.add(item);
                 }
@@ -103,9 +107,9 @@ public class LaunchSearchFilterViewModel extends ViewModel implements ILaunchSea
     }
 
     @Override
-    public void setLaunchSearchFilterForEdit(LaunchSearchFilter launchSearchFilterForEdit) {
+    public void setLaunchSearchFilterForEdit(SearchFilterItem launchSearchFilterForEdit) {
         mLaunchSearchFilterForEdit = launchSearchFilterForEdit;
-        mCanChoice.postValue(mLaunchSearchFilterForEdit.getType() == LaunchSearchType.EMPTY);
+        mCanChoice.postValue(mLaunchSearchFilterForEdit.getType() == SearchFilterItemType.EMPTY);
     }
 
     public MutableLiveData<Boolean> getCloseDialog() {
@@ -113,7 +117,7 @@ public class LaunchSearchFilterViewModel extends ViewModel implements ILaunchSea
     }
 
     @Override
-    public void onFilterItemCloseClick(LaunchSearchFilter item) {
+    public void onFilterItemCloseClick(SearchFilterItem item) {
         //do nothing
     }
 }

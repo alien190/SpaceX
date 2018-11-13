@@ -7,7 +7,7 @@ import com.example.data.utils.converter.DomainToDataConverter;
 import com.example.data.database.LaunchDao;
 import com.example.data.model.DataImage;
 import com.example.domain.model.launch.DomainLaunch;
-import com.example.domain.model.searchFilter.LaunchSearchFilter;
+import com.example.domain.model.searchFilter.SearchFilterItem;
 import com.example.domain.repository.ILaunchRepository;
 
 import java.util.List;
@@ -88,7 +88,7 @@ public class LaunchLocalRepository implements ILaunchRepository {
     }
 
     @Override
-    public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(List<LaunchSearchFilter> launchSearchFilterList) {
+    public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(List<SearchFilterItem> launchSearchFilterList) {
         String filter = generateSqlWhereFromFilterList(launchSearchFilterList);
         if (!filter.isEmpty()) {
             filter = " AND (" + filter + ") ";
@@ -105,13 +105,13 @@ public class LaunchLocalRepository implements ILaunchRepository {
                 .map(DataToDomainConverter::convertLaunchList);
     }
 
-    private String generateSqlWhereFromFilterList(List<LaunchSearchFilter> launchSearchFilterList) {
+    private String generateSqlWhereFromFilterList(List<SearchFilterItem> launchSearchFilterList) {
         if (launchSearchFilterList == null || launchSearchFilterList.isEmpty()) {
             return "";
         } else {
             StringBuilder retValueBuilder = new StringBuilder();
             String filter = "";
-            for (LaunchSearchFilter launchSearchFilter : launchSearchFilterList) {
+            for (SearchFilterItem launchSearchFilter : launchSearchFilterList) {
                 switch (launchSearchFilter.getType()) {
                     case BY_MISSION_NAME: {
                         filter = "mission_name LIKE '%" + launchSearchFilter.getValue() + "%' ";

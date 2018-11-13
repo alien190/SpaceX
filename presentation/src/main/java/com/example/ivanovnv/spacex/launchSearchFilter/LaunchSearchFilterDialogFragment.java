@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.domain.model.searchFilter.LaunchSearchFilter;
+import com.example.domain.model.searchFilter.SearchFilterItem;
 import com.example.ivanovnv.spacex.databinding.SearchFilterItemBinding;
 
 import javax.inject.Inject;
@@ -53,7 +53,7 @@ public class LaunchSearchFilterDialogFragment extends BottomSheetDialogFragment 
 
     private void initViewModel(Scope scope) {
         Toothpick.inject(this, scope);
-        mViewModel.setLaunchSearchFilterForEdit(scope.getInstance(LaunchSearchFilter.class));
+        mViewModel.setLaunchSearchFilterForEdit(scope.getInstance(SearchFilterItem.class));
         mViewModel.initLists();
         mViewModel.getCloseDialog().observe(this, this::onClose);
     }

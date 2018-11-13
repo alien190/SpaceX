@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
-import com.example.domain.model.searchFilter.LaunchSearchFilter;
+import com.example.domain.model.searchFilter.SearchFilterItem;
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.customComponents.SearchFilterLayoutManager;
 import com.example.ivanovnv.spacex.di.launchSearchFilter.LaunchSearchFilterFragmentModule;
@@ -69,12 +69,12 @@ public class LaunchSearchFragment extends Fragment {
         return view;
     }
 
-    private void showEditDialogFragment(LaunchSearchFilter launchSearchFilter) {
+    private void showEditDialogFragment(SearchFilterItem launchSearchFilter) {
         if (launchSearchFilter != null) {
             mSearchViewModel.getSearchFilterItemForEdit().postValue(null);
             FragmentManager fragmentManager = getFragmentManager();
             if (fragmentManager != null) {
-                String scopeName = "LaunchSearchFilter";
+                String scopeName = "SearchFilterItem";
                 Toothpick.closeScope(scopeName);
                 Scope scope = Toothpick.openScopes("LaunchFragment", scopeName);
                 scope.installModules(new LaunchSearchFilterFragmentModule(this, launchSearchFilter));
@@ -106,7 +106,7 @@ public class LaunchSearchFragment extends Fragment {
         mSearchRecycler.setLayoutManager(mLayoutManager);
         mSearchRecycler.setAdapter(mListAdapter);
         mItemTouchHelper.attachToRecyclerView(mSearchRecycler);
-        mAddSearchFilterButton.setOnClickListener((view) -> showEditDialogFragment(new LaunchSearchFilter()));
+        mAddSearchFilterButton.setOnClickListener((view) -> showEditDialogFragment(new SearchFilterItem()));
     }
 
     @Override

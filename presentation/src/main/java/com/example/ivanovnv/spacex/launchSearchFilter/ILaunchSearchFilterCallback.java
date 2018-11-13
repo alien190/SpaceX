@@ -1,9 +1,9 @@
 package com.example.ivanovnv.spacex.launchSearchFilter;
 
-import com.example.domain.model.searchFilter.LaunchSearchFilter;
+import com.example.domain.model.searchFilter.SearchFilterItem;
 
 import java.util.List;
 
 public interface ILaunchSearchFilterCallback {
-    void onFilterEditFinished(LaunchSearchFilter oldItem, List<LaunchSearchFilter> newItems);
+    void onFilterEditFinished(SearchFilterItem oldItem, List<SearchFilterItem> newItems);
 }

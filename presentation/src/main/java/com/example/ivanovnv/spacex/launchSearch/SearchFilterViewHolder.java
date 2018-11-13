@@ -5,13 +5,13 @@ import android.support.design.chip.Chip;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.example.domain.model.searchFilter.LaunchSearchFilter;
+import com.example.domain.model.searchFilter.SearchFilterItem;
 import com.example.ivanovnv.spacex.R;
 
 
 public class SearchFilterViewHolder extends RecyclerView.ViewHolder {
     private Chip mChip;
-    private LaunchSearchFilter mLaunchSearchFilter;
+    private SearchFilterItem mLaunchSearchFilter;
     private SearchFilterAdapter.IOnFilterItemClickListener mItemClickListener;
 
     public SearchFilterViewHolder(@NonNull View itemView) {
@@ -19,7 +19,7 @@ public class SearchFilterViewHolder extends RecyclerView.ViewHolder {
         mChip = itemView.findViewById(R.id.chip);
     }
 
-    public void bind(LaunchSearchFilter item, SearchFilterAdapter.IOnFilterItemClickListener onItemClickListener) {
+    public void bind(SearchFilterItem item, SearchFilterAdapter.IOnFilterItemClickListener onItemClickListener) {
         mItemClickListener = onItemClickListener;
         mLaunchSearchFilter = item;
         mChip.setText(item.getValue());

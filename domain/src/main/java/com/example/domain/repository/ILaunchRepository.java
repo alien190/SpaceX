@@ -1,10 +1,8 @@
 package com.example.domain.repository;
 
 import com.example.domain.model.launch.DomainLaunch;
-import com.example.domain.model.searchFilter.LaunchSearchFilter;
+import com.example.domain.model.searchFilter.SearchFilterItem;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import io.reactivex.Flowable;
@@ -18,7 +16,7 @@ public interface ILaunchRepository {
 
     Flowable<List<DomainLaunch>> getLaunchesLive();
 
-    Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(List<LaunchSearchFilter> launchSearchFilterList);
+    Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(List<SearchFilterItem> launchSearchFilterList);
 
     Single<Boolean> insertLaunches(List<DomainLaunch> domainLaunches);
 

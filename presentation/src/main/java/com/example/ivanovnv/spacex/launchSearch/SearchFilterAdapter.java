@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.domain.model.searchFilter.LaunchSearchFilter;
+import com.example.domain.model.searchFilter.SearchFilterItem;
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.launchSearch.touchHelper.ItemTouchAdapter;
 
@@ -18,7 +18,7 @@ import javax.inject.Inject;
 
 public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterViewHolder> implements ItemTouchAdapter {
 
-    private List<LaunchSearchFilter> mLaunchSearchFilterList;
+    private List<SearchFilterItem> mLaunchSearchFilterList;
     private IOnFilterItemRemoveCallback mOnItemRemoveCallback;
     private IOnFilterItemClickListener mOnItemClickListener;
     private boolean mCanChoice;
@@ -47,7 +47,7 @@ public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterViewHo
         searchFilterViewHolder.bind(getItem(i), mOnItemClickListener);
     }
 
-    LaunchSearchFilter getItem(int index) {
+    SearchFilterItem getItem(int index) {
         if (checkPosition(index)) {
             return mLaunchSearchFilterList.get(index);
         } else {
@@ -75,7 +75,7 @@ public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterViewHo
         return (position >= 0 && position < mLaunchSearchFilterList.size());
     }
 
-    public void submitList(List<LaunchSearchFilter> searchFilterList) {
+    public void submitList(List<SearchFilterItem> searchFilterList) {
         mLaunchSearchFilterList.clear();
         if (searchFilterList != null) {
             mLaunchSearchFilterList.addAll(searchFilterList);
@@ -92,12 +92,12 @@ public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterViewHo
     }
 
     public interface IOnFilterItemRemoveCallback {
-        void onFilterItemRemove(LaunchSearchFilter item);
+        void onFilterItemRemove(SearchFilterItem item);
     }
 
     public interface IOnFilterItemClickListener {
-        void onFilterItemClick(LaunchSearchFilter item);
-        void onFilterItemCloseClick(LaunchSearchFilter item);
+        void onFilterItemClick(SearchFilterItem item);
+        void onFilterItemCloseClick(SearchFilterItem item);
     }
 
     public void setCanChoice(boolean canChoice) {

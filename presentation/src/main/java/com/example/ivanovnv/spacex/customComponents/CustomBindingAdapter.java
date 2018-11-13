@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.example.domain.model.searchFilter.LaunchSearchFilter;
+import com.example.domain.model.searchFilter.SearchFilterItem;
 import com.example.ivanovnv.spacex.launchDetail.photos.PhotosListAdapter;
 import com.example.ivanovnv.spacex.di.imageZoom.ImageZoomModule;
 import com.example.ivanovnv.spacex.imageZoom.ImageZoomActivity;
@@ -85,7 +85,7 @@ public class CustomBindingAdapter {
 
     @BindingAdapter({"bind:filterItemSource", "bind:onItemClickListener", "bind:scopeName", "bind:canChoice"})
     public static void setRecyclerViewFilterItemSource(RecyclerView recyclerView,
-                                                       List<LaunchSearchFilter> launchSearchFilterList,
+                                                       List<SearchFilterItem> launchSearchFilterList,
                                                        SearchFilterAdapter.IOnFilterItemClickListener onFilterItemClickListener,
                                                        String scopeName,
                                                        boolean canChoice) {
@@ -113,7 +113,7 @@ public class CustomBindingAdapter {
 
     private static void initFilterItemAdapter(Scope scope,
                                               RecyclerView recyclerView,
-                                              List<LaunchSearchFilter> launchSearchFilterList,
+                                              List<SearchFilterItem> launchSearchFilterList,
                                               SearchFilterAdapter.IOnFilterItemClickListener onFilterItemClickListener,
                                               boolean canChoice) {
         SearchFilterAdapter searchFilterAdapter = scope.getInstance(SearchFilterAdapter.class);

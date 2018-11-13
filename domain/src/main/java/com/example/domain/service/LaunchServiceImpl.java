@@ -1,19 +1,16 @@
 package com.example.domain.service;
 
 import com.example.domain.model.launch.DomainLaunch;
-import com.example.domain.model.searchFilter.LaunchSearchFilter;
-import com.example.domain.model.searchFilter.LaunchSearchType;
+import com.example.domain.model.searchFilter.SearchFilterItem;
+import com.example.domain.model.searchFilter.SearchFilterItemType;
 import com.example.domain.repository.ILaunchRepository;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class LaunchServiceImpl implements ILaunchService {
@@ -43,7 +40,7 @@ public class LaunchServiceImpl implements ILaunchService {
     }
 
     @Override
-    public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(List<LaunchSearchFilter> launchSearchFilterList) {
+    public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(List<SearchFilterItem> launchSearchFilterList) {
         return mLocalRepository.getLaunchesLiveWithFilter(launchSearchFilterList).subscribeOn(Schedulers.io());
     }
 
@@ -117,32 +114,32 @@ public class LaunchServiceImpl implements ILaunchService {
     }
 
     @Override
-    public Single<List<LaunchSearchFilter>> getRocketNamesFilterList() {
+    public Single<List<SearchFilterItem>> getRocketNamesFilterList() {
         return mLocalRepository.getListRocketNames()
                 .subscribeOn(Schedulers.io())
                 .map(this::createLaunchSearchFilterListRocketNames);
     }
 
     @Override
-    public Single<List<LaunchSearchFilter>> getLaunchYearsFilterList() {
+    public Single<List<SearchFilterItem>> getLaunchYearsFilterList() {
         return mLocalRepository.getListLaunchYears()
                 .subscribeOn(Schedulers.io())
                 .map(this::createLaunchSearchFilterListLaunchYears);
     }
 
-    public List<LaunchSearchFilter> createLaunchSearchFilterListRocketNames(List<String> stringList) throws Exception {
-        return createLaunchSearchFilterList(stringList, LaunchSearchType.BY_ROCKET_NAME);
+    public List<SearchFilterItem> createLaunchSearchFilterListRocketNames(List<String> stringList) throws Exception {
+        return createLaunchSearchFilterList(stringList, SearchFilterItemType.BY_ROCKET_NAME);
     }
 
-    public List<LaunchSearchFilter> createLaunchSearchFilterListLaunchYears(List<String> stringList) throws Exception {
-        return createLaunchSearchFilterList(stringList, LaunchSearchType.BY_LAUNCH_YEAR);
+    public List<SearchFilterItem> createLaunchSearchFilterListLaunchYears(List<String> stringList) throws Exception {
+        return createLaunchSearchFilterList(stringList, SearchFilterItemType.BY_LAUNCH_YEAR);
     }
 
 
-    public List<LaunchSearchFilter> createLaunchSearchFilterList(List<String> stringList, LaunchSearchType type) throws Exception {
-        List<LaunchSearchFilter> launchSearchFilterList = new ArrayList<>();
+    public List<SearchFilterItem> createLaunchSearchFilterList(List<String> stringList, SearchFilterItemType type) throws Exception {
+        List<SearchFilterItem> launchSearchFilterList = new ArrayList<>();
         for (String value : stringList) {
-            launchSearchFilterList.add(new LaunchSearchFilter(value, type));
+            launchSearchFilterList.add(new SearchFilterItem(value, type));
         }
         return launchSearchFilterList;
     }

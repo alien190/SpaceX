@@ -5,9 +5,10 @@ import android.arch.lifecycle.ViewModel;
 import android.support.v4.widget.SwipeRefreshLayout;
 
 import com.example.domain.model.launch.DomainLaunch;
-import com.example.domain.model.searchFilter.LaunchSearchFilter;
-import com.example.domain.model.searchFilter.LaunchSearchType;
+import com.example.domain.model.searchFilter.SearchFilterItem;
+import com.example.domain.model.searchFilter.SearchFilterItemType;
 import com.example.domain.service.ILaunchService;
+import com.example.ivanovnv.spacex.currentPreferences.ICurrentPreferences;
 import com.example.ivanovnv.spacex.launchSearch.ILaunchSearchViewModel;
 import com.example.ivanovnv.spacex.launchSearchFilter.ILaunchSearchFilterCallback;
 
@@ -25,15 +26,16 @@ public class LaunchViewModel extends ViewModel
     private MutableLiveData<Boolean> mIsLoadData = new MutableLiveData<>();
     private MutableLiveData<SwipeRefreshLayout.OnRefreshListener> mOnRefreshListener = new MutableLiveData<>();
     private MutableLiveData<List<DomainLaunch>> mLaunches = new MutableLiveData<>();
-    private MutableLiveData<List<LaunchSearchFilter>> mSearchFilter = new MutableLiveData<>();
+    private MutableLiveData<List<SearchFilterItem>> mSearchFilter = new MutableLiveData<>();
     private MutableLiveData<String> mSearchByNameQuery = new MutableLiveData<>();
-    private MutableLiveData<LaunchSearchFilter> mSearchFilterItemForEdit = new MutableLiveData<>();
+    private MutableLiveData<SearchFilterItem> mSearchFilterItemForEdit = new MutableLiveData<>();
     private ILaunchService mLaunchService;
+    private ICurrentPreferences mICurrentPreferences;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private Disposable mLaunchLiveDisposable;
 
 
-    public LaunchViewModel(ILaunchService launchService) {
+    public LaunchViewModel(ILaunchService launchService, ICurrentPreferences currentPreferences) {
         mLaunchService = launchService;
         mOnRefreshListener.postValue(this::refreshLaunches);
         loadLaunches(null);
@@ -70,8 +72,8 @@ public class LaunchViewModel extends ViewModel
     }
 
     public void submitTextSearch(String s) {
-        List<LaunchSearchFilter> filterList = getCurrentSearchFilter();
-        addNewFilterToList(filterList, s, LaunchSearchType.BY_MISSION_NAME);
+        List<SearchFilterItem> filterList = getCurrentSearchFilter();
+        addNewFilterToList(filterList, s, SearchFilterItemType.BY_MISSION_NAME);
         mSearchFilter.postValue(filterList);
         mSearchByNameQuery.setValue("");
     }
@@ -84,19 +86,19 @@ public class LaunchViewModel extends ViewModel
     }
 
     @Override
-    public void onFilterItemCloseClick(LaunchSearchFilter item) {
+    public void onFilterItemCloseClick(SearchFilterItem item) {
         onFilterItemRemove(item);
     }
 
     @Override
-    public void onFilterItemRemove(LaunchSearchFilter item) {
+    public void onFilterItemRemove(SearchFilterItem item) {
         removeSearchFilterItem(item);
         loadLaunchesWithQueryText(mSearchByNameQuery.getValue());
     }
 
     @Override
-    public void onFilterItemClick(LaunchSearchFilter item) {
-        if (item.getType() == LaunchSearchType.BY_MISSION_NAME) {
+    public void onFilterItemClick(SearchFilterItem item) {
+        if (item.getType() == SearchFilterItemType.BY_MISSION_NAME) {
             removeSearchFilterItem(item);
             mSearchByNameQuery.postValue(item.getValue());
             loadLaunchesWithQueryText(item.getValue());
@@ -106,31 +108,31 @@ public class LaunchViewModel extends ViewModel
     }
 
     @Override
-    public void onFilterEditFinished(LaunchSearchFilter oldItem, List<LaunchSearchFilter> newItems) {
+    public void onFilterEditFinished(SearchFilterItem oldItem, List<SearchFilterItem> newItems) {
         removeSearchFilterItem(oldItem);
         addNewFilterItemsToCurrentList(newItems);
     }
 
-    private void addNewFilterItemsToCurrentList(List<LaunchSearchFilter> newItems) {
+    private void addNewFilterItemsToCurrentList(List<SearchFilterItem> newItems) {
         if (newItems != null && !newItems.isEmpty()) {
-            List<LaunchSearchFilter> filterList = getCurrentSearchFilter();
-            for (LaunchSearchFilter item : newItems) {
+            List<SearchFilterItem> filterList = getCurrentSearchFilter();
+            for (SearchFilterItem item : newItems) {
                 item.setSelected(false);
                 addNewFilterItemToList(filterList, item);
             }
             mSearchFilter.postValue(filterList);
-            addNewFilterToList(filterList, mSearchByNameQuery.getValue(), LaunchSearchType.BY_MISSION_NAME);
+            addNewFilterToList(filterList, mSearchByNameQuery.getValue(), SearchFilterItemType.BY_MISSION_NAME);
             loadLaunches(filterList);
         }
     }
 
     private void loadLaunchesWithQueryText(String query) {
-        List<LaunchSearchFilter> filterList = new ArrayList<>(getCurrentSearchFilter());
-        addNewFilterToList(filterList, query, LaunchSearchType.BY_MISSION_NAME);
+        List<SearchFilterItem> filterList = new ArrayList<>(getCurrentSearchFilter());
+        addNewFilterToList(filterList, query, SearchFilterItemType.BY_MISSION_NAME);
         loadLaunches(filterList);
     }
 
-    private void loadLaunches(List<LaunchSearchFilter> launchSearchFilter) {
+    private void loadLaunches(List<SearchFilterItem> launchSearchFilter) {
         if (mLaunchLiveDisposable != null) {
             mLaunchLiveDisposable.dispose();
         }
@@ -139,8 +141,8 @@ public class LaunchViewModel extends ViewModel
                 .subscribe(mLaunches::postValue, Timber::d);
     }
 
-    private List<LaunchSearchFilter> getCurrentSearchFilter() {
-        List<LaunchSearchFilter> filterList;
+    private List<SearchFilterItem> getCurrentSearchFilter() {
+        List<SearchFilterItem> filterList;
         filterList = mSearchFilter.getValue();
         if (filterList == null) {
             filterList = new ArrayList<>();
@@ -149,20 +151,20 @@ public class LaunchViewModel extends ViewModel
     }
 
 
-    private void addNewFilterToList(List<LaunchSearchFilter> filterList, String value, LaunchSearchType type) {
+    private void addNewFilterToList(List<SearchFilterItem> filterList, String value, SearchFilterItemType type) {
         if (value != null && !value.isEmpty()) {
-            LaunchSearchFilter newItem = new LaunchSearchFilter(value, type);
+            SearchFilterItem newItem = new SearchFilterItem(value, type);
             addNewFilterItemToList(filterList, newItem);
         }
     }
 
-    private void addNewFilterItemToList(List<LaunchSearchFilter> filterList, LaunchSearchFilter newItem) {
+    private void addNewFilterItemToList(List<SearchFilterItem> filterList, SearchFilterItem newItem) {
         if (newItem != null) {
             boolean isFound = false;
             if (filterList == null) {
                 filterList = new ArrayList<>();
             } else {
-                for (LaunchSearchFilter filter : filterList) {
+                for (SearchFilterItem filter : filterList) {
                     if (filter.getType() == newItem.getType() && (filter.getValue().contains(newItem.getValue()))) {
                         isFound = true;
                         break;
@@ -177,9 +179,9 @@ public class LaunchViewModel extends ViewModel
 
 
 
-    private void removeSearchFilterItem(LaunchSearchFilter item) {
+    private void removeSearchFilterItem(SearchFilterItem item) {
         if (item != null) {
-            List<LaunchSearchFilter> filterList = getCurrentSearchFilter();
+            List<SearchFilterItem> filterList = getCurrentSearchFilter();
             filterList.remove(item);
             mSearchFilter.postValue(filterList);
         }
@@ -197,7 +199,7 @@ public class LaunchViewModel extends ViewModel
         return mLaunches;
     }
 
-    public MutableLiveData<List<LaunchSearchFilter>> getSearchFilter() {
+    public MutableLiveData<List<SearchFilterItem>> getSearchFilter() {
         return mSearchFilter;
     }
 
@@ -206,7 +208,7 @@ public class LaunchViewModel extends ViewModel
     }
 
     @Override
-    public MutableLiveData<LaunchSearchFilter> getSearchFilterItemForEdit() {
+    public MutableLiveData<SearchFilterItem> getSearchFilterItemForEdit() {
         return mSearchFilterItemForEdit;
     }
 

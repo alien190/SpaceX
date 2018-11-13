@@ -1,18 +1,18 @@
 package com.example.domain.model.searchFilter;
 
-public class LaunchSearchFilter {
+public class SearchFilterItem {
 
     private String mValue;
-    private LaunchSearchType mType;
+    private SearchFilterItemType mType;
     private boolean mIsSelected;
 
-    public LaunchSearchFilter() {
+    public SearchFilterItem() {
         mValue = "";
         mIsSelected = false;
-        mType = LaunchSearchType.EMPTY;
+        mType = SearchFilterItemType.EMPTY;
     }
 
-    public LaunchSearchFilter(String value, LaunchSearchType type) {
+    public SearchFilterItem(String value, SearchFilterItemType type) {
         mValue = value;
         mType = type;
         mIsSelected = false;
@@ -20,9 +20,9 @@ public class LaunchSearchFilter {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof LaunchSearchFilter
-                && mType == ((LaunchSearchFilter) o).getType()
-                && mValue == ((LaunchSearchFilter) o).getValue();
+        return o instanceof SearchFilterItem
+                && mType == ((SearchFilterItem) o).getType()
+                && mValue == ((SearchFilterItem) o).getValue();
     }
 
     public String getValue() {
@@ -33,11 +33,11 @@ public class LaunchSearchFilter {
         mValue = value;
     }
 
-    public LaunchSearchType getType() {
+    public SearchFilterItemType getType() {
         return mType;
     }
 
-    public void setType(LaunchSearchType type) {
+    public void setType(SearchFilterItemType type) {
         mType = type;
     }
 
