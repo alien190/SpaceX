@@ -1,7 +1,7 @@
 package com.example.domain.service;
 
 import com.example.domain.model.launch.DomainLaunch;
-import com.example.domain.model.searchFilter.SearchFilterItem;
+import com.example.domain.model.searchFilter.ISearchFilter;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public interface ILaunchService {
 
     Flowable<List<DomainLaunch>> getLaunchesLive();
 
-    Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(List<SearchFilterItem> launchSearchFilterList);
+    Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(ISearchFilter searchFilter);
 
     void insertLaunches(List<DomainLaunch> domainLaunches);
 
@@ -28,7 +28,7 @@ public interface ILaunchService {
 
     Flowable<byte[]> loadImagesWithResize(List<String> urls);
 
-    Single<List<SearchFilterItem>> getRocketNamesFilterList();
+    Single<ISearchFilter> getRocketNamesFilterList();
 
-    Single<List<SearchFilterItem>> getLaunchYearsFilterList();
+    Single<ISearchFilter> getLaunchYearsFilterList();
 }

@@ -62,7 +62,7 @@ public class LaunchSearchFragment extends Fragment {
 
         Scope scope = Toothpick.openScope("LaunchFragment");
         Toothpick.inject(this, scope);
-        mSearchViewModel.getSearchFilter().observe(this, mListAdapter::submitList);
+        //mSearchViewModel.getSearchFilterLive().observe(this, mListAdapter::submitSearchFilter);
         mSearchViewModel.getSearchByNameQuery().observe(this, this::setSearchQuery);
         mSearchViewModel.getSearchFilterItemForEdit().observe(this, this::showEditDialogFragment);
 

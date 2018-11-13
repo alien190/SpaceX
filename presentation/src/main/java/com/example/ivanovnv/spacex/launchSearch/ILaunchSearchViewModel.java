@@ -12,7 +12,7 @@ public interface ILaunchSearchViewModel extends
         SearchFilterAdapter.IOnFilterItemRemoveCallback,
         SearchFilterAdapter.IOnFilterItemClickListener {
 
-    MutableLiveData<List<SearchFilterItem>> getSearchFilter();
+    MutableLiveData<List<SearchFilterItem>> getSearchFilterLive();
 
     MutableLiveData<String> getSearchByNameQuery();
 

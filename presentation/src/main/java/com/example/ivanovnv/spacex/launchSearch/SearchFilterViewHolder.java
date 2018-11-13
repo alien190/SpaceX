@@ -5,38 +5,38 @@ import android.support.design.chip.Chip;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.example.domain.model.searchFilter.SearchFilterItem;
+import com.example.domain.model.searchFilter.ISearchFilter;
 import com.example.ivanovnv.spacex.R;
 
 
 public class SearchFilterViewHolder extends RecyclerView.ViewHolder {
     private Chip mChip;
-    private SearchFilterItem mLaunchSearchFilter;
+    private int mIndex;
     private SearchFilterAdapter.IOnFilterItemClickListener mItemClickListener;
+    private ISearchFilter mSearchFilter;
 
     public SearchFilterViewHolder(@NonNull View itemView) {
         super(itemView);
         mChip = itemView.findViewById(R.id.chip);
     }
 
-    public void bind(SearchFilterItem item, SearchFilterAdapter.IOnFilterItemClickListener onItemClickListener) {
+    public void bind(int index, ISearchFilter searchFilter, SearchFilterAdapter.IOnFilterItemClickListener onItemClickListener) {
+        mIndex = index;
         mItemClickListener = onItemClickListener;
-        mLaunchSearchFilter = item;
-        mChip.setText(item.getValue());
+        mSearchFilter = searchFilter;
+        mChip.setText(mSearchFilter.getItemValue(index));
         mChip.setOnClickListener(this::onClick);
         mChip.setOnCloseIconClickListener(this::onCloseIconClick);
-        mChip.setSelected(item.isSelected());
+        mChip.setSelected(mSearchFilter.getIsItemSelected(index));
     }
 
     private void onClick(View view) {
         if (mItemClickListener != null) {
-            mItemClickListener.onFilterItemClick(mLaunchSearchFilter);
+            mItemClickListener.onFilterItemClick(mIndex);
         }
     }
 
     private void onCloseIconClick(View view) {
-        if (mItemClickListener != null) {
-            mItemClickListener.onFilterItemCloseClick(mLaunchSearchFilter);
-        }
+        mSearchFilter.setIsItemUnselected(mIndex);
     }
 }

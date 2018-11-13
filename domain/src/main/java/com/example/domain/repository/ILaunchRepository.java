@@ -1,6 +1,7 @@
 package com.example.domain.repository;
 
 import com.example.domain.model.launch.DomainLaunch;
+import com.example.domain.model.searchFilter.ISearchFilter;
 import com.example.domain.model.searchFilter.SearchFilterItem;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public interface ILaunchRepository {
 
     Flowable<List<DomainLaunch>> getLaunchesLive();
 
-    Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(List<SearchFilterItem> launchSearchFilterList);
+    Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(ISearchFilter searchFilter);
 
     Single<Boolean> insertLaunches(List<DomainLaunch> domainLaunches);
 

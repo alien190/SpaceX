@@ -7,25 +7,41 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.domain.model.searchFilter.ISearchFilter;
+import com.example.domain.model.searchFilter.ISearchFilterItem;
 import com.example.domain.model.searchFilter.SearchFilterItem;
 import com.example.ivanovnv.spacex.R;
+import com.example.ivanovnv.spacex.currentPreferences.ICurrentPreferences;
 import com.example.ivanovnv.spacex.launchSearch.touchHelper.ItemTouchAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import timber.log.Timber;
+
 public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterViewHolder> implements ItemTouchAdapter {
 
-    private List<SearchFilterItem> mLaunchSearchFilterList;
     private IOnFilterItemRemoveCallback mOnItemRemoveCallback;
     private IOnFilterItemClickListener mOnItemClickListener;
     private boolean mCanChoice;
+    private Disposable mSearchFilterDisposable;
+    private ISearchFilter mSearchFilter;
+
+    @Inject
+    ICurrentPreferences mCurrentPreferences;
 
     @Inject
     public SearchFilterAdapter() {
-        mLaunchSearchFilterList = new ArrayList<>();
+        mSearchFilter = mCurrentPreferences.getSearchFilter();
+        mSearchFilterDisposable =
+                mCurrentPreferences
+                        .getSearchFilter()
+                        .getSearchFilterLive()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(this::submitSearchFilter, Timber::d);
     }
 
     @NonNull
@@ -44,42 +60,40 @@ public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterViewHo
 
     @Override
     public void onBindViewHolder(@NonNull SearchFilterViewHolder searchFilterViewHolder, int i) {
-        searchFilterViewHolder.bind(getItem(i), mOnItemClickListener);
+        searchFilterViewHolder.bind(i, mSearchFilter, mOnItemClickListener);
     }
 
-    SearchFilterItem getItem(int index) {
-        if (checkPosition(index)) {
-            return mLaunchSearchFilterList.get(index);
-        } else {
-            return null;
-        }
-    }
+//    ISearchFilterItem getItem(int index) {
+//        if (checkPosition(index)) {
+//            return mLaunchSearchFilterList.get(index);
+//        } else {
+//            return null;
+//        }
+//    }
 
     @Override
     public int getItemCount() {
-        return mLaunchSearchFilterList.size();
+        return mSearchFilter.getItemsCount();
     }
 
     @Override
     public void onItemDismiss(int position) {
-        if (checkPosition(position)) {
-            if (mOnItemRemoveCallback != null) {
-                mOnItemRemoveCallback.onFilterItemRemove(getItem(position));
-            }
-            mLaunchSearchFilterList.remove(position);
-            notifyItemRemoved(position);
-        }
+
+//        if (checkPosition(position)) {
+//            if (mOnItemRemoveCallback != null) {
+//                mOnItemRemoveCallback.onFilterItemRemove(getItem(position));
+//            }
+//            mLaunchSearchFilterList.remove(position);
+//            notifyItemRemoved(position);
+//        }
     }
 
-    private boolean checkPosition(int position) {
-        return (position >= 0 && position < mLaunchSearchFilterList.size());
-    }
+//    private boolean checkPosition(int position) {
+//        return (position >= 0 && position < mLaunchSearchFilterList.size());
+//    }
 
-    public void submitList(List<SearchFilterItem> searchFilterList) {
-        mLaunchSearchFilterList.clear();
-        if (searchFilterList != null) {
-            mLaunchSearchFilterList.addAll(searchFilterList);
-        }
+    private void submitSearchFilter(ISearchFilter searchFilter) {
+        mSearchFilter = searchFilter;
         notifyDataSetChanged();
     }
 
@@ -96,11 +110,19 @@ public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterViewHo
     }
 
     public interface IOnFilterItemClickListener {
-        void onFilterItemClick(SearchFilterItem item);
-        void onFilterItemCloseClick(SearchFilterItem item);
+        void onFilterItemClick(int index);
+
+        //void onFilterItemCloseClick(SearchFilterItem item);
     }
 
     public void setCanChoice(boolean canChoice) {
         mCanChoice = canChoice;
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        if (mSearchFilterDisposable != null) {
+            mSearchFilterDisposable.dispose();
+        }
     }
 }

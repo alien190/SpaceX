@@ -1,6 +1,8 @@
 package com.example.domain.service;
 
 import com.example.domain.model.launch.DomainLaunch;
+import com.example.domain.model.searchFilter.ISearchFilter;
+import com.example.domain.model.searchFilter.SearchFilter;
 import com.example.domain.model.searchFilter.SearchFilterItem;
 import com.example.domain.model.searchFilter.SearchFilterItemType;
 import com.example.domain.repository.ILaunchRepository;
@@ -40,8 +42,8 @@ public class LaunchServiceImpl implements ILaunchService {
     }
 
     @Override
-    public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(List<SearchFilterItem> launchSearchFilterList) {
-        return mLocalRepository.getLaunchesLiveWithFilter(launchSearchFilterList).subscribeOn(Schedulers.io());
+    public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(ISearchFilter searchFilter) {
+        return mLocalRepository.getLaunchesLiveWithFilter(searchFilter).subscribeOn(Schedulers.io());
     }
 
     @Override
@@ -114,33 +116,32 @@ public class LaunchServiceImpl implements ILaunchService {
     }
 
     @Override
-    public Single<List<SearchFilterItem>> getRocketNamesFilterList() {
+    public Single<ISearchFilter> getRocketNamesFilterList() {
         return mLocalRepository.getListRocketNames()
                 .subscribeOn(Schedulers.io())
                 .map(this::createLaunchSearchFilterListRocketNames);
     }
 
     @Override
-    public Single<List<SearchFilterItem>> getLaunchYearsFilterList() {
+    public Single<ISearchFilter> getLaunchYearsFilterList() {
         return mLocalRepository.getListLaunchYears()
                 .subscribeOn(Schedulers.io())
                 .map(this::createLaunchSearchFilterListLaunchYears);
     }
 
-    public List<SearchFilterItem> createLaunchSearchFilterListRocketNames(List<String> stringList) throws Exception {
+    public ISearchFilter createLaunchSearchFilterListRocketNames(List<String> stringList) {
         return createLaunchSearchFilterList(stringList, SearchFilterItemType.BY_ROCKET_NAME);
     }
 
-    public List<SearchFilterItem> createLaunchSearchFilterListLaunchYears(List<String> stringList) throws Exception {
+    public ISearchFilter createLaunchSearchFilterListLaunchYears(List<String> stringList) {
         return createLaunchSearchFilterList(stringList, SearchFilterItemType.BY_LAUNCH_YEAR);
     }
 
 
-    public List<SearchFilterItem> createLaunchSearchFilterList(List<String> stringList, SearchFilterItemType type) throws Exception {
-        List<SearchFilterItem> launchSearchFilterList = new ArrayList<>();
-        for (String value : stringList) {
-            launchSearchFilterList.add(new SearchFilterItem(value, type));
-        }
-        return launchSearchFilterList;
+    public ISearchFilter createLaunchSearchFilterList(List<String> stringList, SearchFilterItemType type) {
+        ISearchFilter searchFilter = new SearchFilter();
+        searchFilter.addItems(stringList, type);
+        return searchFilter;
     }
+
 }

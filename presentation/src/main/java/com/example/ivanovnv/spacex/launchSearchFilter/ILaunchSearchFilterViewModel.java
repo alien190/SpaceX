@@ -2,15 +2,14 @@ package com.example.ivanovnv.spacex.launchSearchFilter;
 
 import android.arch.lifecycle.MutableLiveData;
 
+import com.example.domain.model.searchFilter.ISearchFilter;
 import com.example.domain.model.searchFilter.SearchFilterItem;
 import com.example.ivanovnv.spacex.launchSearch.SearchFilterAdapter;
 
-import java.util.List;
-
 public interface ILaunchSearchFilterViewModel extends SearchFilterAdapter.IOnFilterItemClickListener {
-    MutableLiveData<List<SearchFilterItem>> getListRocketNames();
+    MutableLiveData<ISearchFilter> getListRocketNames();
 
-    MutableLiveData<List<SearchFilterItem>> getListLaunchYears();
+    MutableLiveData<ISearchFilter> getListLaunchYears();
 
     MutableLiveData<Boolean> getCanChoice();
 

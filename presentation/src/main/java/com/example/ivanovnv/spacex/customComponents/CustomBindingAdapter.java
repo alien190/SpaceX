@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.example.domain.model.searchFilter.SearchFilterItem;
+import com.example.domain.model.searchFilter.ISearchFilter;
 import com.example.ivanovnv.spacex.launchDetail.photos.PhotosListAdapter;
 import com.example.ivanovnv.spacex.di.imageZoom.ImageZoomModule;
 import com.example.ivanovnv.spacex.imageZoom.ImageZoomActivity;
@@ -83,9 +83,8 @@ public class CustomBindingAdapter {
         pagerSnapHelper.attachToRecyclerView(recyclerView);
     }
 
-    @BindingAdapter({"bind:filterItemSource", "bind:onItemClickListener", "bind:scopeName", "bind:canChoice"})
+    @BindingAdapter({"bind:onItemClickListener", "bind:scopeName", "bind:canChoice"})
     public static void setRecyclerViewFilterItemSource(RecyclerView recyclerView,
-                                                       List<SearchFilterItem> launchSearchFilterList,
                                                        SearchFilterAdapter.IOnFilterItemClickListener onFilterItemClickListener,
                                                        String scopeName,
                                                        boolean canChoice) {
@@ -96,11 +95,10 @@ public class CustomBindingAdapter {
             initFilterItemAdapter(
                     scope,
                     recyclerView,
-                    launchSearchFilterList,
                     onFilterItemClickListener,
                     canChoice);
         } else {
-            ((SearchFilterAdapter) adapter).submitList(launchSearchFilterList);
+            //((SearchFilterAdapter) adapter).submitSearchFilter(searchFilter);
             ((SearchFilterAdapter) adapter).setCanChoice(canChoice);
             recyclerView.requestLayout();
         }
@@ -113,13 +111,12 @@ public class CustomBindingAdapter {
 
     private static void initFilterItemAdapter(Scope scope,
                                               RecyclerView recyclerView,
-                                              List<SearchFilterItem> launchSearchFilterList,
                                               SearchFilterAdapter.IOnFilterItemClickListener onFilterItemClickListener,
                                               boolean canChoice) {
         SearchFilterAdapter searchFilterAdapter = scope.getInstance(SearchFilterAdapter.class);
         searchFilterAdapter.setCanChoice(canChoice);
         searchFilterAdapter.setOnFilterItemClickListener(onFilterItemClickListener);
-        searchFilterAdapter.submitList(launchSearchFilterList);
+        //searchFilterAdapter.submitSearchFilter(searchFilter);
         recyclerView.setAdapter(searchFilterAdapter);
     }
 

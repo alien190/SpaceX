@@ -7,6 +7,8 @@ import com.example.data.utils.converter.DomainToDataConverter;
 import com.example.data.database.LaunchDao;
 import com.example.data.model.DataImage;
 import com.example.domain.model.launch.DomainLaunch;
+import com.example.domain.model.searchFilter.ISearchFilter;
+import com.example.domain.model.searchFilter.ISearchFilterItem;
 import com.example.domain.model.searchFilter.SearchFilterItem;
 import com.example.domain.repository.ILaunchRepository;
 
@@ -88,8 +90,8 @@ public class LaunchLocalRepository implements ILaunchRepository {
     }
 
     @Override
-    public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(List<SearchFilterItem> launchSearchFilterList) {
-        String filter = generateSqlWhereFromFilterList(launchSearchFilterList);
+    public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(ISearchFilter searchFilter) {
+        String filter = generateSqlWhereFromFilterList(searchFilter);
         if (!filter.isEmpty()) {
             filter = " AND (" + filter + ") ";
         } else {
@@ -105,13 +107,14 @@ public class LaunchLocalRepository implements ILaunchRepository {
                 .map(DataToDomainConverter::convertLaunchList);
     }
 
-    private String generateSqlWhereFromFilterList(List<SearchFilterItem> launchSearchFilterList) {
+    private String generateSqlWhereFromFilterList(ISearchFilter searchFilter) {
+        List<ISearchFilterItem> launchSearchFilterList = searchFilter.getItems();
         if (launchSearchFilterList == null || launchSearchFilterList.isEmpty()) {
             return "";
         } else {
             StringBuilder retValueBuilder = new StringBuilder();
             String filter = "";
-            for (SearchFilterItem launchSearchFilter : launchSearchFilterList) {
+            for (ISearchFilterItem launchSearchFilter : launchSearchFilterList) {
                 switch (launchSearchFilter.getType()) {
                     case BY_MISSION_NAME: {
                         filter = "mission_name LIKE '%" + launchSearchFilter.getValue() + "%' ";

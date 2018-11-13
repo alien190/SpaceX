@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             bind:canChoice="@{vm.canChoice}"
-            bind:filterItemSource="@{vm.listRocketNames}"
+
             bind:onItemClickListener="@{vm}"
             bind:scopeName="@{scopeName}" />
 
@@ -44,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             bind:canChoice="@{vm.canChoice}"
-            bind:filterItemSource="@{vm.listLaunchYears}"
+
             bind:onItemClickListener="@{vm}"
             bind:scopeName="@{scopeName}" />
 

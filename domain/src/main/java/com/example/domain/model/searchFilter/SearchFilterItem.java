@@ -1,6 +1,6 @@
 package com.example.domain.model.searchFilter;
 
-public class SearchFilterItem {
+public class SearchFilterItem implements ISearchFilterItem {
 
     private String mValue;
     private SearchFilterItemType mType;
