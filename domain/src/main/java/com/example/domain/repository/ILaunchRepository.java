@@ -37,9 +37,9 @@ public interface ILaunchRepository {
 
     Single<DomainLaunch> getPressKitPdf(DomainLaunch domainLaunch);
 
-    Single<List<String>> getListRocketNames();
+    Flowable<ISearchFilter> getSearchFilterLive();
 
-    Single<List<String>> getListLaunchYears();
+    //Single<List<String>> getListLaunchYears();
 
     void cancelLoadImages();
 }

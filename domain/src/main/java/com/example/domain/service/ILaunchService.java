@@ -28,7 +28,9 @@ public interface ILaunchService {
 
     Flowable<byte[]> loadImagesWithResize(List<String> urls);
 
-    Single<ISearchFilter> getRocketNamesFilterList();
+    //Single<ISearchFilter> getRocketNamesFilterList();
 
-    Single<ISearchFilter> getLaunchYearsFilterList();
+//    Single<ISearchFilter> getLaunchYearsFilterList();
+
+    ISearchFilter getSearchFilter();
 }

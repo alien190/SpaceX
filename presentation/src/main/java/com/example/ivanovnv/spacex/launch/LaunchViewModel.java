@@ -7,13 +7,11 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.searchFilter.ISearchFilter;
 import com.example.domain.model.searchFilter.SearchFilterItem;
-import com.example.domain.model.searchFilter.SearchFilterItemType;
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spacex.currentPreferences.ICurrentPreferences;
 import com.example.ivanovnv.spacex.launchSearch.ILaunchSearchViewModel;
 import com.example.ivanovnv.spacex.launchSearchFilter.ILaunchSearchFilterCallback;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -41,11 +39,12 @@ public class LaunchViewModel extends ViewModel
     public LaunchViewModel(ILaunchService launchService, ICurrentPreferences currentPreferences) {
         mLaunchService = launchService;
         mCurrentPreferences = currentPreferences;
-        mSearchFilter = currentPreferences.getSearchFilter();
-        compositeDisposable.add(mSearchFilter.getSearchFilterLive()
+        mSearchFilter = mLaunchService.getSearchFilter();
+        compositeDisposable.add(mSearchFilter.getUpdatesLive()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::loadLaunches, Timber::d));
         mOnRefreshListener.postValue(this::refreshLaunches);
+        loadLaunches(mSearchFilter);
     }
 
 
@@ -146,6 +145,7 @@ public class LaunchViewModel extends ViewModel
         if (mLaunchLiveDisposable != null) {
             mLaunchLiveDisposable.dispose();
         }
+
         mLaunchLiveDisposable = mLaunchService.getLaunchesLiveWithFilter(searchFilter)
                 .observeOn(Schedulers.io())
                 .subscribe(mLaunches::postValue, Timber::d);

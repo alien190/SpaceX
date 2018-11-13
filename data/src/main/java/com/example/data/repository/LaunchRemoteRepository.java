@@ -127,22 +127,17 @@ public class LaunchRemoteRepository implements ILaunchRepository {
     }
 
     @Override
-    public Single<List<String>> getListRocketNames() {
-        return Single.error(getError());
+    public void cancelLoadImages() {
+        Timber.d("cancelLoadImages");
+        Picasso.get().cancelTag("loadImageWithResize");
+    }
+
+    @Override
+    public Flowable<ISearchFilter> getSearchFilterLive() {
+        return Flowable.error(getError());
     }
 
     private Throwable getError() {
         return new Throwable("do nothing");
-    }
-
-    @Override
-    public Single<List<String>> getListLaunchYears() {
-        return Single.error(getError());
-    }
-
-    @Override
-    public void cancelLoadImages() {
-        Timber.d("cancelLoadImages");
-        Picasso.get().cancelTag("loadImageWithResize");
     }
 }

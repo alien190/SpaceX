@@ -3,27 +3,35 @@ package com.example.domain.service;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.searchFilter.ISearchFilter;
 import com.example.domain.model.searchFilter.SearchFilter;
-import com.example.domain.model.searchFilter.SearchFilterItem;
 import com.example.domain.model.searchFilter.SearchFilterItemType;
 import com.example.domain.repository.ILaunchRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+
 
 public class LaunchServiceImpl implements ILaunchService {
 
     private ILaunchRepository mLocalRepository;
     private ILaunchRepository mRemoteRepository;
     private static final int CONCURRENT_THREADS_NUMBER = 10;
+    private ISearchFilter mSearchFilter;
+    private Disposable mDisposable;
 
     public LaunchServiceImpl(ILaunchRepository mLocalRepository, ILaunchRepository mRemoteRepository) {
         this.mLocalRepository = mLocalRepository;
         this.mRemoteRepository = mRemoteRepository;
+
+        mSearchFilter = new SearchFilter();
+
+        mDisposable = mLocalRepository.getSearchFilterLive().subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(mSearchFilter::updateFilterFromRepository, Throwable::printStackTrace);
     }
 
     @Override
@@ -115,19 +123,21 @@ public class LaunchServiceImpl implements ILaunchService {
                 .doOnCancel(() -> mRemoteRepository.cancelLoadImages());
     }
 
-    @Override
-    public Single<ISearchFilter> getRocketNamesFilterList() {
-        return mLocalRepository.getListRocketNames()
-                .subscribeOn(Schedulers.io())
-                .map(this::createLaunchSearchFilterListRocketNames);
-    }
-
-    @Override
-    public Single<ISearchFilter> getLaunchYearsFilterList() {
-        return mLocalRepository.getListLaunchYears()
-                .subscribeOn(Schedulers.io())
-                .map(this::createLaunchSearchFilterListLaunchYears);
-    }
+//    @Override
+//    public Single<ISearchFilter> getRocketNamesFilterList() {
+//        return null;
+////        return mLocalRepository.getListRocketNames()
+////                .subscribeOn(Schedulers.io())
+////                .map(this::createLaunchSearchFilterListRocketNames);
+//    }
+//
+//    @Override
+//    public Single<ISearchFilter> getLaunchYearsFilterList() {
+//        return null;
+////        return mLocalRepository.getListLaunchYears()
+////                .subscribeOn(Schedulers.io())
+////                .map(this::createLaunchSearchFilterListLaunchYears);
+//    }
 
     public ISearchFilter createLaunchSearchFilterListRocketNames(List<String> stringList) {
         return createLaunchSearchFilterList(stringList, SearchFilterItemType.BY_ROCKET_NAME);
@@ -142,6 +152,11 @@ public class LaunchServiceImpl implements ILaunchService {
         ISearchFilter searchFilter = new SearchFilter();
         searchFilter.addItems(stringList, type);
         return searchFilter;
+    }
+
+    @Override
+    public ISearchFilter getSearchFilter() {
+        return mSearchFilter;
     }
 
 }

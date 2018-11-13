@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface ILaunchSearchViewModel extends
         SearchView.OnQueryTextListener,
-        SearchFilterAdapter.IOnFilterItemRemoveCallback,
-        SearchFilterAdapter.IOnFilterItemClickListener {
+        SearchFilterAdapterBase.IOnFilterItemRemoveCallback,
+        SearchFilterAdapterBase.IOnFilterItemClickListener {
 
     MutableLiveData<List<SearchFilterItem>> getSearchFilterLive();
 

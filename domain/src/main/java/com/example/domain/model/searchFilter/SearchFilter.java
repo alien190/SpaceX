@@ -16,13 +16,13 @@ public class SearchFilter implements ISearchFilter {
         mItems = new ArrayList<>();
         mPublishProcessor = PublishProcessor.create();
         mFilterLive = Flowable.fromPublisher(mPublishProcessor);
-        notifySearchFilterChages();
+        notifySearchFilterChanges();
     }
 
     public SearchFilter(List<ISearchFilterItem> items) {
         this();
         mItems.addAll(items);
-        notifySearchFilterChages();
+        notifySearchFilterChanges();
     }
 
 
@@ -30,7 +30,7 @@ public class SearchFilter implements ISearchFilter {
     public void deleteItem(ISearchFilterItem item) {
         if (item != null) {
             mItems.remove(item);
-            notifySearchFilterChages();
+            notifySearchFilterChanges();
         }
     }
 
@@ -40,7 +40,7 @@ public class SearchFilter implements ISearchFilter {
     }
 
     @Override
-    public Flowable<ISearchFilter> getSearchFilterLive() {
+    public Flowable<ISearchFilter> getUpdatesLive() {
         return mFilterLive;
     }
 
@@ -88,7 +88,7 @@ public class SearchFilter implements ISearchFilter {
             }
             if (!isFound) {
                 mItems.add(newItem);
-                notifySearchFilterChages();
+                notifySearchFilterChanges();
             }
         }
         return isFound;
@@ -148,7 +148,7 @@ public class SearchFilter implements ISearchFilter {
             ISearchFilterItem searchFilterItem = mItems.get(index);
             if (searchFilterItem.isSelected() != state) {
                 searchFilterItem.setSelected(state);
-                notifySearchFilterChages();
+                notifySearchFilterChanges();
             }
         }
     }
@@ -160,7 +160,14 @@ public class SearchFilter implements ISearchFilter {
         throw new IllegalArgumentException("index out of bounds");
     }
 
-    private void notifySearchFilterChages() {
+    @Override
+    public void updateFilterFromRepository(ISearchFilter searchFilter) {
+        mItems.clear();
+        mItems.addAll(searchFilter.getItems());
+        notifySearchFilterChanges();
+    }
+
+    private void notifySearchFilterChanges() {
         mPublishProcessor.onNext(this);
     }
 }

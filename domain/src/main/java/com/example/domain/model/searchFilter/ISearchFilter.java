@@ -18,7 +18,7 @@ public interface ISearchFilter {
 
     List<ISearchFilterItem> getItems();
 
-    Flowable<ISearchFilter> getSearchFilterLive();
+    Flowable<ISearchFilter> getUpdatesLive();
 
     ISearchFilter getSelectedFilter();
 
@@ -33,4 +33,6 @@ public interface ISearchFilter {
     void setIsItemSelected(int index);
 
     void setIsItemUnselected(int index);
+
+    void updateFilterFromRepository(ISearchFilter searchFilter);
 }

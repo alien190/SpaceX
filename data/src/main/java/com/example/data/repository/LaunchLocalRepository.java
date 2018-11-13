@@ -2,6 +2,7 @@ package com.example.data.repository;
 
 import android.arch.persistence.db.SimpleSQLiteQuery;
 
+import com.example.data.model.DataFilterItem;
 import com.example.data.utils.converter.DataToDomainConverter;
 import com.example.data.utils.converter.DomainToDataConverter;
 import com.example.data.database.LaunchDao;
@@ -9,13 +10,19 @@ import com.example.data.model.DataImage;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.searchFilter.ISearchFilter;
 import com.example.domain.model.searchFilter.ISearchFilterItem;
+import com.example.domain.model.searchFilter.SearchFilter;
 import com.example.domain.model.searchFilter.SearchFilterItem;
+import com.example.domain.model.searchFilter.SearchFilterItemType;
 import com.example.domain.repository.ILaunchRepository;
+
+import org.reactivestreams.Publisher;
 
 import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class LaunchLocalRepository implements ILaunchRepository {
@@ -139,14 +146,38 @@ public class LaunchLocalRepository implements ILaunchRepository {
     }
 
 
-    @Override
-    public Single<List<String>> getListRocketNames() {
-        return mLaunchDao.getListRocketNames();
-    }
+//    @Override
+//    public Single<List<String>> getListRocketNames() {
+//        return mLaunchDao.getListRocketNames();
+//    }
+//
+//    @Override
+//    public Single<List<String>> getListLaunchYears() {
+//        return mLaunchDao.getListLaunchYears();
+//    }
+
 
     @Override
-    public Single<List<String>> getListLaunchYears() {
-        return mLaunchDao.getListLaunchYears();
+    public Flowable<ISearchFilter> getSearchFilterLive() {
+        return mLaunchDao.getFilterListItems().map(this::getSearchFilter);
+    }
+
+    private ISearchFilter getSearchFilter(List<DataFilterItem> filterItems) {
+        ISearchFilter searchFilter = new SearchFilter();
+        for (DataFilterItem item : filterItems) {
+            switch (item.getType()) {
+                case 1: {
+                    searchFilter.addItem(item.getValue(), SearchFilterItemType.BY_ROCKET_NAME);
+                    break;
+                }
+                case 2: {
+                    searchFilter.addItem(item.getValue(), SearchFilterItemType.BY_LAUNCH_YEAR);
+                    break;
+                }
+            }
+
+        }
+        return searchFilter;
     }
 
     @Override

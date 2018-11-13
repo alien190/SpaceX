@@ -28,28 +28,27 @@ public class LaunchSearchFilterViewModel extends ViewModel implements ILaunchSea
     private MutableLiveData<Boolean> mCloseDialog = new MutableLiveData<>();
     private SearchFilterItem mLaunchSearchFilterForEdit;
     private ILaunchSearchFilterCallback mCallback;
-    private ICurrentPreferences mCurrentPreferences;
     private ISearchFilter mSearchFilter;
 
     public LaunchSearchFilterViewModel(ILaunchService launchService,
-                                       ICurrentPreferences currentPreferences,
+                                       ISearchFilter searchFilter,
                                        ILaunchSearchFilterCallback callback) {
         mLaunchService = launchService;
-        mCurrentPreferences = currentPreferences;
-        mSearchFilter = mCurrentPreferences.getSearchFilter();
+        mSearchFilter = searchFilter;
         mCallback = callback;
     }
 
     @Override
     public void initLists() {
-        mCompositeDisposable.addAll(
-                mLaunchService.getRocketNamesFilterList()
-                        .observeOn(Schedulers.io())
-                        .subscribe(mListRocketNames::postValue, Timber::d),
-                mLaunchService.getLaunchYearsFilterList()
-                        .observeOn(Schedulers.io())
-                        .subscribe(mListLaunchYears::postValue, Timber::d)
-        );
+        mListRocketNames.postValue(mSearchFilter);
+//        mCompositeDisposable.addAll(
+//                mLaunchService.getRocketNamesFilterList()
+//                        .observeOn(Schedulers.io())
+//                        .subscribe(mListRocketNames::postValue, Timber::d),
+//                mLaunchService.getLaunchYearsFilterList()
+//                        .observeOn(Schedulers.io())
+//                        .subscribe(mListLaunchYears::postValue, Timber::d)
+//        );
     }
 
     @Override

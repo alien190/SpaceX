@@ -4,9 +4,9 @@ import android.arch.lifecycle.MutableLiveData;
 
 import com.example.domain.model.searchFilter.ISearchFilter;
 import com.example.domain.model.searchFilter.SearchFilterItem;
-import com.example.ivanovnv.spacex.launchSearch.SearchFilterAdapter;
+import com.example.ivanovnv.spacex.launchSearch.SearchFilterAdapterBase;
 
-public interface ILaunchSearchFilterViewModel extends SearchFilterAdapter.IOnFilterItemClickListener {
+public interface ILaunchSearchFilterViewModel extends SearchFilterAdapterBase.IOnFilterItemClickListener {
     MutableLiveData<ISearchFilter> getListRocketNames();
 
     MutableLiveData<ISearchFilter> getListLaunchYears();

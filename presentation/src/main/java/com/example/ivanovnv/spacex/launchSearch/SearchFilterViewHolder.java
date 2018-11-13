@@ -12,7 +12,7 @@ import com.example.ivanovnv.spacex.R;
 public class SearchFilterViewHolder extends RecyclerView.ViewHolder {
     private Chip mChip;
     private int mIndex;
-    private SearchFilterAdapter.IOnFilterItemClickListener mItemClickListener;
+    private SearchFilterAdapterBase.IOnFilterItemClickListener mItemClickListener;
     private ISearchFilter mSearchFilter;
 
     public SearchFilterViewHolder(@NonNull View itemView) {
@@ -20,7 +20,7 @@ public class SearchFilterViewHolder extends RecyclerView.ViewHolder {
         mChip = itemView.findViewById(R.id.chip);
     }
 
-    public void bind(int index, ISearchFilter searchFilter, SearchFilterAdapter.IOnFilterItemClickListener onItemClickListener) {
+    public void bind(int index, ISearchFilter searchFilter, SearchFilterAdapterBase.IOnFilterItemClickListener onItemClickListener) {
         mIndex = index;
         mItemClickListener = onItemClickListener;
         mSearchFilter = searchFilter;

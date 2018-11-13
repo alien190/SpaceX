@@ -7,6 +7,7 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.RawQuery;
 
+import com.example.data.model.DataFilterItem;
 import com.example.data.model.DataImage;
 import com.example.data.model.DataLaunch;
 
@@ -17,6 +18,7 @@ import io.reactivex.Single;
 
 @Dao
 public interface LaunchDao {
+
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertLaunches(List<DataLaunch> dataLaunches);
@@ -71,4 +73,7 @@ public interface LaunchDao {
 
     @Query("SELECT launch_year FROM DataLaunch GROUP BY launch_year")
     Single<List<String>> getListLaunchYears();
+
+    @Query("SELECT rocket_name as value, 1 as type FROM DataLaunch GROUP BY rocket_name UNION SELECT launch_year as value, 2 as type FROM DataLaunch GROUP BY launch_year order by type")
+    Flowable<List<DataFilterItem>> getFilterListItems();
 }

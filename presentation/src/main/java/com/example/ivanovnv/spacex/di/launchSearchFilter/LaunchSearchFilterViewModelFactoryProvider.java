@@ -1,5 +1,6 @@
 package com.example.ivanovnv.spacex.di.launchSearchFilter;
 
+import com.example.domain.model.searchFilter.ISearchFilter;
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spacex.currentPreferences.ICurrentPreferences;
 import com.example.ivanovnv.spacex.launchSearchFilter.ILaunchSearchFilterCallback;
@@ -9,20 +10,20 @@ import javax.inject.Provider;
 
 class LaunchSearchFilterViewModelFactoryProvider implements Provider<LaunchSearchFilterViewModelFactory> {
     private ILaunchService mLaunchService;
-    private ICurrentPreferences mCurrentPreferences;
+    private ISearchFilter mSearchFilter;
     private ILaunchSearchFilterCallback mCallback;
 
     @Inject
     public LaunchSearchFilterViewModelFactoryProvider(ILaunchService launchService,
-                                                      ICurrentPreferences currentPreferences,
+                                                      ISearchFilter searchFilter,
                                                       ILaunchSearchFilterCallback callback) {
         mLaunchService = launchService;
-        mCurrentPreferences = currentPreferences;
+        mSearchFilter = searchFilter;
         mCallback = callback;
     }
 
     @Override
     public LaunchSearchFilterViewModelFactory get() {
-        return new LaunchSearchFilterViewModelFactory(mLaunchService, mCurrentPreferences, mCallback);
+        return new LaunchSearchFilterViewModelFactory(mLaunchService, mSearchFilter, mCallback);
     }
 }

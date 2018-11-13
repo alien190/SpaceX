@@ -8,13 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.domain.model.searchFilter.ISearchFilter;
-import com.example.domain.model.searchFilter.ISearchFilterItem;
 import com.example.domain.model.searchFilter.SearchFilterItem;
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.currentPreferences.ICurrentPreferences;
 import com.example.ivanovnv.spacex.launchSearch.touchHelper.ItemTouchAdapter;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -22,7 +19,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
-public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterViewHolder> implements ItemTouchAdapter {
+public class SearchFilterAdapterBase extends RecyclerView.Adapter<SearchFilterViewHolder> implements ItemTouchAdapter {
 
     private IOnFilterItemRemoveCallback mOnItemRemoveCallback;
     private IOnFilterItemClickListener mOnItemClickListener;
@@ -30,16 +27,14 @@ public class SearchFilterAdapter extends RecyclerView.Adapter<SearchFilterViewHo
     private Disposable mSearchFilterDisposable;
     private ISearchFilter mSearchFilter;
 
-    @Inject
     ICurrentPreferences mCurrentPreferences;
 
     @Inject
-    public SearchFilterAdapter() {
-        mSearchFilter = mCurrentPreferences.getSearchFilter();
+    public SearchFilterAdapterBase(ISearchFilter searchFilter) {
+        mSearchFilter = searchFilter;
         mSearchFilterDisposable =
-                mCurrentPreferences
-                        .getSearchFilter()
-                        .getSearchFilterLive()
+                mSearchFilter
+                        .getUpdatesLive()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(this::submitSearchFilter, Timber::d);
     }

@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,9 +40,9 @@ public class LaunchSearchFragment extends Fragment {
     @Inject
     SearchFilterLayoutManager mLayoutManager;
     @Inject
-    SearchFilterAdapter mListAdapter;
-    @Inject
-    protected ItemTouchHelper mItemTouchHelper;
+    SearchFilterAdapterBase mListAdapter;
+    //@Inject
+    //protected ItemTouchHelper mItemTouchHelper;
 
 
     public static LaunchSearchFragment newInstance() {
@@ -62,7 +61,7 @@ public class LaunchSearchFragment extends Fragment {
 
         Scope scope = Toothpick.openScope("LaunchFragment");
         Toothpick.inject(this, scope);
-        //mSearchViewModel.getSearchFilterLive().observe(this, mListAdapter::submitSearchFilter);
+        //mSearchViewModel.getUpdatesLive().observe(this, mListAdapter::submitSearchFilter);
         mSearchViewModel.getSearchByNameQuery().observe(this, this::setSearchQuery);
         mSearchViewModel.getSearchFilterItemForEdit().observe(this, this::showEditDialogFragment);
 
@@ -105,7 +104,7 @@ public class LaunchSearchFragment extends Fragment {
         mSearchView.setOnQueryTextListener(mSearchViewModel);
         mSearchRecycler.setLayoutManager(mLayoutManager);
         mSearchRecycler.setAdapter(mListAdapter);
-        mItemTouchHelper.attachToRecyclerView(mSearchRecycler);
+        //mItemTouchHelper.attachToRecyclerView(mSearchRecycler);
         mAddSearchFilterButton.setOnClickListener((view) -> showEditDialogFragment(new SearchFilterItem()));
     }
 
@@ -117,7 +116,7 @@ public class LaunchSearchFragment extends Fragment {
         mSearchView.setOnQueryTextListener(null);
         mSearchRecycler.setLayoutManager(null);
         mSearchRecycler.setAdapter(null);
-        mItemTouchHelper.attachToRecyclerView(null);
+        //mItemTouchHelper.attachToRecyclerView(null);
         mAddSearchFilterButton.setOnClickListener(null);
         super.onStop();
     }
