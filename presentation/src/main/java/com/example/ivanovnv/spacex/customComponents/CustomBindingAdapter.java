@@ -12,7 +12,8 @@ import android.widget.ImageView;
 import com.example.ivanovnv.spacex.launchDetail.photos.PhotosListAdapter;
 import com.example.ivanovnv.spacex.di.imageZoom.ImageZoomModule;
 import com.example.ivanovnv.spacex.imageZoom.ImageZoomActivity;
-import com.example.ivanovnv.spacex.launchSearch.SearchFilterAdapterBase;
+import com.example.ivanovnv.spacex.launchSearch.adapter.BaseSearchFilterAdapter;
+import com.example.ivanovnv.spacex.launchSearch.adapter.ByRocketNameSearchFilterAdapter;
 
 import java.util.List;
 
@@ -82,23 +83,19 @@ public class CustomBindingAdapter {
         pagerSnapHelper.attachToRecyclerView(recyclerView);
     }
 
-    @BindingAdapter({"bind:onItemClickListener", "bind:scopeName", "bind:canChoice"})
+    @BindingAdapter({"bind:scopeName"})
     public static void setRecyclerViewFilterItemSource(RecyclerView recyclerView,
-                                                       SearchFilterAdapterBase.IOnFilterItemClickListener onFilterItemClickListener,
-                                                       String scopeName,
-                                                       boolean canChoice) {
+                                                       String scopeName) {
         RecyclerView.Adapter adapter = recyclerView.getAdapter();
         if (adapter == null) {
             Scope scope = Toothpick.openScope(scopeName);
             initFilterItemLayoutManager(scope, recyclerView);
             initFilterItemAdapter(
                     scope,
-                    recyclerView,
-                    onFilterItemClickListener,
-                    canChoice);
+                    recyclerView);
         } else {
-            //((SearchFilterAdapterBase) adapter).submitSearchFilter(searchFilter);
-            ((SearchFilterAdapterBase) adapter).setCanChoice(canChoice);
+            //((BaseSearchFilterAdapter) adapter).submitSearchFilter(searchFilter);
+            //((BaseSearchFilterAdapter) adapter).setCanChoice(canChoice);
             recyclerView.requestLayout();
         }
     }
@@ -109,12 +106,10 @@ public class CustomBindingAdapter {
     }
 
     private static void initFilterItemAdapter(Scope scope,
-                                              RecyclerView recyclerView,
-                                              SearchFilterAdapterBase.IOnFilterItemClickListener onFilterItemClickListener,
-                                              boolean canChoice) {
-        SearchFilterAdapterBase searchFilterAdapter = scope.getInstance(SearchFilterAdapterBase.class);
-        searchFilterAdapter.setCanChoice(canChoice);
-        searchFilterAdapter.setOnFilterItemClickListener(onFilterItemClickListener);
+                                              RecyclerView recyclerView) {
+        BaseSearchFilterAdapter searchFilterAdapter = scope.getInstance(ByRocketNameSearchFilterAdapter.class);
+        //searchFilterAdapter.setCanChoice(canChoice);
+        //searchFilterAdapter.setOnFilterItemClickListener(onFilterItemClickListener);
         //searchFilterAdapter.submitSearchFilter(searchFilter);
         recyclerView.setAdapter(searchFilterAdapter);
     }

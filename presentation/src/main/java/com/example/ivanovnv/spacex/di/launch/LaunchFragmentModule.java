@@ -8,16 +8,16 @@ import com.example.ivanovnv.spacex.launch.ILaunchListViewModel;
 import com.example.ivanovnv.spacex.launch.LaunchAdapter;
 import com.example.ivanovnv.spacex.customComponents.LaunchLayoutManager;
 import com.example.ivanovnv.spacex.launchSearch.ILaunchSearchViewModel;
-import com.example.ivanovnv.spacex.launchSearch.SearchFilterAdapterBase;
+import com.example.ivanovnv.spacex.launchSearch.adapter.BaseSearchFilterAdapter;
 import com.example.ivanovnv.spacex.launchSearchFilter.ILaunchSearchFilterCallback;
 
 import toothpick.config.Module;
 
 public class LaunchFragmentModule extends Module {
-    //private SearchFilterAdapterBase mSearchFilterListAdapter;
+    //private BaseSearchFilterAdapter mSearchFilterListAdapter;
 
     public LaunchFragmentModule(FragmentActivity activity) {
-        //mSearchFilterListAdapter = new SearchFilterAdapterBase();
+        //mSearchFilterListAdapter = new BaseSearchFilterAdapter();
 
         bind(ILaunchListViewModel.class).toProvider(LaunchViewModelProvider.class).providesSingletonInScope();
         bind(ILaunchSearchViewModel.class).toProvider(LaunchViewModelProvider.class).providesSingletonInScope();
@@ -27,8 +27,8 @@ public class LaunchFragmentModule extends Module {
         bind(LaunchLayoutManager.class).toInstance(new LaunchLayoutManager());
         bind(LaunchViewModelFactory.class).toProvider(LaunchViewModelFactoryProvider.class);
         bind(SearchFilterLayoutManager.class).toInstance(new SearchFilterLayoutManager());
-        bind(SearchFilterAdapterBase.class).to(SearchFilterAdapterBase.class);
-        //bind(ItemTouchAdapter.class).to(SearchFilterAdapterBase.class).singletonInScope();
+        bind(BaseSearchFilterAdapter.class).to(BaseSearchFilterAdapter.class);
+        //bind(ItemTouchAdapter.class).to(BaseSearchFilterAdapter.class).singletonInScope();
         bind(ItemTouchHelper.Callback.class).toProvider(ItemTouchCallbackProvider.class).providesSingletonInScope();
         bind(ItemTouchHelper.class).toProvider(ItemTouchHelperProvider.class).providesSingletonInScope();
     }

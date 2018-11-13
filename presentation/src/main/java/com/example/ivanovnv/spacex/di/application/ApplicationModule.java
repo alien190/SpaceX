@@ -14,6 +14,5 @@ public class ApplicationModule extends Module {
         mCurrentPreferences = new CurrentPreferences();
         bind(ILaunchService.class).toProvider(LaunchServiceProvider.class).providesSingletonInScope();
         bind(ICurrentPreferences.class).toInstance(mCurrentPreferences);
-        bind(ISearchFilter.class).toProvider(SearchFilterProvider.class).providesSingletonInScope();
     }
 }

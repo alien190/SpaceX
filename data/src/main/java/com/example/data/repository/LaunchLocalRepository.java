@@ -9,20 +9,13 @@ import com.example.data.database.LaunchDao;
 import com.example.data.model.DataImage;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.searchFilter.ISearchFilter;
-import com.example.domain.model.searchFilter.ISearchFilterItem;
 import com.example.domain.model.searchFilter.SearchFilter;
-import com.example.domain.model.searchFilter.SearchFilterItem;
-import com.example.domain.model.searchFilter.SearchFilterItemType;
 import com.example.domain.repository.ILaunchRepository;
-
-import org.reactivestreams.Publisher;
 
 import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class LaunchLocalRepository implements ILaunchRepository {
@@ -115,34 +108,36 @@ public class LaunchLocalRepository implements ILaunchRepository {
     }
 
     private String generateSqlWhereFromFilterList(ISearchFilter searchFilter) {
-        List<ISearchFilterItem> launchSearchFilterList = searchFilter.getItems();
-        if (launchSearchFilterList == null || launchSearchFilterList.isEmpty()) {
-            return "";
-        } else {
-            StringBuilder retValueBuilder = new StringBuilder();
-            String filter = "";
-            for (ISearchFilterItem launchSearchFilter : launchSearchFilterList) {
-                switch (launchSearchFilter.getType()) {
-                    case BY_MISSION_NAME: {
-                        filter = "mission_name LIKE '%" + launchSearchFilter.getValue() + "%' ";
-                        break;
-                    }
-                    case BY_ROCKET_NAME: {
-                        filter = "rocket_name LIKE '%" + launchSearchFilter.getValue() + "%' ";
-                        break;
-                    }
-                    case BY_LAUNCH_YEAR: {
-                        filter = "launch_year LIKE '%" + launchSearchFilter.getValue() + "%' ";
-                        break;
-                    }
-                }
-                if (!retValueBuilder.toString().isEmpty()) {
-                    retValueBuilder.append(" OR ");
-                }
-                retValueBuilder.append(filter);
-            }
-            return retValueBuilder.toString();
-        }
+        return "";
+
+//        List<ISearchFilterItem> launchSearchFilterList = searchFilter.getItems();
+//        if (launchSearchFilterList == null || launchSearchFilterList.isEmpty()) {
+//            return "";
+//        } else {
+//            StringBuilder retValueBuilder = new StringBuilder();
+//            String filter = "";
+//            for (ISearchFilterItem launchSearchFilter : launchSearchFilterList) {
+//                switch (launchSearchFilter.getType()) {
+//                    case BY_MISSION_NAME: {
+//                        filter = "mission_name LIKE '%" + launchSearchFilter.getValue() + "%' ";
+//                        break;
+//                    }
+//                    case BY_ROCKET_NAME: {
+//                        filter = "rocket_name LIKE '%" + launchSearchFilter.getValue() + "%' ";
+//                        break;
+//                    }
+//                    case BY_LAUNCH_YEAR: {
+//                        filter = "launch_year LIKE '%" + launchSearchFilter.getValue() + "%' ";
+//                        break;
+//                    }
+//                }
+//                if (!retValueBuilder.toString().isEmpty()) {
+//                    retValueBuilder.append(" OR ");
+//                }
+//                retValueBuilder.append(filter);
+//            }
+//            return retValueBuilder.toString();
+//        }
     }
 
 
@@ -167,11 +162,11 @@ public class LaunchLocalRepository implements ILaunchRepository {
         for (DataFilterItem item : filterItems) {
             switch (item.getType()) {
                 case 1: {
-                    searchFilter.addItem(item.getValue(), SearchFilterItemType.BY_ROCKET_NAME);
+                    searchFilter.addItem(item.getValue(), ISearchFilter.ItemType.BY_ROCKET_NAME);
                     break;
                 }
                 case 2: {
-                    searchFilter.addItem(item.getValue(), SearchFilterItemType.BY_LAUNCH_YEAR);
+                    searchFilter.addItem(item.getValue(), ISearchFilter.ItemType.BY_LAUNCH_YEAR);
                     break;
                 }
             }

@@ -13,21 +13,18 @@ import com.example.ivanovnv.spacex.launchSearchFilter.LaunchSearchFilterViewMode
 public class LaunchSearchFilterViewModelFactory implements ViewModelProvider.Factory {
 
     private ILaunchService mLaunchService;
-    private ISearchFilter mSearchFilter;
     private ILaunchSearchFilterCallback mCallback;
 
     public LaunchSearchFilterViewModelFactory(ILaunchService launchService,
-                                              ISearchFilter searchFilter,
                                               ILaunchSearchFilterCallback callback) {
         mLaunchService = launchService;
-        mSearchFilter = searchFilter;
         mCallback = callback;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new LaunchSearchFilterViewModel(mLaunchService, mSearchFilter, mCallback);
+        return (T) new LaunchSearchFilterViewModel(mLaunchService,  mCallback);
 
     }
 }

@@ -10,20 +10,17 @@ import javax.inject.Provider;
 
 class LaunchSearchFilterViewModelFactoryProvider implements Provider<LaunchSearchFilterViewModelFactory> {
     private ILaunchService mLaunchService;
-    private ISearchFilter mSearchFilter;
     private ILaunchSearchFilterCallback mCallback;
 
     @Inject
     public LaunchSearchFilterViewModelFactoryProvider(ILaunchService launchService,
-                                                      ISearchFilter searchFilter,
                                                       ILaunchSearchFilterCallback callback) {
         mLaunchService = launchService;
-        mSearchFilter = searchFilter;
         mCallback = callback;
     }
 
     @Override
     public LaunchSearchFilterViewModelFactory get() {
-        return new LaunchSearchFilterViewModelFactory(mLaunchService, mSearchFilter, mCallback);
+        return new LaunchSearchFilterViewModelFactory(mLaunchService, mCallback);
     }
 }

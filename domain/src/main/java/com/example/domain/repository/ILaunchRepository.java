@@ -2,7 +2,6 @@ package com.example.domain.repository;
 
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.searchFilter.ISearchFilter;
-import com.example.domain.model.searchFilter.SearchFilterItem;
 
 import java.util.List;
 

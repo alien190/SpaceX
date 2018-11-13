@@ -6,23 +6,19 @@ import io.reactivex.Flowable;
 
 public interface ISearchFilter {
 
-    boolean addItem(String value, SearchFilterItemType type);
+    boolean addItem(String value, ItemType type);
 
-    boolean addItem(ISearchFilterItem newItem);
+    void addItems(List<String> values, ItemType type);
 
-    void addItems(List<ISearchFilterItem> newItems);
+    //List<ISearchFilterItem> getItems();
 
-    void addItems(List<String> values, SearchFilterItemType type);
-
-    void deleteItem(ISearchFilterItem item);
-
-    List<ISearchFilterItem> getItems();
+    SearchFilter.SearchFilterItem getItem(int index);
 
     Flowable<ISearchFilter> getUpdatesLive();
 
     ISearchFilter getSelectedFilter();
 
-    ISearchFilter getCombinedFilter(ISearchFilter... filters);
+    ISearchFilter getFilterByType(ItemType type);
 
     int getItemsCount();
 
@@ -34,5 +30,14 @@ public interface ISearchFilter {
 
     void setIsItemUnselected(int index);
 
+    void switchItemSelectedState(SearchFilter.SearchFilterItem item);
+
     void updateFilterFromRepository(ISearchFilter searchFilter);
+
+    enum ItemType {
+        BY_MISSION_NAME,
+        BY_ROCKET_NAME,
+        BY_LAUNCH_YEAR,
+        EMPTY
+    }
 }

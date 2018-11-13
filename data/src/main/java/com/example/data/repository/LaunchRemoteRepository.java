@@ -7,8 +7,6 @@ import com.example.data.utils.converter.DataToDomainConverter;
 import com.example.data.utils.DbBitmapUtility;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.searchFilter.ISearchFilter;
-import com.example.domain.model.searchFilter.SearchFilter;
-import com.example.domain.model.searchFilter.SearchFilterItem;
 import com.example.domain.repository.ILaunchRepository;
 import com.squareup.picasso.Picasso;
 

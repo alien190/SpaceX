@@ -5,19 +5,9 @@ import android.arch.lifecycle.ViewModel;
 
 import com.example.domain.model.searchFilter.ISearchFilter;
 import com.example.domain.model.searchFilter.SearchFilter;
-import com.example.domain.model.searchFilter.SearchFilterItem;
-import com.example.domain.model.searchFilter.SearchFilterItemType;
 import com.example.domain.service.ILaunchService;
-import com.example.ivanovnv.spacex.currentPreferences.ICurrentPreferences;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nullable;
 
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
-import timber.log.Timber;
 
 public class LaunchSearchFilterViewModel extends ViewModel implements ILaunchSearchFilterViewModel {
     private ILaunchService mLaunchService;
@@ -26,15 +16,13 @@ public class LaunchSearchFilterViewModel extends ViewModel implements ILaunchSea
     private MutableLiveData<ISearchFilter> mListLaunchYears = new MutableLiveData<>();
     private MutableLiveData<Boolean> mCanChoice = new MutableLiveData<>();
     private MutableLiveData<Boolean> mCloseDialog = new MutableLiveData<>();
-    private SearchFilterItem mLaunchSearchFilterForEdit;
     private ILaunchSearchFilterCallback mCallback;
     private ISearchFilter mSearchFilter;
 
     public LaunchSearchFilterViewModel(ILaunchService launchService,
-                                       ISearchFilter searchFilter,
                                        ILaunchSearchFilterCallback callback) {
         mLaunchService = launchService;
-        mSearchFilter = searchFilter;
+        mSearchFilter = launchService.getSearchFilter();
         mCallback = callback;
     }
 
@@ -61,8 +49,8 @@ public class LaunchSearchFilterViewModel extends ViewModel implements ILaunchSea
         return mListLaunchYears;
     }
 
-    @Override
-    public void onFilterItemClick(int index) {
+    //@Override
+    //public void onFilterItemClick(int index) {
 //        Boolean canChoice = mCanChoice.getValue();
 //        if (canChoice != null) {
 //            if (canChoice) {
@@ -76,7 +64,7 @@ public class LaunchSearchFilterViewModel extends ViewModel implements ILaunchSea
 //                mCloseDialog.postValue(true);
 //            }
 //        }
-    }
+    //}
 
     public MutableLiveData<Boolean> getCanChoice() {
         return mCanChoice;
@@ -122,14 +110,12 @@ public class LaunchSearchFilterViewModel extends ViewModel implements ILaunchSea
 //        return retList;
 //    }
 
-    @Override
-    public void setLaunchSearchFilterForEdit(SearchFilterItem launchSearchFilterForEdit) {
-        mLaunchSearchFilterForEdit = launchSearchFilterForEdit;
-        mCanChoice.postValue(mLaunchSearchFilterForEdit.getType() == SearchFilterItemType.EMPTY);
-    }
-
     public MutableLiveData<Boolean> getCloseDialog() {
         return mCloseDialog;
     }
 
+    @Override
+    public void onFilterItemClick(SearchFilter.SearchFilterItem item) {
+
+    }
 }

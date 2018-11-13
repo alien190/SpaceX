@@ -6,7 +6,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.searchFilter.ISearchFilter;
-import com.example.domain.model.searchFilter.SearchFilterItem;
+import com.example.domain.model.searchFilter.SearchFilter;
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spacex.currentPreferences.ICurrentPreferences;
 import com.example.ivanovnv.spacex.launchSearch.ILaunchSearchViewModel;
@@ -26,9 +26,7 @@ public class LaunchViewModel extends ViewModel
     private MutableLiveData<Boolean> mIsLoadData = new MutableLiveData<>();
     private MutableLiveData<SwipeRefreshLayout.OnRefreshListener> mOnRefreshListener = new MutableLiveData<>();
     private MutableLiveData<List<DomainLaunch>> mLaunches = new MutableLiveData<>();
-    private MutableLiveData<List<SearchFilterItem>> mSearchFilterLive = new MutableLiveData<>();
     private MutableLiveData<String> mSearchByNameQuery = new MutableLiveData<>();
-    private MutableLiveData<SearchFilterItem> mSearchFilterItemForEdit = new MutableLiveData<>();
     private ILaunchService mLaunchService;
     private ICurrentPreferences mCurrentPreferences;
     private ISearchFilter mSearchFilter;
@@ -79,7 +77,7 @@ public class LaunchViewModel extends ViewModel
 
     public void submitTextSearch(String s) {
 //        List<SearchFilterItem> filterList = getCurrentSearchFilter();
-//        addNewFilterToList(filterList, s, SearchFilterItemType.BY_MISSION_NAME);
+//        addNewFilterToList(filterList, s, ItemType.BY_MISSION_NAME);
 //        mSearchFilterLive.postValue(filterList);
 //        mSearchByNameQuery.setValue("");
     }
@@ -96,16 +94,10 @@ public class LaunchViewModel extends ViewModel
 //        onFilterItemRemove(item);
 //    }
 
-    @Override
-    public void onFilterItemRemove(SearchFilterItem item) {
-//        mSearchFilter.deleteItem(item);
-//        //removeSearchFilterItem(item);
-//        loadLaunchesWithQueryText(mSearchByNameQuery.getValue());
-    }
 
-    @Override
-    public void onFilterItemClick(int index) {
-//        if (item.getType() == SearchFilterItemType.BY_MISSION_NAME) {
+//    @Override
+//    public void onFilterItemClick(int index) {
+//        if (item.getType() == ItemType.BY_MISSION_NAME) {
 //            mSearchFilter.deleteItem(item);
 //            //removeSearchFilterItem(item);
 //            mSearchByNameQuery.postValue(item.getValue());
@@ -113,14 +105,14 @@ public class LaunchViewModel extends ViewModel
 //        } else {
 //            mSearchFilterItemForEdit.postValue(item);
 //        }
-    }
+ //   }
 
-    @Override
-    public void onFilterEditFinished(SearchFilterItem oldItem, List<SearchFilterItem> newItems) {
+    //@Override
+    //public void onFilterEditFinished(SearchFilterItem oldItem, List<SearchFilterItem> newItems) {
 //        mSearchFilter.deleteItem(oldItem);
 //        //removeSearchFilterItem(oldItem);
 //        addNewFilterItemsToCurrentList(newItems);
-    }
+    //}
 
 //    private void addNewFilterItemsToCurrentList(List<SearchFilterItem> newItems) {
 //        if (newItems != null && !newItems.isEmpty()) {
@@ -130,14 +122,14 @@ public class LaunchViewModel extends ViewModel
 //                addNewFilterItemToList(filterList, item);
 //            }
 //            mSearchFilterLive.postValue(filterList);
-//            addNewFilterToList(filterList, mSearchByNameQuery.getValue(), SearchFilterItemType.BY_MISSION_NAME);
+//            addNewFilterToList(filterList, mSearchByNameQuery.getValue(), ItemType.BY_MISSION_NAME);
 //            loadLaunches(filterList);
 //        }
 //}
 
     private void loadLaunchesWithQueryText(String query) {
 //        List<SearchFilterItem> filterList = new ArrayList<>(getCurrentSearchFilter());
-//        addNewFilterToList(filterList, query, SearchFilterItemType.BY_MISSION_NAME);
+//        addNewFilterToList(filterList, query, ItemType.BY_MISSION_NAME);
 //        loadLaunches(filterList);
     }
 
@@ -161,7 +153,7 @@ public class LaunchViewModel extends ViewModel
 //    }
 //
 //
-//    private void addNewFilterToList(List<SearchFilterItem> filterList, String value, SearchFilterItemType type) {
+//    private void addNewFilterToList(List<SearchFilterItem> filterList, String value, ItemType type) {
 //        if (value != null && !value.isEmpty()) {
 //            SearchFilterItem newItem = new SearchFilterItem(value, type);
 //            addNewFilterItemToList(filterList, newItem);
@@ -208,17 +200,13 @@ public class LaunchViewModel extends ViewModel
         return mLaunches;
     }
 
-    public MutableLiveData<List<SearchFilterItem>> getSearchFilterLive() {
-        return mSearchFilterLive;
-    }
 
     public MutableLiveData<String> getSearchByNameQuery() {
         return mSearchByNameQuery;
     }
 
     @Override
-    public MutableLiveData<SearchFilterItem> getSearchFilterItemForEdit() {
-        return mSearchFilterItemForEdit;
-    }
+    public void onFilterItemClick(SearchFilter.SearchFilterItem item) {
 
+    }
 }

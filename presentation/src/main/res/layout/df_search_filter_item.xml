@@ -29,9 +29,6 @@
         <android.support.v7.widget.RecyclerView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            bind:canChoice="@{vm.canChoice}"
-
-            bind:onItemClickListener="@{vm}"
             bind:scopeName="@{scopeName}" />
 
 
@@ -43,9 +40,6 @@
         <android.support.v7.widget.RecyclerView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            bind:canChoice="@{vm.canChoice}"
-
-            bind:onItemClickListener="@{vm}"
             bind:scopeName="@{scopeName}" />
 
 

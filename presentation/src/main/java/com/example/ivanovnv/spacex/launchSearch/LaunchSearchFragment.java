@@ -12,10 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
-import com.example.domain.model.searchFilter.SearchFilterItem;
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.customComponents.SearchFilterLayoutManager;
 import com.example.ivanovnv.spacex.di.launchSearchFilter.LaunchSearchFilterFragmentModule;
+import com.example.ivanovnv.spacex.launchSearch.adapter.SelectedSearchFilterAdapter;
 import com.example.ivanovnv.spacex.launchSearchFilter.LaunchSearchFilterDialogFragment;
 
 import javax.inject.Inject;
@@ -40,7 +40,7 @@ public class LaunchSearchFragment extends Fragment {
     @Inject
     SearchFilterLayoutManager mLayoutManager;
     @Inject
-    SearchFilterAdapterBase mListAdapter;
+    SelectedSearchFilterAdapter mListAdapter;
     //@Inject
     //protected ItemTouchHelper mItemTouchHelper;
 
@@ -63,27 +63,27 @@ public class LaunchSearchFragment extends Fragment {
         Toothpick.inject(this, scope);
         //mSearchViewModel.getUpdatesLive().observe(this, mListAdapter::submitSearchFilter);
         mSearchViewModel.getSearchByNameQuery().observe(this, this::setSearchQuery);
-        mSearchViewModel.getSearchFilterItemForEdit().observe(this, this::showEditDialogFragment);
+        //mSearchViewModel.getSearchFilterItemForEdit().observe(this, this::showEditDialogFragment);
 
         return view;
     }
 
-    private void showEditDialogFragment(SearchFilterItem launchSearchFilter) {
-        if (launchSearchFilter != null) {
-            mSearchViewModel.getSearchFilterItemForEdit().postValue(null);
+    private void showEditDialogFragment() {
+       // if (launchSearchFilter != null) {
+            //mSearchViewModel.getSearchFilterItemForEdit().postValue(null);
             FragmentManager fragmentManager = getFragmentManager();
             if (fragmentManager != null) {
                 String scopeName = "SearchFilterItem";
                 Toothpick.closeScope(scopeName);
                 Scope scope = Toothpick.openScopes("LaunchFragment", scopeName);
-                scope.installModules(new LaunchSearchFilterFragmentModule(this, launchSearchFilter));
+                scope.installModules(new LaunchSearchFilterFragmentModule(this));
                 LaunchSearchFilterDialogFragment launchSearchFilterDialogFragment =
                         LaunchSearchFilterDialogFragment.newInstance(scopeName);
                 launchSearchFilterDialogFragment.show(fragmentManager, scopeName);
             } else {
                 throw new RuntimeException("getFragmentManager() return null");
             }
-        }
+       // }
     }
 
     private void setSearchQuery(String newQuery) {
@@ -99,19 +99,17 @@ public class LaunchSearchFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mListAdapter.setOnFilterItemRemoveCallback(mSearchViewModel);
         mListAdapter.setOnFilterItemClickListener(mSearchViewModel);
         mSearchView.setOnQueryTextListener(mSearchViewModel);
         mSearchRecycler.setLayoutManager(mLayoutManager);
         mSearchRecycler.setAdapter(mListAdapter);
         //mItemTouchHelper.attachToRecyclerView(mSearchRecycler);
-        mAddSearchFilterButton.setOnClickListener((view) -> showEditDialogFragment(new SearchFilterItem()));
+        mAddSearchFilterButton.setOnClickListener((view) -> showEditDialogFragment());
     }
 
     @Override
     public void onStop() {
         mSearchViewModel.submitTextSearch();
-        mListAdapter.setOnFilterItemRemoveCallback(null);
         mListAdapter.setOnFilterItemClickListener(null);
         mSearchView.setOnQueryTextListener(null);
         mSearchRecycler.setLayoutManager(null);

@@ -3,7 +3,6 @@ package com.example.domain.service;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.searchFilter.ISearchFilter;
 import com.example.domain.model.searchFilter.SearchFilter;
-import com.example.domain.model.searchFilter.SearchFilterItemType;
 import com.example.domain.repository.ILaunchRepository;
 
 import java.util.List;
@@ -140,15 +139,15 @@ public class LaunchServiceImpl implements ILaunchService {
 //    }
 
     public ISearchFilter createLaunchSearchFilterListRocketNames(List<String> stringList) {
-        return createLaunchSearchFilterList(stringList, SearchFilterItemType.BY_ROCKET_NAME);
+        return createLaunchSearchFilterList(stringList, ISearchFilter.ItemType.BY_ROCKET_NAME);
     }
 
     public ISearchFilter createLaunchSearchFilterListLaunchYears(List<String> stringList) {
-        return createLaunchSearchFilterList(stringList, SearchFilterItemType.BY_LAUNCH_YEAR);
+        return createLaunchSearchFilterList(stringList, ISearchFilter.ItemType.BY_LAUNCH_YEAR);
     }
 
 
-    public ISearchFilter createLaunchSearchFilterList(List<String> stringList, SearchFilterItemType type) {
+    public ISearchFilter createLaunchSearchFilterList(List<String> stringList, ISearchFilter.ItemType type) {
         ISearchFilter searchFilter = new SearchFilter();
         searchFilter.addItems(stringList, type);
         return searchFilter;
