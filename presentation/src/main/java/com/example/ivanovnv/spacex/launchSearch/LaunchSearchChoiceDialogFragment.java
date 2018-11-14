@@ -1,4 +1,4 @@
-package com.example.ivanovnv.spacex.launchSearchFilter;
+package com.example.ivanovnv.spacex.launchSearch;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,14 +10,14 @@ import android.view.ViewGroup;
 
 import com.example.ivanovnv.spacex.databinding.SearchFilterItemBinding;
 
-public class LaunchSearchFilterDialogFragment extends BottomSheetDialogFragment {
-    private static final String SCOPE_NAME_KEY = "LaunchSearchFilterDialogFragment.ScopeName";
+public class LaunchSearchChoiceDialogFragment extends BottomSheetDialogFragment {
+    private static final String SCOPE_NAME_KEY = "LaunchSearchChoiceDialogFragment.ScopeName";
 
 
-    public static LaunchSearchFilterDialogFragment newInstance(String scopeName) {
+    public static LaunchSearchChoiceDialogFragment newInstance(String scopeName) {
         Bundle args = new Bundle();
 
-        LaunchSearchFilterDialogFragment fragment = new LaunchSearchFilterDialogFragment();
+        LaunchSearchChoiceDialogFragment fragment = new LaunchSearchChoiceDialogFragment();
         args.putString(SCOPE_NAME_KEY, scopeName);
         fragment.setArguments(args);
         return fragment;

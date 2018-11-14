@@ -15,7 +15,6 @@ import android.widget.ImageButton;
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.customComponents.SearchFilterLayoutManager;
 import com.example.ivanovnv.spacex.launchSearch.adapter.SearchFilterAdapterSelected;
-import com.example.ivanovnv.spacex.launchSearchFilter.LaunchSearchFilterDialogFragment;
 
 import javax.inject.Inject;
 
@@ -40,8 +39,6 @@ public class LaunchSearchFragment extends Fragment {
     SearchFilterLayoutManager mLayoutManager;
     @Inject
     SearchFilterAdapterSelected mListAdapter;
-    //@Inject
-    //protected ItemTouchHelper mItemTouchHelper;
 
 
     public static LaunchSearchFragment newInstance() {
@@ -73,8 +70,8 @@ public class LaunchSearchFragment extends Fragment {
         FragmentManager fragmentManager = getFragmentManager();
         if (fragmentManager != null) {
             String scopeName = "LaunchFragment";
-            LaunchSearchFilterDialogFragment launchSearchFilterDialogFragment =
-                    LaunchSearchFilterDialogFragment.newInstance(scopeName);
+            LaunchSearchChoiceDialogFragment launchSearchFilterDialogFragment =
+                    LaunchSearchChoiceDialogFragment.newInstance(scopeName);
             launchSearchFilterDialogFragment.show(fragmentManager, scopeName);
         } else {
             throw new RuntimeException("getFragmentManager() return null");
