@@ -71,8 +71,12 @@ public abstract class BaseSearchFilterAdapter extends RecyclerView.Adapter<Searc
 
 
     private void submitSearchFilter(ISearchFilter searchFilter) {
-        mSearchFilter = searchFilter;
-        notifyDataSetChanged();
+//        if (!(mSearchFilter.getItemsCount() == searchFilter.getItemsCount() &&
+//                mSearchFilter.getSelectedFilter().getItemsCount() ==
+//                        searchFilter.getSelectedFilter().getItemsCount())) {
+            mSearchFilter = searchFilter;
+            notifyDataSetChanged();
+//        }
     }
 
     public void setOnFilterItemClickListener(IOnFilterItemClickListener onItemClickListener) {
