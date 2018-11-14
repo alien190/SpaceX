@@ -14,7 +14,6 @@ import android.widget.ImageButton;
 
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.customComponents.SearchFilterLayoutManager;
-import com.example.ivanovnv.spacex.di.launchSearchFilter.LaunchSearchFilterFragmentModule;
 import com.example.ivanovnv.spacex.launchSearch.adapter.SearchFilterAdapterSelected;
 import com.example.ivanovnv.spacex.launchSearchFilter.LaunchSearchFilterDialogFragment;
 
@@ -69,21 +68,18 @@ public class LaunchSearchFragment extends Fragment {
     }
 
     private void showEditDialogFragment() {
-       // if (launchSearchFilter != null) {
-            //mSearchViewModel.getSearchFilterItemForEdit().postValue(null);
-            FragmentManager fragmentManager = getFragmentManager();
-            if (fragmentManager != null) {
-                String scopeName = "SearchFilterItem";
-                Toothpick.closeScope(scopeName);
-                Scope scope = Toothpick.openScopes("LaunchFragment", scopeName);
-                scope.installModules(new LaunchSearchFilterFragmentModule(this));
-                LaunchSearchFilterDialogFragment launchSearchFilterDialogFragment =
-                        LaunchSearchFilterDialogFragment.newInstance(scopeName);
-                launchSearchFilterDialogFragment.show(fragmentManager, scopeName);
-            } else {
-                throw new RuntimeException("getFragmentManager() return null");
-            }
-       // }
+        // if (launchSearchFilter != null) {
+        //mSearchViewModel.getSearchFilterItemForEdit().postValue(null);
+        FragmentManager fragmentManager = getFragmentManager();
+        if (fragmentManager != null) {
+            String scopeName = "LaunchFragment";
+            LaunchSearchFilterDialogFragment launchSearchFilterDialogFragment =
+                    LaunchSearchFilterDialogFragment.newInstance(scopeName);
+            launchSearchFilterDialogFragment.show(fragmentManager, scopeName);
+        } else {
+            throw new RuntimeException("getFragmentManager() return null");
+        }
+        // }
     }
 
     private void setSearchQuery(String newQuery) {

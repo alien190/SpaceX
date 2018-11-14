@@ -7,11 +7,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.searchFilter.ISearchFilter;
 import com.example.domain.model.searchFilter.ISearchFilterItem;
-import com.example.domain.model.searchFilter.SearchFilter;
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spacex.currentPreferences.ICurrentPreferences;
 import com.example.ivanovnv.spacex.launchSearch.ILaunchSearchViewModel;
-import com.example.ivanovnv.spacex.launchSearchFilter.ILaunchSearchFilterCallback;
 
 import java.util.List;
 
@@ -22,7 +20,7 @@ import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class LaunchViewModel extends ViewModel
-        implements ILaunchListViewModel, ILaunchSearchViewModel, ILaunchSearchFilterCallback {
+        implements ILaunchListViewModel, ILaunchSearchViewModel {
 
     private MutableLiveData<Boolean> mIsLoadData = new MutableLiveData<>();
     private MutableLiveData<SwipeRefreshLayout.OnRefreshListener> mOnRefreshListener = new MutableLiveData<>();
