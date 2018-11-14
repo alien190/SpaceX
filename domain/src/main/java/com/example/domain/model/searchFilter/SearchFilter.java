@@ -10,6 +10,7 @@ public class SearchFilter implements ISearchFilter {
     private List<SearchFilterItem> mItems;
     private PublishProcessor<ISearchFilter> mPublishProcessor;
     private Flowable<ISearchFilter> mFilterLive;
+    private String mTextQuery;
 
 
     public SearchFilter() {
@@ -17,6 +18,16 @@ public class SearchFilter implements ISearchFilter {
         mPublishProcessor = PublishProcessor.create();
         mFilterLive = Flowable.fromPublisher(mPublishProcessor);
         notifySearchFilterChanges();
+    }
+
+    public SearchFilter(ISearchFilter searchFilter) {
+        this();
+        if (searchFilter instanceof SearchFilter) {
+            SearchFilter filter = ((SearchFilter) searchFilter);
+            mItems.addAll(filter.getItems());
+            mTextQuery = filter.mTextQuery;
+            notifySearchFilterChanges();
+        }
     }
 
     private SearchFilter(List<SearchFilterItem> items) {
@@ -59,6 +70,9 @@ public class SearchFilter implements ISearchFilter {
                 }
             }
             if (!isFound) {
+                if (newItem.getType() == ItemType.BY_MISSION_NAME) {
+                    newItem.setSelected(true);
+                }
                 mItems.add(newItem);
                 notifySearchFilterChanges();
             }
@@ -89,23 +103,6 @@ public class SearchFilter implements ISearchFilter {
         return mItems.size();
     }
 
-
-//    @Override
-//    public ISearchFilterItem getItem(int index) {
-//        if (checkIndex(index)) {
-//            return mItems.get(index);
-//        }
-//        return null;
-//    }
-
-//    @Override
-//    public String getItemValue(int index) {
-//        if (checkIndex(index)) {
-//            return mItems.get(index).getValue();
-//        }
-//        return "";
-//    }
-
     @Override
     public ISearchFilterItem getItem(int index) {
         if (checkIndex(index)) {
@@ -114,37 +111,6 @@ public class SearchFilter implements ISearchFilter {
         return null;
     }
 
-//    @Override
-//    public boolean getIsItemSelected(int index) {
-//        if (checkIndex(index)) {
-//            return mItems.get(index).isSelected();
-//        }
-//        return false;
-//    }
-
-//    @Override
-//    public void setIsItemSelected(int index) {
-//        setItemSelectedState(index, true);
-//    }
-
-//    @Override
-//    public void setIsItemUnselected(int index) {
-//        setItemSelectedState(index, false);
-//    }
-
-//    private void setItemSelectedState(int index, boolean state) {
-//        if (checkIndex(index)) {
-//            mItems.get(index).setSelected(state);
-//        }
-//    }
-
-//    @Override
-//    public void switchItemSelectedState(int index) {
-//        if (checkIndex(index)) {
-//            mItems.get(index).switchSelected();
-//        }
-//        notifySearchFilterChanges();
-//    }
 
     private boolean checkIndex(int index) {
         if (index >= 0 || index < mItems.size() - 1) {
@@ -156,12 +122,17 @@ public class SearchFilter implements ISearchFilter {
     @Override
     public void updateFilterFromRepository(ISearchFilter searchFilter) {
         if (searchFilter instanceof SearchFilter) {
-            mItems.clear();
-            List<SearchFilterItem> items = ((SearchFilter) searchFilter).getItems();
-            for (SearchFilterItem item : items) {
-                addItem(item.mValue, item.mType);
+            if (getFilterByType(ItemType.BY_ROCKET_NAME).getItemsCount() !=
+                    searchFilter.getFilterByType(ItemType.BY_ROCKET_NAME).getItemsCount() ||
+                    getFilterByType(ItemType.BY_LAUNCH_YEAR).getItemsCount() !=
+                            searchFilter.getFilterByType(ItemType.BY_LAUNCH_YEAR).getItemsCount()) {
+                mItems.clear();
+                List<SearchFilterItem> items = ((SearchFilter) searchFilter).getItems();
+                for (SearchFilterItem item : items) {
+                    addItem(item.mValue, item.mType);
+                }
+                notifySearchFilterChanges();
             }
-            notifySearchFilterChanges();
         }
     }
 
@@ -184,6 +155,27 @@ public class SearchFilter implements ISearchFilter {
         return new SearchFilter(list);
     }
 
+    @Override
+    public void setTextQuery(String query) {
+        if (query != null && !query.equals(mTextQuery)) {
+            mTextQuery = query;
+            notifySearchFilterChanges();
+        }
+    }
+
+    @Override
+    public String getTextQuery() {
+        return mTextQuery;
+    }
+
+    @Override
+    public void submitTextQuery(String query) {
+        if (query != null && !query.isEmpty()) {
+            mTextQuery = "";
+            addItem(query, ItemType.BY_MISSION_NAME);
+            notifySearchFilterChanges();
+        }
+    }
 
     private class SearchFilterItem implements ISearchFilterItem {
 
@@ -233,13 +225,15 @@ public class SearchFilter implements ISearchFilter {
         public void setSelected(boolean selected) {
             if (mIsSelected != selected) {
                 mIsSelected = selected;
+                if (mType == ItemType.BY_MISSION_NAME) {
+                    mItems.remove(this);
+                }
                 notifySearchFilterChanges();
             }
         }
 
         public void switchSelected() {
-            mIsSelected = !mIsSelected;
-            notifySearchFilterChanges();
+            setSelected(!mIsSelected);
         }
     }
 }

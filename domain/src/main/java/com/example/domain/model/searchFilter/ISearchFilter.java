@@ -20,17 +20,13 @@ public interface ISearchFilter {
 
     ISearchFilterItem getItem(int index);
 
-//    String getItemValue(int index);
-
-//    boolean getIsItemSelected(int index);
-//
-//    void setIsItemSelected(int index);
-//
-//    void setIsItemUnselected(int index);
-//
-//    void switchItemSelectedState(int index);
-
     void updateFilterFromRepository(ISearchFilter searchFilter);
+
+    void setTextQuery(String query);
+
+    String getTextQuery();
+
+    void submitTextQuery(String query);
 
     enum ItemType {
         BY_MISSION_NAME,

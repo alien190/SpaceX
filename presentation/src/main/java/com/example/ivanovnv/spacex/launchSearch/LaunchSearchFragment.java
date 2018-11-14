@@ -24,7 +24,7 @@ import toothpick.Scope;
 import toothpick.Toothpick;
 
 
-public class LaunchSearchFragment extends Fragment {
+public class LaunchSearchFragment extends Fragment implements SearchView.OnQueryTextListener {
 
     @BindView(R.id.searchView)
     SearchView mSearchView;
@@ -54,19 +54,14 @@ public class LaunchSearchFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fr_search_launch, container, false);
         ButterKnife.bind(this, view);
-
+        mSearchRecycler.requestFocus();
         Scope scope = Toothpick.openScope("LaunchFragment");
         Toothpick.inject(this, scope);
-        //mSearchViewModel.getUpdatesLive().observe(this, mListAdapter::submitSearchFilter);
-        mSearchViewModel.getSearchByNameQuery().observe(this, this::setSearchQuery);
-        //mSearchViewModel.getSearchFilterItemForEdit().observe(this, this::showEditDialogFragment);
-
+        //mSearchViewModel.getSearchByNameQuery().observe(this, this::setSearchQuery);
         return view;
     }
 
     private void showEditDialogFragment() {
-        // if (launchSearchFilter != null) {
-        //mSearchViewModel.getSearchFilterItemForEdit().postValue(null);
         FragmentManager fragmentManager = getFragmentManager();
         if (fragmentManager != null) {
             String scopeName = "LaunchFragment";
@@ -76,7 +71,6 @@ public class LaunchSearchFragment extends Fragment {
         } else {
             throw new RuntimeException("getFragmentManager() return null");
         }
-        // }
     }
 
     private void setSearchQuery(String newQuery) {
@@ -92,25 +86,35 @@ public class LaunchSearchFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mListAdapter.setOnFilterItemClickListener(mSearchViewModel);
-        mSearchView.setOnQueryTextListener(mSearchViewModel);
+        //mListAdapter.setOnFilterItemClickListener(mSearchViewModel);
+        mSearchView.setOnQueryTextListener(this);
         mSearchRecycler.setLayoutManager(mLayoutManager);
         mSearchRecycler.setAdapter(mListAdapter);
-        //mItemTouchHelper.attachToRecyclerView(mSearchRecycler);
         mAddSearchFilterButton.setOnClickListener((view) -> showEditDialogFragment());
     }
 
     @Override
     public void onStop() {
-        mSearchViewModel.submitTextSearch();
-        mListAdapter.setOnFilterItemClickListener(null);
+        mSearchViewModel.submitTextQuery(mSearchView.getQuery().toString());
+        //mListAdapter.setOnFilterItemClickListener(null);
         mSearchView.setOnQueryTextListener(null);
         mSearchRecycler.setLayoutManager(null);
         mSearchRecycler.setAdapter(null);
-        //mItemTouchHelper.attachToRecyclerView(null);
         mAddSearchFilterButton.setOnClickListener(null);
         super.onStop();
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        mSearchView.setQuery("", false);
+        mSearchViewModel.submitTextQuery(s);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        mSearchViewModel.changeTextQuery(s);
+        return false;
+    }
 }
 

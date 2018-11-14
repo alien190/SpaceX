@@ -49,7 +49,6 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
         return fragment;
     }
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

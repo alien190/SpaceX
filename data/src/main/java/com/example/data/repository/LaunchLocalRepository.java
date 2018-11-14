@@ -120,7 +120,14 @@ public class LaunchLocalRepository implements ILaunchRepository {
 
     @Override
     public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(ISearchFilter searchFilter) {
-        String filter = generateSqlWhereConditions(searchFilter);
+        ISearchFilter searchFilterCopy = new SearchFilter(searchFilter);
+
+        String textQuery = searchFilterCopy.getTextQuery();
+        if (textQuery != null && !textQuery.isEmpty()) {
+            searchFilterCopy.addItem(textQuery, ISearchFilter.ItemType.BY_MISSION_NAME);
+        }
+
+        String filter = generateSqlWhereConditions(searchFilterCopy);
         if (!filter.isEmpty()) {
             filter = " AND (" + filter + ") ";
         } else {
@@ -159,6 +166,7 @@ public class LaunchLocalRepository implements ILaunchRepository {
     private String generateSqlWhereConditionsForType(ISearchFilter searchFilter, ISearchFilter.ItemType type) {
         StringBuilder retValueBuilder = new StringBuilder();
         ISearchFilter filter = searchFilter.getFilterByType(type).getSelectedFilter();
+
         ISearchFilterItem item;
         int count = filter.getItemsCount();
         for (int i = 0; i < count; i++) {

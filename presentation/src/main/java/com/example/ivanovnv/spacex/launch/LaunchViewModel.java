@@ -25,11 +25,10 @@ public class LaunchViewModel extends ViewModel
     private MutableLiveData<Boolean> mIsLoadData = new MutableLiveData<>();
     private MutableLiveData<SwipeRefreshLayout.OnRefreshListener> mOnRefreshListener = new MutableLiveData<>();
     private MutableLiveData<List<DomainLaunch>> mLaunches = new MutableLiveData<>();
-    private MutableLiveData<String> mSearchByNameQuery = new MutableLiveData<>();
     private ILaunchService mLaunchService;
     private ICurrentPreferences mCurrentPreferences;
     private ISearchFilter mSearchFilter;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     private Disposable mLaunchLiveDisposable;
 
 
@@ -37,7 +36,7 @@ public class LaunchViewModel extends ViewModel
         mLaunchService = launchService;
         mCurrentPreferences = currentPreferences;
         mSearchFilter = mLaunchService.getSearchFilter();
-        compositeDisposable.add(mSearchFilter.getUpdatesLive()
+        mCompositeDisposable.add(mSearchFilter.getUpdatesLive()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::loadLaunches, Timber::d));
         mOnRefreshListener.postValue(this::refreshLaunches);
@@ -47,14 +46,15 @@ public class LaunchViewModel extends ViewModel
 
     @Override
     protected void onCleared() {
-        compositeDisposable.clear();
+        mCompositeDisposable.dispose();
+        mCompositeDisposable.clear();
         mIsLoadData.postValue(false);
         super.onCleared();
     }
 
 
     private void refreshLaunches() {
-        compositeDisposable.add(mLaunchService.refreshLaunches()
+        mCompositeDisposable.add(mLaunchService.refreshLaunches()
                 .doOnSubscribe(s -> mIsLoadData.postValue(true))
                 .doOnComplete(() -> mIsLoadData.postValue(false))
                 .doOnError(throwable -> {
@@ -64,72 +64,15 @@ public class LaunchViewModel extends ViewModel
                 .subscribe(b -> mIsLoadData.postValue(false), Timber::d));
     }
 
+
     @Override
-    public boolean onQueryTextSubmit(String s) {
-        //submitTextSearch(s);
-        return true;
-    }
-
-    public void submitTextSearch() {
-        submitTextSearch(mSearchByNameQuery.getValue());
-    }
-
-    public void submitTextSearch(String s) {
-//        List<SearchFilterItem> filterList = getCurrentSearchFilter();
-//        addNewFilterToList(filterList, s, ItemType.BY_MISSION_NAME);
-//        mSearchFilterLive.postValue(filterList);
-//        mSearchByNameQuery.setValue("");
+    public void submitTextQuery(String s) {
+        mSearchFilter.submitTextQuery(s);
     }
 
     @Override
-    public boolean onQueryTextChange(String s) {
-//        loadLaunchesWithQueryText(s);
-//        mSearchByNameQuery.postValue(s);
-        return true;
-    }
-
-//    @Override
-//    public void onFilterItemCloseClick(SearchFilterItem item) {
-//        onFilterItemRemove(item);
-//    }
-
-
-//    @Override
-//    public void onFilterItemClick(int index) {
-//        if (item.getType() == ItemType.BY_MISSION_NAME) {
-//            mSearchFilter.deleteItem(item);
-//            //removeSearchFilterItem(item);
-//            mSearchByNameQuery.postValue(item.getValue());
-//            loadLaunchesWithQueryText(item.getValue());
-//        } else {
-//            mSearchFilterItemForEdit.postValue(item);
-//        }
- //   }
-
-    //@Override
-    //public void onFilterEditFinished(SearchFilterItem oldItem, List<SearchFilterItem> newItems) {
-//        mSearchFilter.deleteItem(oldItem);
-//        //removeSearchFilterItem(oldItem);
-//        addNewFilterItemsToCurrentList(newItems);
-    //}
-
-//    private void addNewFilterItemsToCurrentList(List<SearchFilterItem> newItems) {
-//        if (newItems != null && !newItems.isEmpty()) {
-//            List<SearchFilterItem> filterList = getCurrentSearchFilter();
-//            for (SearchFilterItem item : newItems) {
-//                item.setSelected(false);
-//                addNewFilterItemToList(filterList, item);
-//            }
-//            mSearchFilterLive.postValue(filterList);
-//            addNewFilterToList(filterList, mSearchByNameQuery.getValue(), ItemType.BY_MISSION_NAME);
-//            loadLaunches(filterList);
-//        }
-//}
-
-    private void loadLaunchesWithQueryText(String query) {
-//        List<SearchFilterItem> filterList = new ArrayList<>(getCurrentSearchFilter());
-//        addNewFilterToList(filterList, query, ItemType.BY_MISSION_NAME);
-//        loadLaunches(filterList);
+    public void changeTextQuery(String s) {
+        mSearchFilter.setTextQuery(s);
     }
 
     private void loadLaunches(ISearchFilter searchFilter) {
@@ -142,51 +85,6 @@ public class LaunchViewModel extends ViewModel
                 .subscribe(mLaunches::postValue, Timber::d);
     }
 
-//    private List<SearchFilterItem> getCurrentSearchFilter() {
-//        List<SearchFilterItem> filterList;
-//        filterList = mSearchFilterLive.getValue();
-//        if (filterList == null) {
-//            filterList = new ArrayList<>();
-//        }
-//        return filterList;
-//    }
-//
-//
-//    private void addNewFilterToList(List<SearchFilterItem> filterList, String value, ItemType type) {
-//        if (value != null && !value.isEmpty()) {
-//            SearchFilterItem newItem = new SearchFilterItem(value, type);
-//            addNewFilterItemToList(filterList, newItem);
-//        }
-//    }
-//
-//    private void addNewFilterItemToList(List<SearchFilterItem> filterList, SearchFilterItem newItem) {
-//        if (newItem != null) {
-//            boolean isFound = false;
-//            if (filterList == null) {
-//                filterList = new ArrayList<>();
-//            } else {
-//                for (SearchFilterItem filter : filterList) {
-//                    if (filter.getType() == newItem.getType() && (filter.getValue().contains(newItem.getValue()))) {
-//                        isFound = true;
-//                        break;
-//                    }
-//                }
-//            }
-//            if (!isFound) {
-//                filterList.add(newItem);
-//            }
-//        }
-//    }
-
-
-//    private void removeSearchFilterItem(SearchFilterItem item) {
-//        if (item != null) {
-//            List<SearchFilterItem> filterList = getCurrentSearchFilter();
-//            filterList.remove(item);
-//            mSearchFilterLive.postValue(filterList);
-//        }
-//    }
-
     public MutableLiveData<SwipeRefreshLayout.OnRefreshListener> getOnRefreshListener() {
         return mOnRefreshListener;
     }
@@ -197,15 +95,5 @@ public class LaunchViewModel extends ViewModel
 
     public MutableLiveData<List<DomainLaunch>> getLaunches() {
         return mLaunches;
-    }
-
-
-    public MutableLiveData<String> getSearchByNameQuery() {
-        return mSearchByNameQuery;
-    }
-
-    @Override
-    public void onFilterItemClick(ISearchFilterItem item) {
-
     }
 }
