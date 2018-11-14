@@ -1,6 +1,7 @@
 package com.example.ivanovnv.spacex.launchSearch.adapter;
 
 import com.example.domain.model.searchFilter.ISearchFilter;
+import com.example.domain.model.searchFilter.ISearchFilterItem;
 import com.example.domain.model.searchFilter.SearchFilter;
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spacex.R;
@@ -17,7 +18,6 @@ public class ByRocketNameSearchFilterAdapter extends BaseSearchFilterAdapter
 
     @Override
     ISearchFilter mapSearchFilterUpdates(ISearchFilter searchFilter) {
-        //return searchFilter;
         return searchFilter.getFilterByType(ISearchFilter.ItemType.BY_ROCKET_NAME);
     }
 
@@ -27,7 +27,9 @@ public class ByRocketNameSearchFilterAdapter extends BaseSearchFilterAdapter
     }
 
     @Override
-    public void onFilterItemClick(SearchFilter.SearchFilterItem item) {
-        mLaunchService.getSearchFilter().switchItemSelectedState(item);
+    public void onFilterItemClick(ISearchFilterItem item) {
+        if (item != null) {
+            item.switchSelected();
+        }
     }
 }

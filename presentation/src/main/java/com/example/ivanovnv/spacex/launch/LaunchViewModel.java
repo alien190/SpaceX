@@ -6,6 +6,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.searchFilter.ISearchFilter;
+import com.example.domain.model.searchFilter.ISearchFilterItem;
 import com.example.domain.model.searchFilter.SearchFilter;
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spacex.currentPreferences.ICurrentPreferences;
@@ -206,7 +207,7 @@ public class LaunchViewModel extends ViewModel
     }
 
     @Override
-    public void onFilterItemClick(SearchFilter.SearchFilterItem item) {
+    public void onFilterItemClick(ISearchFilterItem item) {
 
     }
 }

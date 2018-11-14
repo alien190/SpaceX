@@ -10,10 +10,6 @@ public interface ISearchFilter {
 
     void addItems(List<String> values, ItemType type);
 
-    //List<ISearchFilterItem> getItems();
-
-    SearchFilter.SearchFilterItem getItem(int index);
-
     Flowable<ISearchFilter> getUpdatesLive();
 
     ISearchFilter getSelectedFilter();
@@ -22,15 +18,17 @@ public interface ISearchFilter {
 
     int getItemsCount();
 
-    String getItemValue(int index);
+    ISearchFilterItem getItem(int index);
 
-    boolean getIsItemSelected(int index);
+//    String getItemValue(int index);
 
-    void setIsItemSelected(int index);
-
-    void setIsItemUnselected(int index);
-
-    void switchItemSelectedState(SearchFilter.SearchFilterItem item);
+//    boolean getIsItemSelected(int index);
+//
+//    void setIsItemSelected(int index);
+//
+//    void setIsItemUnselected(int index);
+//
+//    void switchItemSelectedState(int index);
 
     void updateFilterFromRepository(ISearchFilter searchFilter);
 

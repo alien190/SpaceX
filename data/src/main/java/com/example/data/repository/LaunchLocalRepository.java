@@ -9,10 +9,16 @@ import com.example.data.database.LaunchDao;
 import com.example.data.model.DataImage;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.searchFilter.ISearchFilter;
+import com.example.domain.model.searchFilter.ISearchFilterItem;
 import com.example.domain.model.searchFilter.SearchFilter;
 import com.example.domain.repository.ILaunchRepository;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.BiConsumer;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
@@ -20,10 +26,33 @@ import timber.log.Timber;
 
 public class LaunchLocalRepository implements ILaunchRepository {
 
-    LaunchDao mLaunchDao;
+    private LaunchDao mLaunchDao;
+
+    private static final int BY_MISSION_NAME_INDEX = 1;
+    private static final int BY_ROCKET_NAME_INDEX = 2;
+    private static final int BY_LAUNCH_YEAR_INDEX = 3;
+
+    private static final HashMap<Integer, ISearchFilter.ItemType> mItemTypeByIndex =
+            new HashMap<Integer, ISearchFilter.ItemType>() {
+                {
+                    put(BY_MISSION_NAME_INDEX, ISearchFilter.ItemType.BY_MISSION_NAME);
+                    put(BY_ROCKET_NAME_INDEX, ISearchFilter.ItemType.BY_ROCKET_NAME);
+                    put(BY_LAUNCH_YEAR_INDEX, ISearchFilter.ItemType.BY_LAUNCH_YEAR);
+                }
+            };
+
+    private static final HashMap<ISearchFilter.ItemType, String> mColunmNameByItemType =
+            new HashMap<ISearchFilter.ItemType, String>() {
+                {
+                    put(ISearchFilter.ItemType.BY_MISSION_NAME, "mission_name");
+                    put(ISearchFilter.ItemType.BY_ROCKET_NAME, "rocket_name");
+                    put(ISearchFilter.ItemType.BY_LAUNCH_YEAR, "launch_year");
+                }
+            };
 
     public LaunchLocalRepository(LaunchDao mLaunchDao) {
         this.mLaunchDao = mLaunchDao;
+
     }
 
     @Override
@@ -91,7 +120,7 @@ public class LaunchLocalRepository implements ILaunchRepository {
 
     @Override
     public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(ISearchFilter searchFilter) {
-        String filter = generateSqlWhereFromFilterList(searchFilter);
+        String filter = generateSqlWhereConditions(searchFilter);
         if (!filter.isEmpty()) {
             filter = " AND (" + filter + ") ";
         } else {
@@ -107,70 +136,56 @@ public class LaunchLocalRepository implements ILaunchRepository {
                 .map(DataToDomainConverter::convertLaunchList);
     }
 
-    private String generateSqlWhereFromFilterList(ISearchFilter searchFilter) {
-        return "";
-
-//        List<ISearchFilterItem> launchSearchFilterList = searchFilter.getItems();
-//        if (launchSearchFilterList == null || launchSearchFilterList.isEmpty()) {
-//            return "";
-//        } else {
-//            StringBuilder retValueBuilder = new StringBuilder();
-//            String filter = "";
-//            for (ISearchFilterItem launchSearchFilter : launchSearchFilterList) {
-//                switch (launchSearchFilter.getType()) {
-//                    case BY_MISSION_NAME: {
-//                        filter = "mission_name LIKE '%" + launchSearchFilter.getValue() + "%' ";
-//                        break;
-//                    }
-//                    case BY_ROCKET_NAME: {
-//                        filter = "rocket_name LIKE '%" + launchSearchFilter.getValue() + "%' ";
-//                        break;
-//                    }
-//                    case BY_LAUNCH_YEAR: {
-//                        filter = "launch_year LIKE '%" + launchSearchFilter.getValue() + "%' ";
-//                        break;
-//                    }
-//                }
-//                if (!retValueBuilder.toString().isEmpty()) {
-//                    retValueBuilder.append(" OR ");
-//                }
-//                retValueBuilder.append(filter);
-//            }
-//            return retValueBuilder.toString();
-//        }
+    String generateSqlWhereConditions(ISearchFilter searchFilter) {
+        String retValue;
+        StringBuilder retValueBuilder = new StringBuilder();
+        String filter;
+        Set<Map.Entry<Integer, ISearchFilter.ItemType>> entries = mItemTypeByIndex.entrySet();
+        for (Map.Entry<Integer, ISearchFilter.ItemType> entry : entries) {
+            filter = generateSqlWhereConditionsForType(searchFilter, entry.getValue());
+            if (!filter.isEmpty()) {
+                if (!retValueBuilder.toString().isEmpty()) {
+                    retValueBuilder.append(" AND ");
+                }
+                retValueBuilder.append("(");
+                retValueBuilder.append(filter);
+                retValueBuilder.append(")");
+            }
+        }
+        retValue = retValueBuilder.toString();
+        return retValue;
     }
 
-
-//    @Override
-//    public Single<List<String>> getListRocketNames() {
-//        return mLaunchDao.getListRocketNames();
-//    }
-//
-//    @Override
-//    public Single<List<String>> getListLaunchYears() {
-//        return mLaunchDao.getListLaunchYears();
-//    }
+    private String generateSqlWhereConditionsForType(ISearchFilter searchFilter, ISearchFilter.ItemType type) {
+        StringBuilder retValueBuilder = new StringBuilder();
+        ISearchFilter filter = searchFilter.getFilterByType(type).getSelectedFilter();
+        ISearchFilterItem item;
+        int count = filter.getItemsCount();
+        for (int i = 0; i < count; i++) {
+            item = filter.getItem(i);
+            if (item != null) {
+                if (!retValueBuilder.toString().isEmpty()) {
+                    retValueBuilder.append(" OR ");
+                }
+                retValueBuilder.append(mColunmNameByItemType.get(item.getType()));
+                retValueBuilder.append(" LIKE '%");
+                retValueBuilder.append(item.getValue());
+                retValueBuilder.append("%'");
+            }
+        }
+        return retValueBuilder.toString();
+    }
 
 
     @Override
     public Flowable<ISearchFilter> getSearchFilterLive() {
-        return mLaunchDao.getFilterListItems().map(this::getSearchFilter);
+        return mLaunchDao.getFilterListItems(BY_ROCKET_NAME_INDEX, BY_LAUNCH_YEAR_INDEX).map(this::getSearchFilter);
     }
 
     private ISearchFilter getSearchFilter(List<DataFilterItem> filterItems) {
         ISearchFilter searchFilter = new SearchFilter();
         for (DataFilterItem item : filterItems) {
-            switch (item.getType()) {
-                case 1: {
-                    searchFilter.addItem(item.getValue(), ISearchFilter.ItemType.BY_ROCKET_NAME);
-                    break;
-                }
-                case 2: {
-                    searchFilter.addItem(item.getValue(), ISearchFilter.ItemType.BY_LAUNCH_YEAR);
-                    break;
-                }
-            }
-
+            searchFilter.addItem(item.getValue(), mItemTypeByIndex.get(item.getType()));
         }
         return searchFilter;
     }

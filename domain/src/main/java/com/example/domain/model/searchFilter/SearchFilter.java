@@ -89,58 +89,62 @@ public class SearchFilter implements ISearchFilter {
         return mItems.size();
     }
 
-    @Override
-    public String getItemValue(int index) {
-        if (checkIndex(index)) {
-            return mItems.get(index).getValue();
-        }
-        return "";
-    }
+
+//    @Override
+//    public ISearchFilterItem getItem(int index) {
+//        if (checkIndex(index)) {
+//            return mItems.get(index);
+//        }
+//        return null;
+//    }
+
+//    @Override
+//    public String getItemValue(int index) {
+//        if (checkIndex(index)) {
+//            return mItems.get(index).getValue();
+//        }
+//        return "";
+//    }
 
     @Override
-    public SearchFilterItem getItem(int index) {
+    public ISearchFilterItem getItem(int index) {
         if (checkIndex(index)) {
             return mItems.get(index);
         }
         return null;
     }
 
-    @Override
-    public boolean getIsItemSelected(int index) {
-        if (checkIndex(index)) {
-            return mItems.get(index).isSelected();
-        }
-        return false;
-    }
+//    @Override
+//    public boolean getIsItemSelected(int index) {
+//        if (checkIndex(index)) {
+//            return mItems.get(index).isSelected();
+//        }
+//        return false;
+//    }
 
-    @Override
-    public void setIsItemSelected(int index) {
-        setItemSelectedState(index, true);
-    }
+//    @Override
+//    public void setIsItemSelected(int index) {
+//        setItemSelectedState(index, true);
+//    }
 
-    @Override
-    public void setIsItemUnselected(int index) {
-        setItemSelectedState(index, false);
-    }
+//    @Override
+//    public void setIsItemUnselected(int index) {
+//        setItemSelectedState(index, false);
+//    }
 
-    private void setItemSelectedState(int index, boolean state) {
-        if (checkIndex(index)) {
-            mItems.get(index).setSelected(state);
-        }
-    }
+//    private void setItemSelectedState(int index, boolean state) {
+//        if (checkIndex(index)) {
+//            mItems.get(index).setSelected(state);
+//        }
+//    }
 
-    @Override
-    public void switchItemSelectedState(SearchFilterItem item) {
+//    @Override
+//    public void switchItemSelectedState(int index) {
 //        if (checkIndex(index)) {
 //            mItems.get(index).switchSelected();
 //        }
-//        boolean c = mItems.contains(item);
-//        item.switchSelected();
-//        c = false;
-        mItems.get(mItems.indexOf(item)).switchSelected();
-        notifySearchFilterChanges();
-
-    }
+//        notifySearchFilterChanges();
+//    }
 
     private boolean checkIndex(int index) {
         if (index >= 0 || index < mItems.size() - 1) {
@@ -153,7 +157,10 @@ public class SearchFilter implements ISearchFilter {
     public void updateFilterFromRepository(ISearchFilter searchFilter) {
         if (searchFilter instanceof SearchFilter) {
             mItems.clear();
-            mItems.addAll(((SearchFilter) searchFilter).getItems());
+            List<SearchFilterItem> items = ((SearchFilter) searchFilter).getItems();
+            for (SearchFilterItem item : items) {
+                addItem(item.mValue, item.mType);
+            }
             notifySearchFilterChanges();
         }
     }
@@ -178,7 +185,7 @@ public class SearchFilter implements ISearchFilter {
     }
 
 
-    public class SearchFilterItem {
+    private class SearchFilterItem implements ISearchFilterItem {
 
         private String mValue;
         private ItemType mType;
@@ -203,7 +210,7 @@ public class SearchFilter implements ISearchFilter {
                     && mValue.equals(((SearchFilterItem) o).getValue());
         }
 
-        private String getValue() {
+        public String getValue() {
             return mValue;
         }
 
@@ -211,7 +218,7 @@ public class SearchFilter implements ISearchFilter {
             mValue = value;
         }
 
-        private ItemType getType() {
+        public ItemType getType() {
             return mType;
         }
 
@@ -219,18 +226,18 @@ public class SearchFilter implements ISearchFilter {
             mType = type;
         }
 
-        private boolean isSelected() {
+        public boolean isSelected() {
             return mIsSelected;
         }
 
-        private void setSelected(boolean selected) {
+        public void setSelected(boolean selected) {
             if (mIsSelected != selected) {
                 mIsSelected = selected;
                 notifySearchFilterChanges();
             }
         }
 
-        private void switchSelected() {
+        public void switchSelected() {
             mIsSelected = !mIsSelected;
             notifySearchFilterChanges();
         }

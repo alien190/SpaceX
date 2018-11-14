@@ -38,7 +38,6 @@ public interface ILaunchRepository {
 
     Flowable<ISearchFilter> getSearchFilterLive();
 
-    //Single<List<String>> getListLaunchYears();
-
     void cancelLoadImages();
+
 }

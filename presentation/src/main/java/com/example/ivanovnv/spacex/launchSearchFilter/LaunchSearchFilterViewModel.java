@@ -4,6 +4,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.example.domain.model.searchFilter.ISearchFilter;
+import com.example.domain.model.searchFilter.ISearchFilterItem;
 import com.example.domain.model.searchFilter.SearchFilter;
 import com.example.domain.service.ILaunchService;
 
@@ -115,7 +116,7 @@ public class LaunchSearchFilterViewModel extends ViewModel implements ILaunchSea
     }
 
     @Override
-    public void onFilterItemClick(SearchFilter.SearchFilterItem item) {
+    public void onFilterItemClick(ISearchFilterItem item) {
 
     }
 }

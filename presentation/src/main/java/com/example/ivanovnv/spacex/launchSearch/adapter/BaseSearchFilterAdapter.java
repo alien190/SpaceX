@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.domain.model.searchFilter.ISearchFilter;
+import com.example.domain.model.searchFilter.ISearchFilterItem;
 import com.example.domain.model.searchFilter.SearchFilter;
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spacex.launchSearch.SearchFilterViewHolder;
@@ -60,7 +61,7 @@ public abstract class BaseSearchFilterAdapter extends RecyclerView.Adapter<Searc
 
     @Override
     public void onBindViewHolder(@NonNull SearchFilterViewHolder searchFilterViewHolder, int i) {
-        searchFilterViewHolder.bind(i, mSearchFilter, mOnItemClickListener);
+        searchFilterViewHolder.bind(mSearchFilter.getItem(i), mOnItemClickListener);
     }
 
     @Override
@@ -80,7 +81,7 @@ public abstract class BaseSearchFilterAdapter extends RecyclerView.Adapter<Searc
 
 
     public interface IOnFilterItemClickListener {
-        void onFilterItemClick(SearchFilter.SearchFilterItem item);
+        void onFilterItemClick(ISearchFilterItem item);
     }
 
 
