@@ -27,7 +27,7 @@ public class LaunchFragmentModule extends Module {
         bind(LaunchLayoutManager.class).toInstance(new LaunchLayoutManager());
         bind(LaunchViewModelFactory.class).toProvider(LaunchViewModelFactoryProvider.class);
         bind(SearchFilterLayoutManager.class).toInstance(new SearchFilterLayoutManager());
-        bind(BaseSearchFilterAdapter.class).to(BaseSearchFilterAdapter.class);
+        //bind(BaseSearchFilterAdapter.class).to(BaseSearchFilterAdapter.class);
         //bind(ItemTouchAdapter.class).to(BaseSearchFilterAdapter.class).singletonInScope();
         bind(ItemTouchHelper.Callback.class).toProvider(ItemTouchCallbackProvider.class).providesSingletonInScope();
         bind(ItemTouchHelper.class).toProvider(ItemTouchHelperProvider.class).providesSingletonInScope();

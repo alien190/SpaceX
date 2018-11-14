@@ -1,24 +1,15 @@
 package com.example.ivanovnv.spacex.launchSearch.adapter;
 
-import com.example.domain.model.searchFilter.ISearchFilter;
 import com.example.domain.model.searchFilter.ISearchFilterItem;
-import com.example.domain.model.searchFilter.SearchFilter;
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spacex.R;
 
-import javax.inject.Inject;
-
-public class ByRocketNameSearchFilterAdapter extends BaseSearchFilterAdapter
+public abstract class ChoiceSearchFilterAdapter extends BaseSearchFilterAdapter
         implements BaseSearchFilterAdapter.IOnFilterItemClickListener {
-    @Inject
-    public ByRocketNameSearchFilterAdapter(ILaunchService launchService) {
+
+    public ChoiceSearchFilterAdapter(ILaunchService launchService) {
         super(launchService);
         setOnFilterItemClickListener(this);
-    }
-
-    @Override
-    ISearchFilter mapSearchFilterUpdates(ISearchFilter searchFilter) {
-        return searchFilter.getFilterByType(ISearchFilter.ItemType.BY_ROCKET_NAME);
     }
 
     @Override

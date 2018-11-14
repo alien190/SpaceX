@@ -15,7 +15,7 @@ import android.widget.ImageButton;
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.customComponents.SearchFilterLayoutManager;
 import com.example.ivanovnv.spacex.di.launchSearchFilter.LaunchSearchFilterFragmentModule;
-import com.example.ivanovnv.spacex.launchSearch.adapter.SelectedSearchFilterAdapter;
+import com.example.ivanovnv.spacex.launchSearch.adapter.SearchFilterAdapterSelected;
 import com.example.ivanovnv.spacex.launchSearchFilter.LaunchSearchFilterDialogFragment;
 
 import javax.inject.Inject;
@@ -40,7 +40,7 @@ public class LaunchSearchFragment extends Fragment {
     @Inject
     SearchFilterLayoutManager mLayoutManager;
     @Inject
-    SelectedSearchFilterAdapter mListAdapter;
+    SearchFilterAdapterSelected mListAdapter;
     //@Inject
     //protected ItemTouchHelper mItemTouchHelper;
 

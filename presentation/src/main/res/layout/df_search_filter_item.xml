@@ -12,7 +12,9 @@
             name="scopeName"
             type="String" />
 
+
         <import type="android.view.View" />
+        <import type="com.example.domain.model.searchFilter.ISearchFilter.ItemType"/>
     </data>
 
     <LinearLayout
@@ -29,7 +31,8 @@
         <android.support.v7.widget.RecyclerView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            bind:scopeName="@{scopeName}" />
+            bind:scopeName="@{scopeName}"
+            bind:itemType="@{ItemType.BY_ROCKET_NAME}"/>
 
 
         <TextView
@@ -40,18 +43,8 @@
         <android.support.v7.widget.RecyclerView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            bind:scopeName="@{scopeName}" />
-
-
-        <android.support.design.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:id="@+id/btn_ok"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="@{() -> vm.onOkButtonClick()}"
-            android:text="ok"
-            android:visibility="@{vm.canChoice ? View.VISIBLE : View.GONE}" />
-
+            bind:scopeName="@{scopeName}"
+            bind:itemType="@{ItemType.BY_LAUNCH_YEAR}"/>
     </LinearLayout>
 
 

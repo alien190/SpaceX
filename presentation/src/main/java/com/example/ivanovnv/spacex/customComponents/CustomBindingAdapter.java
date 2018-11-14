@@ -9,11 +9,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.example.domain.model.searchFilter.ISearchFilter;
 import com.example.ivanovnv.spacex.launchDetail.photos.PhotosListAdapter;
 import com.example.ivanovnv.spacex.di.imageZoom.ImageZoomModule;
 import com.example.ivanovnv.spacex.imageZoom.ImageZoomActivity;
 import com.example.ivanovnv.spacex.launchSearch.adapter.BaseSearchFilterAdapter;
-import com.example.ivanovnv.spacex.launchSearch.adapter.ByRocketNameSearchFilterAdapter;
+import com.example.ivanovnv.spacex.launchSearch.adapter.SearchFilterAdapterByLaunchYear;
+import com.example.ivanovnv.spacex.launchSearch.adapter.SearchFilterAdapterByRocketName;
 
 import java.util.List;
 
@@ -83,21 +85,22 @@ public class CustomBindingAdapter {
         pagerSnapHelper.attachToRecyclerView(recyclerView);
     }
 
-    @BindingAdapter({"bind:scopeName"})
+    @BindingAdapter({"bind:scopeName", "bind:itemType"})
     public static void setRecyclerViewFilterItemSource(RecyclerView recyclerView,
-                                                       String scopeName) {
+                                                       String scopeName,
+                                                       ISearchFilter.ItemType itemType) {
         RecyclerView.Adapter adapter = recyclerView.getAdapter();
         if (adapter == null) {
             Scope scope = Toothpick.openScope(scopeName);
             initFilterItemLayoutManager(scope, recyclerView);
             initFilterItemAdapter(
                     scope,
+                    itemType,
                     recyclerView);
-        } else {
-            //((BaseSearchFilterAdapter) adapter).submitSearchFilter(searchFilter);
-            //((BaseSearchFilterAdapter) adapter).setCanChoice(canChoice);
-            recyclerView.requestLayout();
         }
+//        else {
+//            recyclerView.requestLayout();
+//        }
     }
 
     private static void initFilterItemLayoutManager(Scope scope, RecyclerView recyclerView) {
@@ -106,11 +109,18 @@ public class CustomBindingAdapter {
     }
 
     private static void initFilterItemAdapter(Scope scope,
+                                              ISearchFilter.ItemType itemType,
                                               RecyclerView recyclerView) {
-        BaseSearchFilterAdapter searchFilterAdapter = scope.getInstance(ByRocketNameSearchFilterAdapter.class);
-        //searchFilterAdapter.setCanChoice(canChoice);
-        //searchFilterAdapter.setOnFilterItemClickListener(onFilterItemClickListener);
-        //searchFilterAdapter.submitSearchFilter(searchFilter);
+        BaseSearchFilterAdapter searchFilterAdapter = null;
+        switch (itemType) {
+            case BY_ROCKET_NAME:{
+                searchFilterAdapter = scope.getInstance(SearchFilterAdapterByRocketName.class);
+                break;
+            }
+            case BY_LAUNCH_YEAR:{
+                searchFilterAdapter = scope.getInstance(SearchFilterAdapterByLaunchYear.class);
+            }
+        }
         recyclerView.setAdapter(searchFilterAdapter);
     }
 
