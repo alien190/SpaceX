@@ -9,16 +9,14 @@ import com.example.data.database.LaunchDao;
 import com.example.data.model.DataImage;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.searchFilter.ISearchFilter;
-import com.example.domain.model.searchFilter.ISearchFilterItem;
+import com.example.domain.model.searchFilter.IBaseFilterItem;
 import com.example.domain.model.searchFilter.SearchFilter;
 import com.example.domain.repository.ILaunchRepository;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiConsumer;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
@@ -167,7 +165,7 @@ public class LaunchLocalRepository implements ILaunchRepository {
         StringBuilder retValueBuilder = new StringBuilder();
         ISearchFilter filter = searchFilter.getFilterByType(type).getSelectedFilter();
 
-        ISearchFilterItem item;
+        IBaseFilterItem item;
         int count = filter.getItemsCount();
         for (int i = 0; i < count; i++) {
             item = filter.getItem(i);

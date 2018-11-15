@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.domain.model.searchFilter.ISearchFilter;
-import com.example.domain.model.searchFilter.ISearchFilterItem;
+import com.example.domain.model.searchFilter.IBaseFilterItem;
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spacex.launchSearch.SearchFilterViewHolder;
 
@@ -84,7 +84,7 @@ public abstract class BaseSearchFilterAdapter extends RecyclerView.Adapter<Searc
 
 
     public interface IOnFilterItemClickListener {
-        void onFilterItemClick(ISearchFilterItem item);
+        void onFilterItemClick(IBaseFilterItem item);
     }
 
 

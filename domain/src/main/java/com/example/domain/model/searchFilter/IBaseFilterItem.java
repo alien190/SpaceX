@@ -1,9 +1,9 @@
 package com.example.domain.model.searchFilter;
 
-public interface ISearchFilterItem {
+public interface IBaseFilterItem {
     String getValue();
 
-    ISearchFilter.ItemType getType();
+    IBaseFilter.ItemType getType();
 
     boolean isSelected();
 

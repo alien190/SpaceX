@@ -4,23 +4,23 @@ import java.util.List;
 
 import io.reactivex.Flowable;
 
-public interface ISearchFilter {
+public interface IBaseFilter {
 
     boolean addItem(String value, ItemType type);
 
     void addItems(List<String> values, ItemType type);
 
-    Flowable<ISearchFilter> getUpdatesLive();
+    Flowable<IBaseFilter> getUpdatesLive();
 
-    ISearchFilter getSelectedFilter();
+    IBaseFilter getSelectedFilter();
 
-    ISearchFilter getFilterByType(ItemType type);
+    IBaseFilter getFilterByType(ItemType type);
 
     int getItemsCount();
 
     IBaseFilterItem getItem(int index);
 
-    void updateFilterFromRepository(ISearchFilter searchFilter);
+    void updateFilterFromRepository(IBaseFilter searchFilter);
 
     void setTextQuery(String query);
 

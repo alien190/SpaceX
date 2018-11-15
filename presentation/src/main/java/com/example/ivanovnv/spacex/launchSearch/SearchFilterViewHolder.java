@@ -5,14 +5,14 @@ import android.support.design.chip.Chip;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.example.domain.model.searchFilter.ISearchFilterItem;
+import com.example.domain.model.searchFilter.IBaseFilterItem;
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.launchSearch.adapter.BaseSearchFilterAdapter;
 
 
 public class SearchFilterViewHolder extends RecyclerView.ViewHolder {
     private Chip mChip;
-    private ISearchFilterItem mItem;
+    private IBaseFilterItem mItem;
     private BaseSearchFilterAdapter.IOnFilterItemClickListener mItemClickListener;
 
     public SearchFilterViewHolder(@NonNull View itemView) {
@@ -20,7 +20,7 @@ public class SearchFilterViewHolder extends RecyclerView.ViewHolder {
         mChip = itemView.findViewById(R.id.chip);
     }
 
-    public void bind(ISearchFilterItem item, BaseSearchFilterAdapter.IOnFilterItemClickListener onItemClickListener) {
+    public void bind(IBaseFilterItem item, BaseSearchFilterAdapter.IOnFilterItemClickListener onItemClickListener) {
         if (item != null) {
             mItem = item;
             mItemClickListener = onItemClickListener;

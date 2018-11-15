@@ -1,6 +1,6 @@
 package com.example.ivanovnv.spacex.launchSearch.adapter;
 
-import com.example.domain.model.searchFilter.ISearchFilterItem;
+import com.example.domain.model.searchFilter.IBaseFilterItem;
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spacex.R;
 
@@ -18,7 +18,7 @@ public abstract class ChoiceSearchFilterAdapter extends BaseSearchFilterAdapter
     }
 
     @Override
-    public void onFilterItemClick(ISearchFilterItem item) {
+    public void onFilterItemClick(IBaseFilterItem item) {
         if (item != null) {
             item.switchSelected();
         }

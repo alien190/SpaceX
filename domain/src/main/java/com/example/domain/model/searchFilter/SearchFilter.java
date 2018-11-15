@@ -104,7 +104,7 @@ public class SearchFilter implements ISearchFilter {
     }
 
     @Override
-    public ISearchFilterItem getItem(int index) {
+    public IBaseFilterItem getItem(int index) {
         if (checkIndex(index)) {
             return mItems.get(index);
         }
@@ -177,7 +177,7 @@ public class SearchFilter implements ISearchFilter {
         }
     }
 
-    private class SearchFilterItem implements ISearchFilterItem {
+    private class SearchFilterItem implements IBaseFilterItem {
 
         private String mValue;
         private ItemType mType;
