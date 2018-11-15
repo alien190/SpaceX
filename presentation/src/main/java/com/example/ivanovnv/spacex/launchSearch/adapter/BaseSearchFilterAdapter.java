@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 
 import com.example.domain.model.searchFilter.ISearchFilter;
 import com.example.domain.model.searchFilter.ISearchFilterItem;
-import com.example.domain.model.searchFilter.SearchFilter;
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spacex.launchSearch.SearchFilterViewHolder;
 

@@ -3,6 +3,7 @@ package com.example.ivanovnv.spacex;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,14 +11,18 @@ import android.support.v4.view.ViewPager;
 import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.ivanovnv.spacex.Analytics.AnalyticsFragment;
 import com.example.ivanovnv.spacex.launch.LaunchFragment;
 
 import timber.log.Timber;
 
 public class MainFragment extends Fragment {
+
+    private BottomNavigationView mBottomNavigationView;
 
     public static MainFragment newInstance() {
 
@@ -31,18 +36,59 @@ public class MainFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View View = inflater.inflate(R.layout.fr_main, container, false);
-        FragmentManager fragmentManager = getFragmentManager();
-        if (fragmentManager != null) {
-            fragmentManager
-                    .beginTransaction()
-                    .replace(R.id.container, LaunchFragment.newInstance())
-                    .commit();
+        View view = inflater.inflate(R.layout.fr_main, container, false);
+        mBottomNavigationView = view.findViewById(R.id.bottom_navigation);
+        if (savedInstanceState == null) {
+            replaceFragment(LaunchFragment.newInstance());
         }
-        setExitTransition(TransitionInflater.from(getContext()).inflateTransition(R.transition.launch_list_exit_transition));
-        return View;
+        return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mBottomNavigationView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
+    }
+
+    @Override
+    public void onStop() {
+        mBottomNavigationView.setOnNavigationItemSelectedListener(null);
+        super.onStop();
+    }
+
+    private boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.mi_launches: {
+                if (replaceFragment(LaunchFragment.newInstance())) {
+                    setExitTransition(TransitionInflater.from(getContext()).inflateTransition(R.transition.launch_list_exit_transition));
+                    return true;
+                }
+                return false;
+            }
+            case R.id.mi_analytics: {
+                if (replaceFragment(AnalyticsFragment.newInstance()))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean replaceFragment(Fragment fragment) {
+        if (fragment != null) {
+            FragmentManager fragmentManager = getFragmentManager();
+            if (fragmentManager != null) {
+                fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.container, fragment)
+                        .commit();
+                return true;
+            } else {
+                throw new IllegalArgumentException("fragmentManager can't be null");
+            }
+        } else {
+            throw new IllegalArgumentException("fragment can't be null");
+        }
+    }
 }
 
 
