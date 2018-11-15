@@ -2,23 +2,13 @@ package com.example.domain.model.searchFilter;
 
 import java.util.List;
 
-import io.reactivex.Flowable;
-
-public interface ISearchFilter {
+public interface ISearchFilter extends IBaseFilter{
 
     boolean addItem(String value, ItemType type);
 
     void addItems(List<String> values, ItemType type);
 
-    Flowable<ISearchFilter> getUpdatesLive();
-
-    ISearchFilter getSelectedFilter();
-
     ISearchFilter getFilterByType(ItemType type);
-
-    int getItemsCount();
-
-    IBaseFilterItem getItem(int index);
 
     void updateFilterFromRepository(ISearchFilter searchFilter);
 

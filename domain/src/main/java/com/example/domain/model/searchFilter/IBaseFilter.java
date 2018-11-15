@@ -4,34 +4,18 @@ import java.util.List;
 
 import io.reactivex.Flowable;
 
-public interface IBaseFilter {
+public interface IBaseFilter<T> {
 
-    boolean addItem(String value, ItemType type);
+    boolean addItem(String value);
 
-    void addItems(List<String> values, ItemType type);
+    void addItems(List<String> values);
 
-    Flowable<IBaseFilter> getUpdatesLive();
+    Flowable<T> getUpdatesLive();
 
-    IBaseFilter getSelectedFilter();
-
-    IBaseFilter getFilterByType(ItemType type);
+    T getSelectedFilter();
 
     int getItemsCount();
 
     IBaseFilterItem getItem(int index);
 
-    void updateFilterFromRepository(IBaseFilter searchFilter);
-
-    void setTextQuery(String query);
-
-    String getTextQuery();
-
-    void submitTextQuery(String query);
-
-    enum ItemType {
-        BY_MISSION_NAME,
-        BY_ROCKET_NAME,
-        BY_LAUNCH_YEAR,
-        EMPTY
-    }
 }

@@ -1,26 +1,27 @@
 package com.example.domain.model.searchFilter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.processors.PublishProcessor;
 
-public class BaseFilter {
-    private List<BaseFilterItem> mItems;
-    private PublishProcessor<BaseFilter> mPublishProcessor;
-    private Flowable<BaseFilter> mFilterLive;
+public class BaseFilter<T> implements IBaseFilter<T>{
+    protected List<BaseFilterItem> mItems;
+    protected PublishProcessor<BaseFilter> mPublishProcessor;
+    protected Flowable<BaseFilter> mFilterLive;
 
     public enum ItemType {}
 
-    public BaseFilter() {
+    protected BaseFilter() {
         mItems = new ArrayList<>();
         mPublishProcessor = PublishProcessor.create();
         mFilterLive = Flowable.fromPublisher(mPublishProcessor);
         notifySearchFilterChanges();
     }
 
-    public BaseFilter(BaseFilter filter) {
+    protected BaseFilter(BaseFilter filter) {
         this();
         //if (filter instanceof BaseFilter) {
 //            BaseFilter newFilter = ((BaseFilter) searchFilter);
@@ -29,13 +30,14 @@ public class BaseFilter {
         //}
     }
 
-    private BaseFilter(List<BaseFilterItem> items) {
+    protected BaseFilter(List<? extends BaseFilterItem> items) {
         this();
         mItems.addAll(items);
         notifySearchFilterChanges();
     }
 
-    public Flowable<BaseFilter> getUpdatesLive() {
+
+    public Flowable<T> getUpdatesLive() {
         return mFilterLive;
     }
 
@@ -49,19 +51,11 @@ public class BaseFilter {
         return new BaseFilter(list);
     }
 
-    private void addItems(List<BaseFilterItem> newItems) {
-        if (newItems != null) {
-            for (BaseFilterItem item : newItems) {
-                addItem(item);
-            }
-        }
-    }
-
     private boolean addItem(BaseFilterItem newItem) {
         boolean isFound = false;
         if (newItem != null) {
             for (BaseFilterItem filter : mItems) {
-                if (filter.getType() == newItem.getType() && (filter.getValue().contains(newItem.getValue()))) {
+                if (filter.equals(newItem)) {
                     isFound = true;
                     break;
                 }
@@ -74,17 +68,17 @@ public class BaseFilter {
         return isFound;
     }
 
-    public void addItems(List<String> values, ItemType type) {
+    public void addItems(List<String> values) {
         if (values != null) {
             for (String item : values) {
-                addItem(item, type);
+                addItem(item);
             }
         }
     }
 
-    public boolean addItem(String value, ItemType type) {
+    public boolean addItem(String value) {
         if (value != null && !value.isEmpty()) {
-            BaseFilterItem item = new BaseFilterItem(value, type);
+            BaseFilterItem item = new BaseFilterItem(value);
             return addItem(item);
         }
         return false;
@@ -94,7 +88,7 @@ public class BaseFilter {
         return mItems.size();
     }
 
-    public BaseFilterItem getItem(int index) {
+    public IBaseFilterItem getItem(int index) {
         if (checkIndex(index)) {
             return mItems.get(index);
         }
@@ -109,45 +103,33 @@ public class BaseFilter {
         throw new IllegalArgumentException("index out of bounds");
     }
 
-    public void updateFilterFromRepository(ISearchFilter searchFilter) {
-    }
 
-    private List<BaseFilterItem> getItems() {
+    protected List<? extends BaseFilterItem> getItems() {
         return mItems;
     }
 
-    private void notifySearchFilterChanges() {
+    protected void notifySearchFilterChanges() {
         mPublishProcessor.onNext(this);
     }
 
-    public BaseFilter getFilterByType(ItemType type) {
-        List<BaseFilterItem> list = new ArrayList<>();
-        for (BaseFilterItem item : mItems) {
-            if (item.getType() == type) {
-                list.add(item);
-            }
+
+    protected class BaseFilterItem implements IBaseFilterItem {
+
+        protected String mValue;
+        protected boolean mIsSelected;
+
+        public BaseFilterItem() {
         }
-        return new BaseFilter(list);
-    }
 
-
-    private class BaseFilterItem {
-
-        private String mValue;
-        private ItemType mType;
-        private boolean mIsSelected;
-
-        private BaseFilterItem(String value, ItemType type) {
+        protected BaseFilterItem(String value) {
             mValue = value;
-            mType = type;
             mIsSelected = false;
         }
 
         @Override
         public boolean equals(Object o) {
             return o instanceof BaseFilterItem
-                    && mType == ((BaseFilterItem) o).getType()
-                    && mValue.equals(((BaseFilterItem) o).getValue());
+                    && mValue.contains(((BaseFilterItem) o).getValue());
         }
 
         public String getValue() {
@@ -158,13 +140,6 @@ public class BaseFilter {
             mValue = value;
         }
 
-        public ItemType getType() {
-            return mType;
-        }
-
-        private void setType(ItemType type) {
-            mType = type;
-        }
 
         public boolean isSelected() {
             return mIsSelected;
