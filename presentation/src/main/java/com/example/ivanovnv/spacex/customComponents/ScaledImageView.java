@@ -58,7 +58,7 @@ public class ScaledImageView extends View {
                 .onBackpressureBuffer(1,
                         () -> Timber.d("initObserver: buffer overflow"),
                         BackpressureOverflowStrategy.DROP_OLDEST)
-                .observeOn(Schedulers.io(), false, 1)
+                .observeOn(Schedulers.computation(), false, 1)
                 .map(mCreateScaledBitmap)
                 .map(mSetScaledBitmap)
                 //.observeOn(AndroidSchedulers.mainThread())
