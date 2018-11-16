@@ -1,5 +1,4 @@
 package com.example.domain.model.searchFilter;
 
-public interface ISearchFilterItem extends IBaseFilterItem {
-    ISearchFilter.ItemType getType();
+public interface ISearchFilterItem extends IBaseFilterItem<ISearchFilter.ItemType> {
 }

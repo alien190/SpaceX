@@ -4,11 +4,7 @@ import java.util.List;
 
 import io.reactivex.Flowable;
 
-public interface IBaseFilter<T> {
-
-    boolean addItem(String value);
-
-    void addItems(List<String> values);
+public interface IBaseFilter<T extends IBaseFilter, I extends IBaseFilterItem, H> {
 
     Flowable<T> getUpdatesLive();
 
@@ -16,6 +12,14 @@ public interface IBaseFilter<T> {
 
     int getItemsCount();
 
-    IBaseFilterItem getItem(int index);
+    I getItem(int index);
+
+    List<I> getItems();
+
+    boolean addItem(String value, H type);
+
+    void addItems(List<String> values, H type);
+
+    T getFilterByType(H type);
 
 }

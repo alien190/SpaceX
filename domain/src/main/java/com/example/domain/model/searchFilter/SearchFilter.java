@@ -1,100 +1,60 @@
 package com.example.domain.model.searchFilter;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Flowable;
+import static com.example.domain.model.searchFilter.ISearchFilter.ItemType.BY_LAUNCH_YEAR;
+import static com.example.domain.model.searchFilter.ISearchFilter.ItemType.BY_MISSION_NAME;
+import static com.example.domain.model.searchFilter.ISearchFilter.ItemType.BY_ROCKET_NAME;
 
-public class SearchFilter extends BaseFilter implements ISearchFilter {
+public class SearchFilter extends BaseFilter<ISearchFilter, ISearchFilterItem, ISearchFilter.ItemType> implements ISearchFilter {
     private String mTextQuery;
-    private Flowable<SearchFilter> mFilterLive;
-    private List<SearchFilterItem> mItems;
-
 
     public SearchFilter() {
         super();
-
     }
 
     public SearchFilter(ISearchFilter searchFilter) {
-        super((BaseFilter) searchFilter);
+        super(searchFilter);
+        mTextQuery = searchFilter.getTextQuery();
     }
 
-    private SearchFilter(List<SearchFilterItem> items) {
+    private SearchFilter(List<ISearchFilterItem> items) {
         super(items);
-        // mItems.add
-    }
-
-    private boolean addItem(SearchFilterItem newItem) {
-        boolean isFound = false;
-        if (newItem != null) {
-            for (SearchFilterItem filter : mItems) {
-                if (filter.getType() == newItem.getType() && (filter.getValue().contains(newItem.getValue()))) {
-                    isFound = true;
-                    break;
-                }
-            }
-            if (!isFound) {
-                if (newItem.getType() == ISearchFilter.ItemType.BY_MISSION_NAME) {
-                    newItem.setSelected(true);
-                }
-                mItems.add(newItem);
-                notifySearchFilterChanges();
-            }
-        }
-        return isFound;
     }
 
     @Override
-    public void addItems(List<String> values, ISearchFilter.ItemType type) {
-        if (values != null) {
-            for (String item : values) {
-                addItem(item, type);
-            }
+    protected boolean addItem(ISearchFilterItem newItem) {
+        if (newItem.getType().equals(BY_MISSION_NAME)) {
+            newItem.setSelected(true);
         }
+        return super.addItem(newItem);
     }
-
-    public boolean addItem(String value, ISearchFilter.ItemType type) {
-        if (value != null && !value.isEmpty()) {
-            SearchFilterItem item = new SearchFilterItem(value, type);
-            return addItem(item);
-        }
-        return false;
-    }
-
 
     @Override
-    public int getItemsCount() {
-        return mItems.size();
+    protected ISearchFilter newInstance(List<ISearchFilterItem> items) {
+        return new SearchFilter(items);
+    }
+
+    @Override
+    protected ISearchFilterItem getNewItemInstance(String value, ISearchFilter.ItemType type) {
+        return new SearchFilterItem(value, type);
     }
 
     @Override
     public void updateFilterFromRepository(ISearchFilter searchFilter) {
-        if (searchFilter instanceof SearchFilter) {
-            SearchFilter searchFilterCast = (SearchFilter) searchFilter;
-            if (getFilterByType(ISearchFilter.ItemType.BY_ROCKET_NAME).getItemsCount() !=
-                    searchFilterCast.getFilterByType(ISearchFilter.ItemType.BY_ROCKET_NAME).getItemsCount() ||
-                    getFilterByType(ISearchFilter.ItemType.BY_LAUNCH_YEAR).getItemsCount() !=
-                            searchFilterCast.getFilterByType(ISearchFilter.ItemType.BY_LAUNCH_YEAR).getItemsCount()) {
-                mItems.clear();
-                List<? extends BaseFilterItem> items = searchFilterCast.getItems();
-                for (BaseFilterItem item : items) {
-                    addItem(item.getValue(), ((SearchFilterItem) item).getType());
-                }
-                notifySearchFilterChanges();
+        if (getFilterByType(BY_ROCKET_NAME).getItemsCount() !=
+                searchFilter.getFilterByType(BY_ROCKET_NAME).getItemsCount() ||
+                getFilterByType(BY_LAUNCH_YEAR).getItemsCount() !=
+                        searchFilter.getFilterByType(BY_LAUNCH_YEAR).getItemsCount()) {
+            mItems.clear();
+            List<ISearchFilterItem> items = searchFilter.getItems();
+            for (ISearchFilterItem item : items) {
+                addItem(item.getValue(), item.getType());
             }
+            notifySearchFilterChanges();
         }
     }
 
-    public SearchFilter getFilterByType(ISearchFilter.ItemType type) {
-        List<SearchFilterItem> list = new ArrayList<>();
-        for (SearchFilterItem item : mItems) {
-            if (item.getType() == type) {
-                list.add(item);
-            }
-        }
-        return new SearchFilter(list);
-    }
 
     @Override
     public void setTextQuery(String query) {
@@ -113,39 +73,26 @@ public class SearchFilter extends BaseFilter implements ISearchFilter {
     public void submitTextQuery(String query) {
         if (query != null && !query.isEmpty()) {
             mTextQuery = "";
-            addItem(query, ISearchFilter.ItemType.BY_MISSION_NAME);
+            addItem(query, BY_MISSION_NAME);
             notifySearchFilterChanges();
         }
     }
 
-    private class SearchFilterItem extends BaseFilterItem implements IBaseFilterItem {
+    private class SearchFilterItem extends BaseFilterItem<ISearchFilter.ItemType> implements ISearchFilterItem {
 
-        private ISearchFilter.ItemType mType;
-
-        private SearchFilterItem(String value, ISearchFilter.ItemType type) {
-            mValue = value;
-            mType = type;
-            mIsSelected = false;
+        SearchFilterItem(String value, ISearchFilter.ItemType type) {
+            super(value, type);
         }
 
-        public ISearchFilter.ItemType getType() {
-            return mType;
-        }
-
-        private void setType(ISearchFilter.ItemType type) {
-            mType = type;
-        }
-
-
+        @Override
         public void setSelected(boolean selected) {
             if (mIsSelected != selected) {
                 mIsSelected = selected;
-                if (mType == ISearchFilter.ItemType.BY_MISSION_NAME) {
+                if (mType == BY_MISSION_NAME) {
                     mItems.remove(this);
                 }
                 notifySearchFilterChanges();
             }
         }
-
     }
 }

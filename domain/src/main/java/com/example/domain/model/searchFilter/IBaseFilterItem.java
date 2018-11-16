@@ -1,6 +1,6 @@
 package com.example.domain.model.searchFilter;
 
-public interface IBaseFilterItem {
+public interface IBaseFilterItem<H> {
     String getValue();
 
     boolean isSelected();
@@ -8,4 +8,6 @@ public interface IBaseFilterItem {
     void switchSelected();
 
     void setSelected(boolean selected);
+
+    H getType();
 }
