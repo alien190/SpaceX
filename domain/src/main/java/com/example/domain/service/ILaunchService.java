@@ -1,5 +1,6 @@
 package com.example.domain.service;
 
+import com.example.domain.model.filter.IAnalyticsFilter;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.filter.ISearchFilter;
 
@@ -33,4 +34,6 @@ public interface ILaunchService {
 //    Single<ISearchFilter> getLaunchYearsFilterList();
 
     ISearchFilter getSearchFilter();
+
+    IAnalyticsFilter getAnalyticsFilter();
 }

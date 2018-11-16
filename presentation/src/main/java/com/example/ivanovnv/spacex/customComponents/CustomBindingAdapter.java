@@ -13,7 +13,7 @@ import com.example.domain.model.filter.ISearchFilter;
 import com.example.ivanovnv.spacex.launchDetail.photos.PhotosListAdapter;
 import com.example.ivanovnv.spacex.di.imageZoom.ImageZoomModule;
 import com.example.ivanovnv.spacex.imageZoom.ImageZoomActivity;
-import com.example.ivanovnv.spacex.launchSearch.adapter.BaseSearchFilterAdapter;
+import com.example.ivanovnv.spacex.launchSearch.adapter.BaseFilterAdapter;
 import com.example.ivanovnv.spacex.launchSearch.adapter.SearchFilterAdapterByLaunchYear;
 import com.example.ivanovnv.spacex.launchSearch.adapter.SearchFilterAdapterByRocketName;
 
@@ -111,7 +111,7 @@ public class CustomBindingAdapter {
     private static void initFilterItemAdapter(Scope scope,
                                               ISearchFilter.ItemType itemType,
                                               RecyclerView recyclerView) {
-        BaseSearchFilterAdapter searchFilterAdapter = null;
+        BaseFilterAdapter searchFilterAdapter = null;
         switch (itemType) {
             case BY_ROCKET_NAME:{
                 searchFilterAdapter = scope.getInstance(SearchFilterAdapterByRocketName.class);

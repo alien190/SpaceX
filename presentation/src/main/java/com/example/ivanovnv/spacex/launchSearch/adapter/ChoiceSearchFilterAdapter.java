@@ -4,8 +4,8 @@ import com.example.domain.model.filter.IBaseFilterItem;
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spacex.R;
 
-public abstract class ChoiceSearchFilterAdapter extends BaseSearchFilterAdapter
-        implements BaseSearchFilterAdapter.IOnFilterItemClickListener {
+public abstract class ChoiceSearchFilterAdapter extends SearchFilterAdapter
+        implements BaseFilterAdapter.IOnFilterItemClickListener {
 
     public ChoiceSearchFilterAdapter(ILaunchService launchService) {
         super(launchService);

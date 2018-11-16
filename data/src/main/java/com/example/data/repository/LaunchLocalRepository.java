@@ -7,6 +7,9 @@ import com.example.data.utils.converter.DataToDomainConverter;
 import com.example.data.utils.converter.DomainToDataConverter;
 import com.example.data.database.LaunchDao;
 import com.example.data.model.DataImage;
+import com.example.domain.model.filter.AnalyticsFilter;
+import com.example.domain.model.filter.IAnalyticsFilter;
+import com.example.domain.model.filter.IAnalyticsFilterItem;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.filter.ISearchFilter;
 import com.example.domain.model.filter.IBaseFilterItem;
@@ -17,10 +20,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import timber.log.Timber;
+
+import static com.example.domain.model.filter.IAnalyticsFilter.ItemType.LAUNCH_COUNT;
+import static com.example.domain.model.filter.IAnalyticsFilter.ItemType.PAYLOAD_WEIGHT;
+import static com.example.domain.model.filter.IAnalyticsFilterItem.BaseType.COUNTRIES;
+import static com.example.domain.model.filter.IAnalyticsFilterItem.BaseType.MISSIONS;
+import static com.example.domain.model.filter.IAnalyticsFilterItem.BaseType.ORBITS;
+import static com.example.domain.model.filter.IAnalyticsFilterItem.BaseType.YEARS;
 
 public class LaunchLocalRepository implements ILaunchRepository {
 
@@ -199,6 +210,23 @@ public class LaunchLocalRepository implements ILaunchRepository {
     @Override
     public void cancelLoadImages() {
         //do nothing
+    }
+
+    @Override
+    public Single<IAnalyticsFilter> getAnalyticsFilter() {
+        return Single.fromCallable(() -> {
+            IAnalyticsFilter analyticsFilter = new AnalyticsFilter();
+            analyticsFilter.addItem("По годам", PAYLOAD_WEIGHT, YEARS);
+            analyticsFilter.addItem("По орбитам", PAYLOAD_WEIGHT, ORBITS);
+            analyticsFilter.addItem("По миссиям", PAYLOAD_WEIGHT, MISSIONS);
+            analyticsFilter.addItem("По странам", PAYLOAD_WEIGHT, COUNTRIES);
+
+            analyticsFilter.addItem("По годам", LAUNCH_COUNT, YEARS);
+            analyticsFilter.addItem("По орбитам", LAUNCH_COUNT, ORBITS);
+            analyticsFilter.addItem("По миссиям", LAUNCH_COUNT, MISSIONS);
+            analyticsFilter.addItem("По странам", LAUNCH_COUNT, COUNTRIES);
+            return analyticsFilter;
+        });
     }
 
     private Throwable getError() {

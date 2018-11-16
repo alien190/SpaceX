@@ -35,10 +35,7 @@ public class SearchFilter extends BaseFilter<ISearchFilter, ISearchFilterItem, I
         return new SearchFilter(items);
     }
 
-    @Override
-    protected ISearchFilterItem getNewItemInstance(String value, ISearchFilter.ItemType type) {
-        return new SearchFilterItem(value, type);
-    }
+
 
     @Override
     public void updateFilterFromRepository(ISearchFilter searchFilter) {
@@ -76,6 +73,22 @@ public class SearchFilter extends BaseFilter<ISearchFilter, ISearchFilterItem, I
             addItem(query, BY_MISSION_NAME);
             notifySearchFilterChanges();
         }
+    }
+
+    public void addItems(List<String> values, ISearchFilter.ItemType type) {
+        if (values != null) {
+            for (String item : values) {
+                addItem(item, type);
+            }
+        }
+    }
+
+    public boolean addItem(String value, ISearchFilter.ItemType type) {
+        if (value != null && !value.isEmpty()) {
+            ISearchFilterItem item = new SearchFilterItem(value, type);
+            return addItem(item);
+        }
+        return false;
     }
 
     private class SearchFilterItem extends BaseFilterItem<ISearchFilter.ItemType> implements ISearchFilterItem {

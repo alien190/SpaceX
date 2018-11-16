@@ -16,10 +16,5 @@ public interface IBaseFilter<T extends IBaseFilter, I extends IBaseFilterItem, H
 
     List<I> getItems();
 
-    boolean addItem(String value, H type);
-
-    void addItems(List<String> values, H type);
-
     T getFilterByType(H type);
-
 }

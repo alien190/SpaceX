@@ -6,7 +6,7 @@ import com.example.ivanovnv.spacex.R;
 
 import javax.inject.Inject;
 
-public class SearchFilterAdapterSelected extends BaseSearchFilterAdapter {
+public class SearchFilterAdapterSelected extends SearchFilterAdapter {
     @Inject
     public SearchFilterAdapterSelected(ILaunchService launchService) {
         super(launchService);

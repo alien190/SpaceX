@@ -1,5 +1,7 @@
 package com.example.domain.service;
 
+import com.example.domain.model.filter.AnalyticsFilter;
+import com.example.domain.model.filter.IAnalyticsFilter;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.filter.ISearchFilter;
 import com.example.domain.model.filter.SearchFilter;
@@ -20,17 +22,24 @@ public class LaunchServiceImpl implements ILaunchService {
     private ILaunchRepository mRemoteRepository;
     private static final int CONCURRENT_THREADS_NUMBER = 10;
     private ISearchFilter mSearchFilter;
-    private Disposable mDisposable;
+    private IAnalyticsFilter mAnalyticsFilter;
+    private Disposable mSearchDisposable;
+    private Disposable mAnalyticsDisposable;
 
     public LaunchServiceImpl(ILaunchRepository mLocalRepository, ILaunchRepository mRemoteRepository) {
         this.mLocalRepository = mLocalRepository;
         this.mRemoteRepository = mRemoteRepository;
 
         mSearchFilter = new SearchFilter();
+        mAnalyticsFilter = new AnalyticsFilter();
 
-        mDisposable = mLocalRepository.getSearchFilterLive().subscribeOn(Schedulers.io())
+        mSearchDisposable = mLocalRepository.getSearchFilterLive().subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe(mSearchFilter::updateFilterFromRepository, Throwable::printStackTrace);
+
+        mAnalyticsDisposable = mLocalRepository.getAnalyticsFilter().subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(mAnalyticsFilter::updateFilterFromRepository, Throwable::printStackTrace);
     }
 
     @Override
@@ -158,4 +167,8 @@ public class LaunchServiceImpl implements ILaunchService {
         return mSearchFilter;
     }
 
+    @Override
+    public IAnalyticsFilter getAnalyticsFilter() {
+        return mAnalyticsFilter;
+    }
 }

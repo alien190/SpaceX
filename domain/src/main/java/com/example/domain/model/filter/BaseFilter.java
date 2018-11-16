@@ -30,10 +30,12 @@ public class BaseFilter<T extends IBaseFilter, I extends IBaseFilterItem, H> imp
     }
 
 
+    @Override
     public Flowable<T> getUpdatesLive() {
         return mFilterLive;
     }
 
+    @Override
     public T getSelectedFilter() {
         List<I> list = new ArrayList<>();
         for (I item : mItems) {
@@ -43,6 +45,7 @@ public class BaseFilter<T extends IBaseFilter, I extends IBaseFilterItem, H> imp
         }
         return newInstance(list);
     }
+
 
     protected boolean addItem(I newItem) {
         boolean isFound = false;
@@ -61,30 +64,12 @@ public class BaseFilter<T extends IBaseFilter, I extends IBaseFilterItem, H> imp
         return isFound;
     }
 
-    public void addItems(List<String> values, H type) {
-        if (values != null) {
-            for (String item : values) {
-                addItem(item, type);
-            }
-        }
-    }
-
-    public boolean addItem(String value, H type) {
-        if (value != null && !value.isEmpty()) {
-            I item = getNewItemInstance(value, type);
-            return addItem(item);
-        }
-        return false;
-    }
-
-    protected I getNewItemInstance(String value, H type) {
-        return (I) new BaseFilterItem(value, type);
-    }
-
+    @Override
     public int getItemsCount() {
         return mItems.size();
     }
 
+    @Override
     public I getItem(int index) {
         if (checkIndex(index)) {
             return mItems.get(index);
@@ -99,6 +84,7 @@ public class BaseFilter<T extends IBaseFilter, I extends IBaseFilterItem, H> imp
         throw new IllegalArgumentException("index out of bounds");
     }
 
+    @Override
     public List<I> getItems() {
         return mItems;
     }
@@ -107,6 +93,7 @@ public class BaseFilter<T extends IBaseFilter, I extends IBaseFilterItem, H> imp
         mPublishProcessor.onNext((T) this);
     }
 
+    @Override
     public T getFilterByType(H type) {
         List<I> list = new ArrayList<>();
         for (I item : mItems) {
@@ -162,4 +149,6 @@ public class BaseFilter<T extends IBaseFilter, I extends IBaseFilterItem, H> imp
             setSelected(!mIsSelected);
         }
     }
+
+
 }

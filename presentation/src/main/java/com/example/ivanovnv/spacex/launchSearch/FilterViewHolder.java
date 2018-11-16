@@ -7,20 +7,20 @@ import android.view.View;
 
 import com.example.domain.model.filter.IBaseFilterItem;
 import com.example.ivanovnv.spacex.R;
-import com.example.ivanovnv.spacex.launchSearch.adapter.BaseSearchFilterAdapter;
+import com.example.ivanovnv.spacex.launchSearch.adapter.BaseFilterAdapter;
 
 
-public class SearchFilterViewHolder extends RecyclerView.ViewHolder {
+public class FilterViewHolder extends RecyclerView.ViewHolder {
     private Chip mChip;
     private IBaseFilterItem mItem;
-    private BaseSearchFilterAdapter.IOnFilterItemClickListener mItemClickListener;
+    private BaseFilterAdapter.IOnFilterItemClickListener mItemClickListener;
 
-    public SearchFilterViewHolder(@NonNull View itemView) {
+    public FilterViewHolder(@NonNull View itemView) {
         super(itemView);
         mChip = itemView.findViewById(R.id.chip);
     }
 
-    public void bind(IBaseFilterItem item, BaseSearchFilterAdapter.IOnFilterItemClickListener onItemClickListener) {
+    public void bind(IBaseFilterItem item, BaseFilterAdapter.IOnFilterItemClickListener onItemClickListener) {
         if (item != null) {
             mItem = item;
             mItemClickListener = onItemClickListener;

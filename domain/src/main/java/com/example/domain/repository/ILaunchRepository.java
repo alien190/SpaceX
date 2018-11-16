@@ -1,5 +1,6 @@
 package com.example.domain.repository;
 
+import com.example.domain.model.filter.IAnalyticsFilter;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.filter.ISearchFilter;
 
@@ -37,6 +38,8 @@ public interface ILaunchRepository {
     Single<DomainLaunch> getPressKitPdf(DomainLaunch domainLaunch);
 
     Flowable<ISearchFilter> getSearchFilterLive();
+
+    Single<IAnalyticsFilter> getAnalyticsFilter();
 
     void cancelLoadImages();
 

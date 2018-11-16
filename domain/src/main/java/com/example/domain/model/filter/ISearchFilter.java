@@ -1,5 +1,7 @@
 package com.example.domain.model.filter;
 
+import java.util.List;
+
 public interface ISearchFilter extends IBaseFilter<ISearchFilter, ISearchFilterItem, ISearchFilter.ItemType> {
 
     void updateFilterFromRepository(ISearchFilter searchFilter);
@@ -9,6 +11,10 @@ public interface ISearchFilter extends IBaseFilter<ISearchFilter, ISearchFilterI
     String getTextQuery();
 
     void submitTextQuery(String query);
+
+    boolean addItem(String value, ItemType type);
+
+    void addItems(List<String> values, ItemType type);
 
 
     enum ItemType {

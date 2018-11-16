@@ -57,7 +57,6 @@ public class LaunchSearchFragment extends Fragment implements SearchView.OnQuery
         mSearchRecycler.requestFocus();
         Scope scope = Toothpick.openScope("LaunchFragment");
         Toothpick.inject(this, scope);
-        //mSearchViewModel.getSearchByNameQuery().observe(this, this::setSearchQuery);
         return view;
     }
 
@@ -73,20 +72,9 @@ public class LaunchSearchFragment extends Fragment implements SearchView.OnQuery
         }
     }
 
-    private void setSearchQuery(String newQuery) {
-        if (newQuery == null) {
-            mSearchView.setQuery("", false);
-        } else {
-            if (!newQuery.equals(String.valueOf(mSearchView.getQuery()))) {
-                mSearchView.setQuery(newQuery, false);
-            }
-        }
-    }
-
     @Override
     public void onStart() {
         super.onStart();
-        //mListAdapter.setOnFilterItemClickListener(mSearchViewModel);
         mSearchView.setOnQueryTextListener(this);
         mSearchRecycler.setLayoutManager(mLayoutManager);
         mSearchRecycler.setAdapter(mListAdapter);
@@ -96,7 +84,6 @@ public class LaunchSearchFragment extends Fragment implements SearchView.OnQuery
     @Override
     public void onStop() {
         mSearchViewModel.submitTextQuery(mSearchView.getQuery().toString());
-        //mListAdapter.setOnFilterItemClickListener(null);
         mSearchView.setOnQueryTextListener(null);
         mSearchRecycler.setLayoutManager(null);
         mSearchRecycler.setAdapter(null);

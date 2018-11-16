@@ -6,7 +6,7 @@ import com.example.domain.service.ILaunchService;
 import javax.inject.Inject;
 
 public class SearchFilterAdapterByLaunchYear extends ChoiceSearchFilterAdapter
-        implements BaseSearchFilterAdapter.IOnFilterItemClickListener {
+        implements BaseFilterAdapter.IOnFilterItemClickListener {
     @Inject
     public SearchFilterAdapterByLaunchYear(ILaunchService launchService) {
         super(launchService);
