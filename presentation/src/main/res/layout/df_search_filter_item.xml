@@ -3,11 +3,16 @@
     xmlns:bind="http://schemas.android.com/apk/res-auto">
 
     <data class="SearchFilterItemBinding">
+
         <variable
-            name="scopeName"
+            name="SearchByRocketNameScopeName"
             type="String" />
 
-        <import type="com.example.domain.model.filter.ISearchFilter.ItemType"/>
+        <variable
+            name="SearchByYearScopeName"
+            type="String" />
+
+        <import type="com.example.domain.model.filter.ISearchFilter.ItemType" />
     </data>
 
     <LinearLayout
@@ -24,8 +29,7 @@
         <android.support.v7.widget.RecyclerView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            bind:scopeName="@{scopeName}"
-            bind:itemType="@{ItemType.BY_ROCKET_NAME}"/>
+            bind:scopeName="@{SearchByRocketNameScopeName}" />
 
 
         <TextView
@@ -36,8 +40,7 @@
         <android.support.v7.widget.RecyclerView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            bind:scopeName="@{scopeName}"
-            bind:itemType="@{ItemType.BY_LAUNCH_YEAR}"/>
+            bind:scopeName="@{SearchByYearScopeName}" />
     </LinearLayout>
 
 

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
@@ -40,6 +39,8 @@ public class LaunchSearchFragment extends Fragment implements SearchView.OnQuery
     @Inject
     SearchFilterAdapterSelected mListAdapter;
 
+    private String mScopeName;
+
 
     public static LaunchSearchFragment newInstance() {
         Bundle args = new Bundle();
@@ -55,21 +56,14 @@ public class LaunchSearchFragment extends Fragment implements SearchView.OnQuery
         View view = inflater.inflate(R.layout.fr_search_launch, container, false);
         ButterKnife.bind(this, view);
         mSearchRecycler.requestFocus();
-        Scope scope = Toothpick.openScope("LaunchFragment");
+        mScopeName = "LaunchFragment";
+        Scope scope = Toothpick.openScope(mScopeName);
         Toothpick.inject(this, scope);
         return view;
     }
 
     private void showEditDialogFragment() {
-        FragmentManager fragmentManager = getFragmentManager();
-        if (fragmentManager != null) {
-            String scopeName = "LaunchFragment";
-            LaunchSearchChoiceDialogFragment launchSearchFilterDialogFragment =
-                    LaunchSearchChoiceDialogFragment.newInstance(scopeName);
-            launchSearchFilterDialogFragment.show(fragmentManager, scopeName);
-        } else {
-            throw new RuntimeException("getFragmentManager() return null");
-        }
+        SearchFilterChoiceDialogFragment.showDialogFragment(this, mScopeName);
     }
 
     @Override

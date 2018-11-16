@@ -85,22 +85,17 @@ public class CustomBindingAdapter {
         pagerSnapHelper.attachToRecyclerView(recyclerView);
     }
 
-    @BindingAdapter({"bind:scopeName", "bind:itemType"})
+    @BindingAdapter({"bind:scopeName"})
     public static void setRecyclerViewFilterItemSource(RecyclerView recyclerView,
-                                                       String scopeName,
-                                                       ISearchFilter.ItemType itemType) {
+                                                       String scopeName) {
         RecyclerView.Adapter adapter = recyclerView.getAdapter();
         if (adapter == null) {
             Scope scope = Toothpick.openScope(scopeName);
             initFilterItemLayoutManager(scope, recyclerView);
             initFilterItemAdapter(
                     scope,
-                    itemType,
                     recyclerView);
         }
-//        else {
-//            recyclerView.requestLayout();
-//        }
     }
 
     private static void initFilterItemLayoutManager(Scope scope, RecyclerView recyclerView) {
@@ -109,18 +104,8 @@ public class CustomBindingAdapter {
     }
 
     private static void initFilterItemAdapter(Scope scope,
-                                              ISearchFilter.ItemType itemType,
                                               RecyclerView recyclerView) {
-        BaseFilterAdapter searchFilterAdapter = null;
-        switch (itemType) {
-            case BY_ROCKET_NAME:{
-                searchFilterAdapter = scope.getInstance(SearchFilterAdapterByRocketName.class);
-                break;
-            }
-            case BY_LAUNCH_YEAR:{
-                searchFilterAdapter = scope.getInstance(SearchFilterAdapterByLaunchYear.class);
-            }
-        }
+        BaseFilterAdapter searchFilterAdapter = scope.getInstance(BaseFilterAdapter.class);
         recyclerView.setAdapter(searchFilterAdapter);
     }
 
