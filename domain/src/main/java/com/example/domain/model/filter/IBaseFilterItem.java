@@ -1,4 +1,4 @@
-package com.example.domain.model.searchFilter;
+package com.example.domain.model.filter;
 
 public interface IBaseFilterItem<H> {
     String getValue();

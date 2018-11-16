@@ -1,14 +1,11 @@
 package com.example.data.repository;
 
-import com.example.domain.model.searchFilter.ISearchFilter;
-import com.example.domain.model.searchFilter.SearchFilter;
+import com.example.domain.model.filter.ISearchFilter;
+import com.example.domain.model.filter.SearchFilter;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
 
 import static org.junit.Assert.*;
 

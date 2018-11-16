@@ -5,7 +5,7 @@ import android.arch.lifecycle.ViewModel;
 import android.support.v4.widget.SwipeRefreshLayout;
 
 import com.example.domain.model.launch.DomainLaunch;
-import com.example.domain.model.searchFilter.ISearchFilter;
+import com.example.domain.model.filter.ISearchFilter;
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spacex.currentPreferences.ICurrentPreferences;
 import com.example.ivanovnv.spacex.launchSearch.ILaunchSearchViewModel;

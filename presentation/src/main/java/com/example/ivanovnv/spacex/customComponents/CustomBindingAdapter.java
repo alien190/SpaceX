@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.example.domain.model.searchFilter.ISearchFilter;
+import com.example.domain.model.filter.ISearchFilter;
 import com.example.ivanovnv.spacex.launchDetail.photos.PhotosListAdapter;
 import com.example.ivanovnv.spacex.di.imageZoom.ImageZoomModule;
 import com.example.ivanovnv.spacex.imageZoom.ImageZoomActivity;

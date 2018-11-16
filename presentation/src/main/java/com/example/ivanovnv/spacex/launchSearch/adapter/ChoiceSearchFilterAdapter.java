@@ -1,6 +1,6 @@
 package com.example.ivanovnv.spacex.launchSearch.adapter;
 
-import com.example.domain.model.searchFilter.IBaseFilterItem;
+import com.example.domain.model.filter.IBaseFilterItem;
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spacex.R;
 

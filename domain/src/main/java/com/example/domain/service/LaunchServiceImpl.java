@@ -1,8 +1,8 @@
 package com.example.domain.service;
 
 import com.example.domain.model.launch.DomainLaunch;
-import com.example.domain.model.searchFilter.ISearchFilter;
-import com.example.domain.model.searchFilter.SearchFilter;
+import com.example.domain.model.filter.ISearchFilter;
+import com.example.domain.model.filter.SearchFilter;
 import com.example.domain.repository.ILaunchRepository;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.example.ivanovnv.spacex.di.application;
 
-import com.example.domain.model.searchFilter.ISearchFilter;
+import com.example.domain.model.filter.ISearchFilter;
 import com.example.domain.service.ILaunchService;
 
 import javax.inject.Inject;

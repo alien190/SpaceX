@@ -8,9 +8,9 @@ import com.example.data.utils.converter.DomainToDataConverter;
 import com.example.data.database.LaunchDao;
 import com.example.data.model.DataImage;
 import com.example.domain.model.launch.DomainLaunch;
-import com.example.domain.model.searchFilter.ISearchFilter;
-import com.example.domain.model.searchFilter.IBaseFilterItem;
-import com.example.domain.model.searchFilter.SearchFilter;
+import com.example.domain.model.filter.ISearchFilter;
+import com.example.domain.model.filter.IBaseFilterItem;
+import com.example.domain.model.filter.SearchFilter;
 import com.example.domain.repository.ILaunchRepository;
 
 import java.util.HashMap;

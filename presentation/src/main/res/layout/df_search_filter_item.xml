@@ -7,7 +7,7 @@
             name="scopeName"
             type="String" />
 
-        <import type="com.example.domain.model.searchFilter.ISearchFilter.ItemType"/>
+        <import type="com.example.domain.model.filter.ISearchFilter.ItemType"/>
     </data>
 
     <LinearLayout

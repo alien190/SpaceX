@@ -1,10 +1,10 @@
-package com.example.domain.model.searchFilter;
+package com.example.domain.model.filter;
 
 import java.util.List;
 
-import static com.example.domain.model.searchFilter.ISearchFilter.ItemType.BY_LAUNCH_YEAR;
-import static com.example.domain.model.searchFilter.ISearchFilter.ItemType.BY_MISSION_NAME;
-import static com.example.domain.model.searchFilter.ISearchFilter.ItemType.BY_ROCKET_NAME;
+import static com.example.domain.model.filter.ISearchFilter.ItemType.BY_LAUNCH_YEAR;
+import static com.example.domain.model.filter.ISearchFilter.ItemType.BY_MISSION_NAME;
+import static com.example.domain.model.filter.ISearchFilter.ItemType.BY_ROCKET_NAME;
 
 public class SearchFilter extends BaseFilter<ISearchFilter, ISearchFilterItem, ISearchFilter.ItemType> implements ISearchFilter {
     private String mTextQuery;

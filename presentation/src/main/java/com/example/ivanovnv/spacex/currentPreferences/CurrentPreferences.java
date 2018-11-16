@@ -1,7 +1,6 @@
 package com.example.ivanovnv.spacex.currentPreferences;
 
-import com.example.domain.model.searchFilter.ISearchFilter;
-import com.example.domain.model.searchFilter.SearchFilter;
+import com.example.domain.model.filter.ISearchFilter;
 
 public class CurrentPreferences implements ICurrentPreferences {
     private ISearchFilter mSearchFilter;
