@@ -47,7 +47,16 @@ public class AnalyticsFilter extends BaseFilter<IAnalyticsFilter, IAnalyticsFilt
             for (IAnalyticsFilterItem item : items) {
                 addItem(item.getValue(), item.getType(), item.getBaseType());
             }
+            if (mItems.size() != 0) {
+                mItems.get(0).setSelected(true);
+            }
             notifySearchFilterChanges();
+        }
+    }
+
+    private void unselectAllItems() {
+        for (IAnalyticsFilterItem item : mItems) {
+            item.setSelectedWithoutNotification(false);
         }
     }
 
@@ -71,6 +80,20 @@ public class AnalyticsFilter extends BaseFilter<IAnalyticsFilter, IAnalyticsFilt
         @Override
         public BaseType getBaseType() {
             return mBaseType;
+        }
+
+        @Override
+        public void setSelectedWithoutNotification(boolean selected) {
+            mIsSelected = selected;
+        }
+
+        @Override
+        public void setSelected(boolean selected) {
+            if (mIsSelected != selected) {
+                unselectAllItems();
+                mIsSelected = selected;
+                notifySearchFilterChanges();
+            }
         }
     }
 

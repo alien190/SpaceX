@@ -4,9 +4,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 
-import com.example.ivanovnv.spacex.launchDetail.LaunchDetailViewModel;
-import com.example.ivanovnv.spacex.launchDetail.photos.PhotosListAdapter;
-import com.example.ivanovnv.spacex.launch.LaunchAdapter;
+import com.example.ivanovnv.spacex.ui.launchDetail.LaunchDetailViewModel;
+import com.example.ivanovnv.spacex.ui.launchDetail.photos.PhotosListAdapter;
+import com.example.ivanovnv.spacex.ui.launch.LaunchAdapter;
 import com.example.ivanovnv.spacex.customComponents.LaunchLayoutManager;
 
 import toothpick.config.Module;

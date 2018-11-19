@@ -20,4 +20,8 @@
     <string name="launches_menu_item">Запуски</string>
     <string name="analytics_menu_item">Аналитика</string>
     <string name="settings_menu_item">Настройки</string>
+    <string name="rocket_type">Тип ракеты:</string>
+    <string name="launch_year">Год запуска:</string>
+    <string name="launch_count_analytics">Количество запусков в разрезе:</string>
+    <string name="payload_weight_analytics">Масса полезной нагрузки в разрезе:</string>
 </resources>

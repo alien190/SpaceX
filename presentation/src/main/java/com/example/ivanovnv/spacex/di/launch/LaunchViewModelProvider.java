@@ -1,10 +1,9 @@
 package com.example.ivanovnv.spacex.di.launch;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
-import com.example.ivanovnv.spacex.launch.LaunchViewModel;
+import com.example.ivanovnv.spacex.ui.launch.LaunchViewModel;
 
 import javax.inject.Inject;
 import javax.inject.Provider;

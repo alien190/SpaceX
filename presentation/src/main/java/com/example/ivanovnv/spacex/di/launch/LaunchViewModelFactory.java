@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spacex.currentPreferences.ICurrentPreferences;
-import com.example.ivanovnv.spacex.launch.LaunchViewModel;
+import com.example.ivanovnv.spacex.ui.launch.LaunchViewModel;
 
 public class LaunchViewModelFactory implements ViewModelProvider.Factory {
 

@@ -216,15 +216,17 @@ public class LaunchLocalRepository implements ILaunchRepository {
     public Single<IAnalyticsFilter> getAnalyticsFilter() {
         return Single.fromCallable(() -> {
             IAnalyticsFilter analyticsFilter = new AnalyticsFilter();
-            analyticsFilter.addItem("По годам", PAYLOAD_WEIGHT, YEARS);
-            analyticsFilter.addItem("По орбитам", PAYLOAD_WEIGHT, ORBITS);
-            analyticsFilter.addItem("По миссиям", PAYLOAD_WEIGHT, MISSIONS);
-            analyticsFilter.addItem("По странам", PAYLOAD_WEIGHT, COUNTRIES);
 
             analyticsFilter.addItem("По годам", LAUNCH_COUNT, YEARS);
             analyticsFilter.addItem("По орбитам", LAUNCH_COUNT, ORBITS);
             analyticsFilter.addItem("По миссиям", LAUNCH_COUNT, MISSIONS);
             analyticsFilter.addItem("По странам", LAUNCH_COUNT, COUNTRIES);
+
+            analyticsFilter.addItem("По годам", PAYLOAD_WEIGHT, YEARS);
+            analyticsFilter.addItem("По орбитам", PAYLOAD_WEIGHT, ORBITS);
+            analyticsFilter.addItem("По миссиям", PAYLOAD_WEIGHT, MISSIONS);
+            analyticsFilter.addItem("По странам", PAYLOAD_WEIGHT, COUNTRIES);
+
             return analyticsFilter;
         });
     }

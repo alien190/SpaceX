@@ -9,13 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.example.domain.model.filter.ISearchFilter;
-import com.example.ivanovnv.spacex.launchDetail.photos.PhotosListAdapter;
+import com.example.ivanovnv.spacex.ui.launchDetail.photos.PhotosListAdapter;
 import com.example.ivanovnv.spacex.di.imageZoom.ImageZoomModule;
-import com.example.ivanovnv.spacex.imageZoom.ImageZoomActivity;
-import com.example.ivanovnv.spacex.launchSearch.adapter.BaseFilterAdapter;
-import com.example.ivanovnv.spacex.launchSearch.adapter.SearchFilterAdapterByLaunchYear;
-import com.example.ivanovnv.spacex.launchSearch.adapter.SearchFilterAdapterByRocketName;
+import com.example.ivanovnv.spacex.ui.imageZoom.ImageZoomActivity;
+import com.example.ivanovnv.spacex.filterAdapter.BaseFilterAdapter;
 
 import java.util.List;
 
@@ -99,7 +96,7 @@ public class CustomBindingAdapter {
     }
 
     private static void initFilterItemLayoutManager(Scope scope, RecyclerView recyclerView) {
-        SearchFilterLayoutManager searchFilterLayoutManager = scope.getInstance(SearchFilterLayoutManager.class);
+        FilterLayoutManager searchFilterLayoutManager = scope.getInstance(FilterLayoutManager.class);
         recyclerView.setLayoutManager(searchFilterLayoutManager);
     }
 

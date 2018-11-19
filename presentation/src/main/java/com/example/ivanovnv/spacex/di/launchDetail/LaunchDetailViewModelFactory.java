@@ -5,7 +5,7 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
 import com.example.domain.service.ILaunchService;
-import com.example.ivanovnv.spacex.launchDetail.LaunchDetailViewModel;
+import com.example.ivanovnv.spacex.ui.launchDetail.LaunchDetailViewModel;
 
 public class LaunchDetailViewModelFactory implements ViewModelProvider.Factory {
 

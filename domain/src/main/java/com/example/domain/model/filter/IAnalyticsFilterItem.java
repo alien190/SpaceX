@@ -4,6 +4,8 @@ public interface IAnalyticsFilterItem extends IBaseFilterItem<IAnalyticsFilter.I
 
     BaseType getBaseType();
 
+    void setSelectedWithoutNotification(boolean selected);
+
     enum BaseType {
         YEARS,
         ORBITS,

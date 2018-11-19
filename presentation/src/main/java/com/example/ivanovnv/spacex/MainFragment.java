@@ -4,21 +4,16 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.ViewPager;
 import android.transition.TransitionInflater;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.ivanovnv.spacex.Analytics.AnalyticsFragment;
-import com.example.ivanovnv.spacex.launch.LaunchFragment;
-
-import timber.log.Timber;
+import com.example.ivanovnv.spacex.ui.launchAnalytics.AnalyticsFragment;
+import com.example.ivanovnv.spacex.ui.launch.LaunchFragment;
 
 public class MainFragment extends Fragment {
 

@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <fragment
-        android:name="com.example.ivanovnv.spacex.launchSearch.LaunchSearchFragment"
+        android:name="com.example.ivanovnv.spacex.ui.launchSearch.LaunchSearchFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/search_fragment"/>

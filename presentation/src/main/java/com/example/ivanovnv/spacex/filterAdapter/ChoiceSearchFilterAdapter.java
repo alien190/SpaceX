@@ -1,0 +1,26 @@
+package com.example.ivanovnv.spacex.filterAdapter;
+
+import com.example.domain.model.filter.IBaseFilterItem;
+import com.example.domain.service.ILaunchService;
+import com.example.ivanovnv.spacex.R;
+
+public abstract class ChoiceSearchFilterAdapter extends SearchFilterAdapter
+        implements BaseFilterAdapter.IOnFilterItemClickListener {
+
+    public ChoiceSearchFilterAdapter(ILaunchService launchService) {
+        super(launchService);
+        setOnFilterItemClickListener(this);
+    }
+
+    @Override
+    int getViewHolderLayoutResId() {
+        return R.layout.li_search_filter_choice;
+    }
+
+    @Override
+    public void onFilterItemClick(IBaseFilterItem item) {
+        if (item != null) {
+            item.switchSelected();
+        }
+    }
+}

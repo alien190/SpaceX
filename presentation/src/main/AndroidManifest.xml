@@ -22,8 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Analytics.DetailAnalyticsActivity"/>
-        <activity android:name=".imageZoom.ImageZoomActivity"/>
+        <activity android:name=".ui.launchAnalytics.DetailAnalyticsActivity"/>
+        <activity android:name=".ui.imageZoom.ImageZoomActivity"/>
     </application>
 
 </manifest>

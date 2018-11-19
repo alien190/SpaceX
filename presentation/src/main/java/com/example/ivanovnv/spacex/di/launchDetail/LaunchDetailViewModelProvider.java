@@ -3,7 +3,7 @@ package com.example.ivanovnv.spacex.di.launchDetail;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.v4.app.Fragment;
 
-import com.example.ivanovnv.spacex.launchDetail.LaunchDetailViewModel;
+import com.example.ivanovnv.spacex.ui.launchDetail.LaunchDetailViewModel;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
