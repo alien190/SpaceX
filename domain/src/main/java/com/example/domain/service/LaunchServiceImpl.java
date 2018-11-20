@@ -1,10 +1,11 @@
 package com.example.domain.service;
 
+import com.example.domain.model.analytics.DomainAnalytics;
 import com.example.domain.model.filter.AnalyticsFilter;
 import com.example.domain.model.filter.IAnalyticsFilter;
-import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.filter.ISearchFilter;
 import com.example.domain.model.filter.SearchFilter;
+import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.repository.ILaunchRepository;
 
 import java.util.List;
@@ -131,37 +132,6 @@ public class LaunchServiceImpl implements ILaunchService {
                 .doOnCancel(() -> mRemoteRepository.cancelLoadImages());
     }
 
-//    @Override
-//    public Single<ISearchFilter> getRocketNamesFilterList() {
-//        return null;
-////        return mLocalRepository.getListRocketNames()
-////                .subscribeOn(Schedulers.io())
-////                .map(this::createLaunchSearchFilterListRocketNames);
-//    }
-//
-//    @Override
-//    public Single<ISearchFilter> getLaunchYearsFilterList() {
-//        return null;
-////        return mLocalRepository.getListLaunchYears()
-////                .subscribeOn(Schedulers.io())
-////                .map(this::createLaunchSearchFilterListLaunchYears);
-//    }
-
-    public ISearchFilter createLaunchSearchFilterListRocketNames(List<String> stringList) {
-        return createLaunchSearchFilterList(stringList, ISearchFilter.ItemType.BY_ROCKET_NAME);
-    }
-
-    public ISearchFilter createLaunchSearchFilterListLaunchYears(List<String> stringList) {
-        return createLaunchSearchFilterList(stringList, ISearchFilter.ItemType.BY_LAUNCH_YEAR);
-    }
-
-
-    public ISearchFilter createLaunchSearchFilterList(List<String> stringList, ISearchFilter.ItemType type) {
-        ISearchFilter searchFilter = new SearchFilter();
-        searchFilter.addItems(stringList, type);
-        return searchFilter;
-    }
-
     @Override
     public ISearchFilter getSearchFilter() {
         return mSearchFilter;
@@ -170,5 +140,14 @@ public class LaunchServiceImpl implements ILaunchService {
     @Override
     public IAnalyticsFilter getAnalyticsFilter() {
         return mAnalyticsFilter;
+    }
+
+    @Override
+    public Flowable<List<DomainAnalytics>> getAnalyticsLive() {
+        return mSearchFilter.getUpdatesLive().map(v -> true)
+                .mergeWith(mAnalyticsFilter.getUpdatesLive().map(v -> true))
+                .mergeWith(Flowable.just(true))
+                .flatMap(v -> mLocalRepository.getAnalyticsLive(mSearchFilter, mAnalyticsFilter))
+                .subscribeOn(Schedulers.io());
     }
 }

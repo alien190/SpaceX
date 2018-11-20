@@ -9,11 +9,26 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.example.domain.model.analytics.DomainAnalytics;
 import com.example.ivanovnv.spacex.ui.launchDetail.photos.PhotosListAdapter;
 import com.example.ivanovnv.spacex.di.imageZoom.ImageZoomModule;
 import com.example.ivanovnv.spacex.ui.imageZoom.ImageZoomActivity;
 import com.example.ivanovnv.spacex.filterAdapter.BaseFilterAdapter;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.Chart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import toothpick.Scope;
@@ -106,4 +121,87 @@ public class CustomBindingAdapter {
         recyclerView.setAdapter(searchFilterAdapter);
     }
 
+    @BindingAdapter({"bind:data"})
+    public static void setData(Chart chart, List<DomainAnalytics> domainAnalyticsList) {
+        if (domainAnalyticsList != null && !domainAnalyticsList.isEmpty()) {
+            if (chart instanceof BarChart) {
+                setBarData((BarChart) chart, domainAnalyticsList);
+            } else if (chart instanceof PieChart) {
+                setPieData((PieChart) chart, domainAnalyticsList);
+            }
+            chart.setVisibility(View.VISIBLE);
+        } else {
+            chart.setData(null);
+            chart.setVisibility(View.GONE);
+        }
+    }
+
+    private static void setBarData(BarChart chart, List<DomainAnalytics> domainAnalyticsList) {
+        try {
+            List<IBarDataSet> sets = new ArrayList<>();
+            List<BarEntry> entries = new ArrayList<>();
+
+            for (DomainAnalytics domainAnalytics : domainAnalyticsList) {
+                int year = Integer.valueOf(domainAnalytics.getBase());
+                float value = Float.valueOf(domainAnalytics.getValue());
+                entries.add(new BarEntry(year, value));
+            }
+
+            BarDataSet dsCount = new BarDataSet(entries, "");
+            dsCount.setAxisDependency(YAxis.AxisDependency.RIGHT);
+            sets.add(dsCount);
+
+            XAxis xAxis = chart.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xAxis.setDrawGridLines(true);
+            xAxis.setGranularity(1f);
+            xAxis.setValueFormatter((v, a) -> String.valueOf((int) v));
+
+            chart.setData(new BarData(sets));
+            chart.invalidate();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+    }
+
+    private static void setPieData(PieChart chart, List<DomainAnalytics> domainAnalyticsList) {
+        try {
+            List<PieEntry> entries = new ArrayList<>();
+            for (DomainAnalytics domainAnalytics : domainAnalyticsList) {
+                float value = Float.valueOf(domainAnalytics.getValue());
+                entries.add(new PieEntry(value, domainAnalytics.getBase()));
+            }
+            PieDataSet dataSet = new PieDataSet(entries, "");
+
+            ArrayList<Integer> colors = new ArrayList<>();
+
+            for (int c : ColorTemplate.VORDIPLOM_COLORS) {
+                colors.add(c);
+            }
+
+            for (int c : ColorTemplate.JOYFUL_COLORS) {
+                colors.add(c);
+            }
+
+            for (int c : ColorTemplate.COLORFUL_COLORS) {
+                colors.add(c);
+            }
+
+            for (int c : ColorTemplate.LIBERTY_COLORS) {
+                colors.add(c);
+            }
+
+            for (int c : ColorTemplate.PASTEL_COLORS) {
+                colors.add(c);
+            }
+
+            colors.add(ColorTemplate.getHoloBlue());
+            dataSet.setColors(colors);
+
+            chart.setData(new PieData(dataSet));
+            chart.invalidate();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+    }
 }

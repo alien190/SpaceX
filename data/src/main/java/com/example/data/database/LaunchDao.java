@@ -10,6 +10,8 @@ import android.arch.persistence.room.RawQuery;
 import com.example.data.model.DataFilterItem;
 import com.example.data.model.DataImage;
 import com.example.data.model.DataLaunch;
+import com.example.domain.model.analytics.DomainAnalytics;
+import com.example.domain.model.launch.DomainLaunch;
 
 import java.util.List;
 
@@ -38,6 +40,9 @@ public interface LaunchDao {
     //@Query("SELECT DataLaunch.*, DataImage.image FROM DataLaunch,DataImage WHERE DataLaunch.imageId=DataImage.id AND :filter ORDER BY launch_date_unix DESC")
     @RawQuery(observedEntities = {DataLaunch.class, DataImage.class})
     Flowable<List<DataLaunch>> getLaunchesLiveWithFilter(SupportSQLiteQuery query);
+
+    @RawQuery(observedEntities = {DataLaunch.class})
+    Flowable<List<DomainAnalytics>> getAnalyticsLive(SupportSQLiteQuery query);
 
     @Query("SELECT * FROM DataLaunch WHERE flight_number < :lastFlightNumber ORDER BY launch_date_unix DESC LIMIT :returnCount")
     List<DataLaunch> getLaunchesInRange(int lastFlightNumber, int returnCount);

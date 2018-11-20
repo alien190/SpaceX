@@ -72,6 +72,12 @@ public class DataLaunch {
     @ColumnInfo(name = "wikipedia")
     private String wikipedia;
 
+    @ColumnInfo(name = "orbit")
+    private String orbit;
+
+    @ColumnInfo(name = "nationality")
+    private String nationality;
+
     private List<String> flickr_images;
 
 
@@ -245,12 +251,29 @@ public class DataLaunch {
         for (ServerResponse.RocketBean.SecondStageBean.PayloadsBean payloads : serverResponse.getRocket().getSecond_stage().getPayloads()) {
             payload_mass_kg_sum = +payloads.getPayload_mass_kg();
             payload_mass_lbs_sum = +payloads.getPayload_mass_lbs();
+            nationality = payloads.getNationality();
+            orbit = payloads.getOrbit();
         }
-
     }
 
     @Override
     public boolean equals(Object launch) {
         return launch != null && ((DataLaunch) launch).flight_number == flight_number;
+    }
+
+    public String getOrbit() {
+        return orbit;
+    }
+
+    public void setOrbit(String orbit) {
+        this.orbit = orbit;
+    }
+
+    public String getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
     }
 }

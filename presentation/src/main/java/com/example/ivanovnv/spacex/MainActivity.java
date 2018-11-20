@@ -22,7 +22,7 @@ public class MainActivity extends SingleFragmentActivity {
         scope.installModules(new LaunchFragmentModule(this));
 
         scope = Toothpick.openScopes("Application", "AnalyticsFragment");
-        scope.installModules(new LaunchAnalyticsModule(scope.getInstance(ILaunchService.class)));
+        scope.installModules(new LaunchAnalyticsModule(this, scope.getInstance(ILaunchService.class)));
     }
 
     @Override

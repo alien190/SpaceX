@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import com.example.data.api.SpaceXAPI;
 import com.example.data.utils.converter.DataToDomainConverter;
 import com.example.data.utils.DbBitmapUtility;
+import com.example.domain.model.analytics.DomainAnalytics;
 import com.example.domain.model.filter.IAnalyticsFilter;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.filter.ISearchFilter;
@@ -139,6 +140,11 @@ public class LaunchRemoteRepository implements ILaunchRepository {
     @Override
     public Single<IAnalyticsFilter> getAnalyticsFilter() {
         return Single.error(getError());
+    }
+
+    @Override
+    public Flowable<List<DomainAnalytics>> getAnalyticsLive(ISearchFilter searchFilter, IAnalyticsFilter analyticsFilter) {
+        return Flowable.error(getError());
     }
 
     private Throwable getError() {

@@ -310,6 +310,7 @@ public class ServerResponse {
                 private double payload_mass_lbs;
                 private String orbit;
                 private List<String> customers;
+                private String nationality;
 
                 public String getPayload_id() {
                     return payload_id;
@@ -365,6 +366,14 @@ public class ServerResponse {
 
                 public void setCustomers(List<String> customers) {
                     this.customers = customers;
+                }
+
+                public String getNationality() {
+                    return nationality;
+                }
+
+                public void setNationality(String nationality) {
+                    this.nationality = nationality;
                 }
             }
         }

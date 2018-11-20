@@ -1,5 +1,6 @@
 package com.example.domain.service;
 
+import com.example.domain.model.analytics.DomainAnalytics;
 import com.example.domain.model.filter.IAnalyticsFilter;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.filter.ISearchFilter;
@@ -36,4 +37,6 @@ public interface ILaunchService {
     ISearchFilter getSearchFilter();
 
     IAnalyticsFilter getAnalyticsFilter();
+
+    Flowable<List<DomainAnalytics>> getAnalyticsLive();
 }

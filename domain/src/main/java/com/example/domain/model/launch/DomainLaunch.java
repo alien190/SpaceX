@@ -1,6 +1,5 @@
 package com.example.domain.model.launch;
 
-import java.io.InputStream;
 import java.util.List;
 
 public class DomainLaunch {
@@ -23,6 +22,8 @@ public class DomainLaunch {
     private String video_link;
     private String wikipedia;
     private List<String> flickr_images;
+    private String orbit;
+    private String nationality;
 
     public int getFlight_number() {
         return flight_number;
@@ -175,5 +176,21 @@ public class DomainLaunch {
     @Override
     public boolean equals(Object launch) {
         return launch != null && ((DomainLaunch) launch).flight_number == flight_number;
+    }
+
+    public String getOrbit() {
+        return orbit;
+    }
+
+    public void setOrbit(String orbit) {
+        this.orbit = orbit;
+    }
+
+    public String getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
     }
 }

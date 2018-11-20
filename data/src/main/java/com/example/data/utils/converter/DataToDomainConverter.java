@@ -36,11 +36,13 @@ public final class DataToDomainConverter {
             domainLaunch.setWikipedia(launch.getWikipedia());
             domainLaunch.setFlickr_images(new ArrayList<>());
             domainLaunch.getFlickr_images().addAll(launch.getFlickr_images());
+            domainLaunch.setPayload_mass_kg_sum(launch.getPayload_mass_kg_sum());
+            domainLaunch.setNationality(launch.getNationality());
+            domainLaunch.setOrbit(launch.getOrbit());
             return domainLaunch;
         }
         return null;
     }
-
 
 
 }

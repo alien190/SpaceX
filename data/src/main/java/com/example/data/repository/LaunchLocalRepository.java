@@ -7,6 +7,7 @@ import com.example.data.utils.converter.DataToDomainConverter;
 import com.example.data.utils.converter.DomainToDataConverter;
 import com.example.data.database.LaunchDao;
 import com.example.data.model.DataImage;
+import com.example.domain.model.analytics.DomainAnalytics;
 import com.example.domain.model.filter.AnalyticsFilter;
 import com.example.domain.model.filter.IAnalyticsFilter;
 import com.example.domain.model.filter.IAnalyticsFilterItem;
@@ -20,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
@@ -32,6 +32,9 @@ import static com.example.domain.model.filter.IAnalyticsFilterItem.BaseType.COUN
 import static com.example.domain.model.filter.IAnalyticsFilterItem.BaseType.MISSIONS;
 import static com.example.domain.model.filter.IAnalyticsFilterItem.BaseType.ORBITS;
 import static com.example.domain.model.filter.IAnalyticsFilterItem.BaseType.YEARS;
+import static com.example.domain.model.filter.ISearchFilter.ItemType.BY_LAUNCH_YEAR;
+import static com.example.domain.model.filter.ISearchFilter.ItemType.BY_MISSION_NAME;
+import static com.example.domain.model.filter.ISearchFilter.ItemType.BY_ROCKET_NAME;
 
 public class LaunchLocalRepository implements ILaunchRepository {
 
@@ -44,18 +47,28 @@ public class LaunchLocalRepository implements ILaunchRepository {
     private static final HashMap<Integer, ISearchFilter.ItemType> mItemTypeByIndex =
             new HashMap<Integer, ISearchFilter.ItemType>() {
                 {
-                    put(BY_MISSION_NAME_INDEX, ISearchFilter.ItemType.BY_MISSION_NAME);
-                    put(BY_ROCKET_NAME_INDEX, ISearchFilter.ItemType.BY_ROCKET_NAME);
-                    put(BY_LAUNCH_YEAR_INDEX, ISearchFilter.ItemType.BY_LAUNCH_YEAR);
+                    put(BY_MISSION_NAME_INDEX, BY_MISSION_NAME);
+                    put(BY_ROCKET_NAME_INDEX, BY_ROCKET_NAME);
+                    put(BY_LAUNCH_YEAR_INDEX, BY_LAUNCH_YEAR);
                 }
             };
 
-    private static final HashMap<ISearchFilter.ItemType, String> mColunmNameByItemType =
+    private static final HashMap<ISearchFilter.ItemType, String> mColumnNameByItemType =
             new HashMap<ISearchFilter.ItemType, String>() {
                 {
-                    put(ISearchFilter.ItemType.BY_MISSION_NAME, "mission_name");
-                    put(ISearchFilter.ItemType.BY_ROCKET_NAME, "rocket_name");
-                    put(ISearchFilter.ItemType.BY_LAUNCH_YEAR, "launch_year");
+                    put(BY_MISSION_NAME, "mission_name");
+                    put(BY_ROCKET_NAME, "rocket_name");
+                    put(BY_LAUNCH_YEAR, "launch_year");
+                }
+            };
+
+    private static final HashMap<IAnalyticsFilterItem.BaseType, String> mGroupByBaseType =
+            new HashMap<IAnalyticsFilterItem.BaseType, String>() {
+                {
+                    put(IAnalyticsFilterItem.BaseType.COUNTRIES, "nationality");
+                    put(IAnalyticsFilterItem.BaseType.MISSIONS, "mission_name");
+                    put(IAnalyticsFilterItem.BaseType.ORBITS, "orbit");
+                    put(IAnalyticsFilterItem.BaseType.YEARS, "launch_year");
                 }
             };
 
@@ -129,27 +142,60 @@ public class LaunchLocalRepository implements ILaunchRepository {
 
     @Override
     public Flowable<List<DomainLaunch>> getLaunchesLiveWithFilter(ISearchFilter searchFilter) {
-        ISearchFilter searchFilterCopy = new SearchFilter(searchFilter);
-
-        String textQuery = searchFilterCopy.getTextQuery();
-        if (textQuery != null && !textQuery.isEmpty()) {
-            searchFilterCopy.addItem(textQuery, ISearchFilter.ItemType.BY_MISSION_NAME);
-        }
-
-        String filter = generateSqlWhereConditions(searchFilterCopy);
-        if (!filter.isEmpty()) {
-            filter = " AND (" + filter + ") ";
-        } else {
-            filter = " ";
-        }
-
         String query = "SELECT DataLaunch.*, DataImage.image FROM DataLaunch,DataImage WHERE DataLaunch.imageId=DataImage.id"
-                + filter
+                + generateSqlFilterQuery(searchFilter, "AND")
                 + "ORDER BY launch_date_unix DESC";
         Timber.d("SQL query: %s", query);
         return mLaunchDao
                 .getLaunchesLiveWithFilter(new SimpleSQLiteQuery(query))
                 .map(DataToDomainConverter::convertLaunchList);
+    }
+
+    @Override
+    public Flowable<List<DomainAnalytics>> getAnalyticsLive(ISearchFilter searchFilter, IAnalyticsFilter analyticsFilter) {
+        IAnalyticsFilter analyticsFilterSelected = analyticsFilter.getSelectedFilter();
+        if (analyticsFilterSelected.getItemsCount() == 1) {
+            String groupByColumnName = mGroupByBaseType.get(analyticsFilterSelected.getItem(0).getBaseType());
+            String query = "SELECT " +
+                    generateSqlAnalyticsValue(analyticsFilterSelected)
+                    + ", "
+                    + groupByColumnName
+                    + " as mBase FROM DataLaunch"
+                    + generateSqlFilterQuery(searchFilter, "WHERE")
+                    + "GROUP BY "
+                    + groupByColumnName;
+            Timber.d("SQL query: %s", query);
+            return mLaunchDao
+                    .getAnalyticsLive(new SimpleSQLiteQuery(query));
+        }
+        throw new IllegalArgumentException("filterSelected.getItemsCount() != 1");
+    }
+
+    private String generateSqlAnalyticsValue(IAnalyticsFilter analyticsFilterSelected) {
+        switch (analyticsFilterSelected.getItem(0).getType()) {
+            case PAYLOAD_WEIGHT: {
+                return "sum(payload_mass_kg_sum) as mValue";
+            }
+            default: {
+                return "count() as mValue";
+            }
+        }
+    }
+
+    String generateSqlFilterQuery(ISearchFilter searchFilter, String prefix) {
+        ISearchFilter searchFilterCopy = new SearchFilter(searchFilter);
+        String textQuery = searchFilterCopy.getTextQuery();
+        if (textQuery != null && !textQuery.isEmpty()) {
+            searchFilterCopy.addItem(textQuery, BY_MISSION_NAME);
+        }
+
+        String filter = generateSqlWhereConditions(searchFilterCopy);
+        if (filter.isEmpty()) {
+            filter = " ";
+        } else {
+            filter = " " + prefix + " (" + filter + ") ";
+        }
+        return filter;
     }
 
     String generateSqlWhereConditions(ISearchFilter searchFilter) {
@@ -172,7 +218,8 @@ public class LaunchLocalRepository implements ILaunchRepository {
         return retValue;
     }
 
-    private String generateSqlWhereConditionsForType(ISearchFilter searchFilter, ISearchFilter.ItemType type) {
+    private String generateSqlWhereConditionsForType(ISearchFilter
+                                                             searchFilter, ISearchFilter.ItemType type) {
         StringBuilder retValueBuilder = new StringBuilder();
         ISearchFilter filter = searchFilter.getFilterByType(type).getSelectedFilter();
 
@@ -184,7 +231,7 @@ public class LaunchLocalRepository implements ILaunchRepository {
                 if (!retValueBuilder.toString().isEmpty()) {
                     retValueBuilder.append(" OR ");
                 }
-                retValueBuilder.append(mColunmNameByItemType.get(item.getType()));
+                retValueBuilder.append(mColumnNameByItemType.get(item.getType()));
                 retValueBuilder.append(" LIKE '%");
                 retValueBuilder.append(item.getValue());
                 retValueBuilder.append("%'");

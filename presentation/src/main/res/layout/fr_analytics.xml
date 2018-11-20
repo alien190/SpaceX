@@ -1,24 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
-    <fragment
-        android:name="com.example.ivanovnv.spacex.ui.launchAnalytics.AnalyticsSelectedFilterFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/search_fragment"/>
+    <data class="AnalyticsChartBinding">
+
+        <variable
+            name="vm"
+            type="com.example.ivanovnv.spacex.ui.launchAnalytics.ILaunchAnalyticsViewModel" />
+    </data>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/analytics_container">
+        android:orientation="vertical">
 
-    <com.github.mikephil.charting.charts.CombinedChart
-        android:id="@+id/chart1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        <fragment
+            android:id="@+id/search_fragment"
+            android:name="com.example.ivanovnv.spacex.ui.launchAnalytics.AnalyticsSelectedFilterFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/bar_chart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            bind:data="@{vm.barAnalytics}" />
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/pie_chart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            bind:data="@{vm.pieAnalytics}" />
+
     </FrameLayout>
-
-</FrameLayout>
+</layout>

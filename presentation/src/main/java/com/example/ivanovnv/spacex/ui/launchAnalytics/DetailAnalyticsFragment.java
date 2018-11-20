@@ -32,7 +32,7 @@ import java.util.Map;
 
 public class DetailAnalyticsFragment extends Fragment implements OnChartGestureListener {
 
-    private static final String YEAR_KEY = "com.example.ivanovnv.spacex.Analytics.YEAR_KEY";
+    private static final String YEAR_KEY = "com.example.ivanovnv.spacex.DomainAnalytics.YEAR_KEY";
     private CombinedChart mChart;
     private int mYear;
     private ProgressBar mProgressBar;

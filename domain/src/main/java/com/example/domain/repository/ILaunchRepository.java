@@ -1,5 +1,6 @@
 package com.example.domain.repository;
 
+import com.example.domain.model.analytics.DomainAnalytics;
 import com.example.domain.model.filter.IAnalyticsFilter;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.filter.ISearchFilter;
@@ -42,5 +43,7 @@ public interface ILaunchRepository {
     Single<IAnalyticsFilter> getAnalyticsFilter();
 
     void cancelLoadImages();
+
+    Flowable<List<DomainAnalytics>> getAnalyticsLive(ISearchFilter searchFilter, IAnalyticsFilter analyticsFilter);
 
 }

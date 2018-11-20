@@ -8,7 +8,7 @@ import com.example.ivanovnv.spacex.SingleFragmentActivity;
 
 public class DetailAnalyticsActivity extends SingleFragmentActivity {
 
-    public static final String YEAR_KEY = "com.example.ivanovnv.spacex.Analytics.YEAR_KEY";
+    public static final String YEAR_KEY = "com.example.ivanovnv.spacex.DomainAnalytics.YEAR_KEY";
 
     @Override
     protected Fragment getFragment() {
