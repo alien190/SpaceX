@@ -217,15 +217,15 @@ public class LaunchLocalRepository implements ILaunchRepository {
         return Single.fromCallable(() -> {
             IAnalyticsFilter analyticsFilter = new AnalyticsFilter();
 
-            analyticsFilter.addItem("По годам", LAUNCH_COUNT, YEARS);
-            analyticsFilter.addItem("По орбитам", LAUNCH_COUNT, ORBITS);
-            analyticsFilter.addItem("По миссиям", LAUNCH_COUNT, MISSIONS);
-            analyticsFilter.addItem("По странам", LAUNCH_COUNT, COUNTRIES);
+            analyticsFilter.addItem("по годам", LAUNCH_COUNT, YEARS);
+            analyticsFilter.addItem("по орбитам", LAUNCH_COUNT, ORBITS);
+            analyticsFilter.addItem("по миссиям", LAUNCH_COUNT, MISSIONS);
+            analyticsFilter.addItem("по странам", LAUNCH_COUNT, COUNTRIES);
 
-            analyticsFilter.addItem("По годам", PAYLOAD_WEIGHT, YEARS);
-            analyticsFilter.addItem("По орбитам", PAYLOAD_WEIGHT, ORBITS);
-            analyticsFilter.addItem("По миссиям", PAYLOAD_WEIGHT, MISSIONS);
-            analyticsFilter.addItem("По странам", PAYLOAD_WEIGHT, COUNTRIES);
+            analyticsFilter.addItem("по годам", PAYLOAD_WEIGHT, YEARS);
+            analyticsFilter.addItem("по орбитам", PAYLOAD_WEIGHT, ORBITS);
+            analyticsFilter.addItem("по миссиям", PAYLOAD_WEIGHT, MISSIONS);
+            analyticsFilter.addItem("по странам", PAYLOAD_WEIGHT, COUNTRIES);
 
             return analyticsFilter;
         });

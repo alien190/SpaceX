@@ -10,7 +10,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
-public abstract class AnalyticsFilterAdapter extends BaseFilterAdapter {
+public abstract class AnalyticsFilterAdapter<T extends BaseFilterViewHolder> extends BaseFilterAdapter<T> {
 
     private Disposable mFilterDisposable;
 

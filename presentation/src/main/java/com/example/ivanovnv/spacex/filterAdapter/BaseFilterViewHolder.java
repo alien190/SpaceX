@@ -1,4 +1,4 @@
-package com.example.ivanovnv.spacex.ui.launchSearch;
+package com.example.ivanovnv.spacex.filterAdapter;
 
 import android.support.annotation.NonNull;
 import android.support.design.chip.Chip;
@@ -10,12 +10,12 @@ import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.filterAdapter.BaseFilterAdapter;
 
 
-public class FilterViewHolder extends RecyclerView.ViewHolder {
-    private Chip mChip;
-    private IBaseFilterItem mItem;
-    private BaseFilterAdapter.IOnFilterItemClickListener mItemClickListener;
+public class BaseFilterViewHolder extends RecyclerView.ViewHolder {
+    protected Chip mChip;
+    protected IBaseFilterItem mItem;
+    protected BaseFilterAdapter.IOnFilterItemClickListener mItemClickListener;
 
-    public FilterViewHolder(@NonNull View itemView) {
+    public BaseFilterViewHolder(@NonNull View itemView) {
         super(itemView);
         mChip = itemView.findViewById(R.id.chip);
     }

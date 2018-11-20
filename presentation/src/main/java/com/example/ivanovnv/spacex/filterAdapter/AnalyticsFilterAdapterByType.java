@@ -5,7 +5,7 @@ import com.example.domain.model.filter.IBaseFilterItem;
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spacex.R;
 
-public class AnalyticsFilterAdapterByType extends AnalyticsFilterAdapter
+public class AnalyticsFilterAdapterByType extends AnalyticsFilterAdapter<BaseFilterViewHolder>
         implements BaseFilterAdapter.IOnFilterItemClickListener {
     private IAnalyticsFilter.ItemType mItemType;
 

@@ -10,9 +10,8 @@ import android.view.ViewGroup;
 import com.example.domain.model.filter.IBaseFilter;
 import com.example.domain.model.filter.IBaseFilterItem;
 import com.example.domain.service.ILaunchService;
-import com.example.ivanovnv.spacex.ui.launchSearch.FilterViewHolder;
 
-public abstract class BaseFilterAdapter extends RecyclerView.Adapter<FilterViewHolder> {
+public abstract class BaseFilterAdapter<T extends BaseFilterViewHolder> extends RecyclerView.Adapter<T> {
 
     private IOnFilterItemClickListener mOnItemClickListener;
     protected ILaunchService mLaunchService;
@@ -24,16 +23,16 @@ public abstract class BaseFilterAdapter extends RecyclerView.Adapter<FilterViewH
 
     @NonNull
     @Override
-    public FilterViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public T onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(getViewHolderLayoutResId(), viewGroup, false);
-        return new FilterViewHolder(view);
+        return (T) new BaseFilterViewHolder(view);
     }
 
     abstract @LayoutRes
     int getViewHolderLayoutResId();
 
     @Override
-    public void onBindViewHolder(@NonNull FilterViewHolder searchFilterViewHolder, int i) {
+    public void onBindViewHolder(@NonNull BaseFilterViewHolder searchFilterViewHolder, int i) {
         if (mFilter != null) {
             searchFilterViewHolder.bind(mFilter.getItem(i), mOnItemClickListener);
         }

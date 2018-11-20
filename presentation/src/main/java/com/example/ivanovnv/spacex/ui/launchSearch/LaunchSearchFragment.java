@@ -13,7 +13,7 @@ import android.widget.ImageButton;
 
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.customComponents.FilterLayoutManager;
-import com.example.ivanovnv.spacex.filterAdapter.SearchFilterAdapterSelected;
+import com.example.ivanovnv.spacex.filterAdapter.SearchFilterAdapterBySelected;
 
 import javax.inject.Inject;
 
@@ -37,7 +37,7 @@ public class LaunchSearchFragment extends Fragment implements SearchView.OnQuery
     @Inject
     FilterLayoutManager mLayoutManager;
     @Inject
-    SearchFilterAdapterSelected mListAdapter;
+    SearchFilterAdapterBySelected mListAdapter;
 
     private String mScopeName;
 
