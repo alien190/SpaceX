@@ -2,6 +2,7 @@ package com.example.data.repository;
 
 import android.arch.persistence.db.SimpleSQLiteQuery;
 
+import com.example.data.model.DataAnalytics;
 import com.example.data.model.DataFilterItem;
 import com.example.data.utils.converter.DataToDomainConverter;
 import com.example.data.utils.converter.DomainToDataConverter;
@@ -24,6 +25,7 @@ import java.util.Set;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
+import io.reactivex.functions.Function;
 import timber.log.Timber;
 
 import static com.example.domain.model.filter.IAnalyticsFilter.ItemType.LAUNCH_COUNT;
@@ -152,7 +154,7 @@ public class LaunchLocalRepository implements ILaunchRepository {
     }
 
     @Override
-    public Flowable<List<DomainAnalytics>> getAnalyticsLive(ISearchFilter searchFilter, IAnalyticsFilter analyticsFilter) {
+    public Flowable<DomainAnalytics> getAnalyticsLive(ISearchFilter searchFilter, IAnalyticsFilter analyticsFilter) {
         IAnalyticsFilter analyticsFilterSelected = analyticsFilter.getSelectedFilter();
         if (analyticsFilterSelected.getItemsCount() == 1) {
             String groupByColumnName = mGroupByBaseType.get(analyticsFilterSelected.getItem(0).getBaseType());
@@ -166,7 +168,8 @@ public class LaunchLocalRepository implements ILaunchRepository {
                     + groupByColumnName;
             Timber.d("SQL query: %s", query);
             return mLaunchDao
-                    .getAnalyticsLive(new SimpleSQLiteQuery(query));
+                    .getAnalyticsLive(new SimpleSQLiteQuery(query))
+                    .map(dataAnalytics -> DataToDomainConverter.convertAnalytics(dataAnalytics, analyticsFilterSelected));
         }
         throw new IllegalArgumentException("filterSelected.getItemsCount() != 1");
     }

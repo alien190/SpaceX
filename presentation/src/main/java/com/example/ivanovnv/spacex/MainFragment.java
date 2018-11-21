@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.example.ivanovnv.spacex.ui.launchAnalytics.AnalyticsFragment;
 import com.example.ivanovnv.spacex.ui.launch.LaunchFragment;
+import com.example.ivanovnv.spacex.ui.prefs.MainPreferenceFragment;
 
 public class MainFragment extends Fragment {
 
@@ -61,8 +62,10 @@ public class MainFragment extends Fragment {
                 return false;
             }
             case R.id.mi_analytics: {
-                if (replaceFragment(AnalyticsFragment.newInstance()))
-                    return true;
+                return replaceFragment(AnalyticsFragment.newInstance());
+            }
+            case R.id.mi_settings: {
+                return replaceFragment(MainPreferenceFragment.newInstance());
             }
         }
         return false;

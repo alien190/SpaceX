@@ -1,27 +1,36 @@
 package com.example.domain.model.analytics;
 
+import com.example.domain.model.filter.IAnalyticsFilter;
+import com.example.domain.model.filter.IAnalyticsFilterItem;
+
+import java.util.List;
+
 public class DomainAnalytics {
-    private String mValue;
-    private String mBase;
+    private List<DomainAnalyticsItem> mItems;
+    private IAnalyticsFilter.ItemType mItemType;
+    private IAnalyticsFilterItem.BaseType mBaseType;
 
-    public DomainAnalytics(String value, String base) {
-        mValue = value;
-        mBase = base;
+    public List<DomainAnalyticsItem> getItems() {
+        return mItems;
     }
 
-    public String getValue() {
-        return mValue;
+    public void setItems(List<DomainAnalyticsItem> items) {
+        mItems = items;
     }
 
-    public void setValue(String value) {
-        mValue = value;
+    public IAnalyticsFilter.ItemType getItemType() {
+        return mItemType;
     }
 
-    public String getBase() {
-        return mBase;
+    public void setItemType(IAnalyticsFilter.ItemType itemType) {
+        mItemType = itemType;
     }
 
-    public void setBase(String base) {
-        mBase = base;
+    public IAnalyticsFilterItem.BaseType getBaseType() {
+        return mBaseType;
+    }
+
+    public void setBaseType(IAnalyticsFilterItem.BaseType baseType) {
+        mBaseType = baseType;
     }
 }

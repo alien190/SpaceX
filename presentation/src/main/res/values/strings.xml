@@ -24,4 +24,9 @@
     <string name="launch_year">Год запуска:</string>
     <string name="launch_count_analytics">Количество запусков:</string>
     <string name="payload_weight_analytics">Масса полезной нагрузки:</string>
+    <string name="pref_title">Настройки</string>
+    <string name="unit_dialog_title">Выберите единицу измерения веса</string>
+    <string name="unit_title">Единица измерения веса</string>
+    <string name="unit_key">unit</string>
+    <string name="about_title">О приложении</string>
 </resources>

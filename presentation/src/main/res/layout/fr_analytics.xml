@@ -24,12 +24,14 @@
             android:id="@+id/bar_chart"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            bind:currentPreferences="@{vm.currentPreferences}"
             bind:data="@{vm.barAnalytics}" />
 
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/pie_chart"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            bind:currentPreferences="@{vm.currentPreferences}"
             bind:data="@{vm.pieAnalytics}" />
 
     </FrameLayout>

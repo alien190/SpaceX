@@ -44,6 +44,6 @@ public interface ILaunchRepository {
 
     void cancelLoadImages();
 
-    Flowable<List<DomainAnalytics>> getAnalyticsLive(ISearchFilter searchFilter, IAnalyticsFilter analyticsFilter);
+    Flowable<DomainAnalytics> getAnalyticsLive(ISearchFilter searchFilter, IAnalyticsFilter analyticsFilter);
 
 }

@@ -1,6 +1,10 @@
 package com.example.data.utils.converter;
 
+import com.example.data.model.DataAnalytics;
 import com.example.data.model.DataLaunch;
+import com.example.domain.model.analytics.DomainAnalytics;
+import com.example.domain.model.analytics.DomainAnalyticsItem;
+import com.example.domain.model.filter.IAnalyticsFilter;
 import com.example.domain.model.launch.DomainLaunch;
 
 import java.util.ArrayList;
@@ -44,5 +48,20 @@ public final class DataToDomainConverter {
         return null;
     }
 
+    public static DomainAnalytics convertAnalytics(List<DataAnalytics> dataAnalyticsList, IAnalyticsFilter analyticsFilter) {
+        if (dataAnalyticsList != null && analyticsFilter != null && analyticsFilter.getItemsCount() == 1) {
+            DomainAnalytics domainAnalytics = new DomainAnalytics();
+            domainAnalytics.setItemType(analyticsFilter.getItem(0).getType());
+            domainAnalytics.setBaseType(analyticsFilter.getItem(0).getBaseType());
+            List<DomainAnalyticsItem> items = new ArrayList<>();
+            for (DataAnalytics dataAnalytics : dataAnalyticsList) {
+                items.add(new DomainAnalyticsItem(dataAnalytics.getValue(), dataAnalytics.getBase()));
+            }
+            domainAnalytics.setItems(items);
+            return domainAnalytics;
+        } else {
+            throw new IllegalArgumentException("dataAnalyticsList and analyticsFilter can't be null, analyticsFilter.getItemsCount()=1");
+        }
+    }
 
 }

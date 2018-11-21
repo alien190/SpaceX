@@ -143,7 +143,7 @@ public class LaunchServiceImpl implements ILaunchService {
     }
 
     @Override
-    public Flowable<List<DomainAnalytics>> getAnalyticsLive() {
+    public Flowable<DomainAnalytics> getAnalyticsLive() {
         return mSearchFilter.getUpdatesLive().map(v -> true)
                 .mergeWith(mAnalyticsFilter.getUpdatesLive().map(v -> true))
                 .mergeWith(Flowable.just(true))

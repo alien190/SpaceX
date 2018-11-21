@@ -10,6 +10,9 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.example.domain.model.analytics.DomainAnalytics;
+import com.example.domain.model.analytics.DomainAnalyticsItem;
+import com.example.domain.model.filter.IAnalyticsFilter;
+import com.example.ivanovnv.spacex.currentPreferences.ICurrentPreferences;
 import com.example.ivanovnv.spacex.ui.launchDetail.photos.PhotosListAdapter;
 import com.example.ivanovnv.spacex.di.imageZoom.ImageZoomModule;
 import com.example.ivanovnv.spacex.ui.imageZoom.ImageZoomActivity;
@@ -33,6 +36,8 @@ import java.util.List;
 
 import toothpick.Scope;
 import toothpick.Toothpick;
+
+import static com.example.domain.model.filter.IAnalyticsFilter.ItemType.PAYLOAD_WEIGHT;
 
 public class CustomBindingAdapter {
 
@@ -121,13 +126,14 @@ public class CustomBindingAdapter {
         recyclerView.setAdapter(searchFilterAdapter);
     }
 
-    @BindingAdapter({"bind:data"})
-    public static void setData(Chart chart, List<DomainAnalytics> domainAnalyticsList) {
-        if (domainAnalyticsList != null && !domainAnalyticsList.isEmpty()) {
+    @BindingAdapter({"bind:data", "bind:currentPreferences"})
+    public static void setData(Chart chart, DomainAnalytics domainAnalytics,
+                               ICurrentPreferences currentPreferences) {
+        if (domainAnalytics != null) {
             if (chart instanceof BarChart) {
-                setBarData((BarChart) chart, domainAnalyticsList);
+                setBarData((BarChart) chart, domainAnalytics, currentPreferences);
             } else if (chart instanceof PieChart) {
-                setPieData((PieChart) chart, domainAnalyticsList);
+                setPieData((PieChart) chart, domainAnalytics, currentPreferences);
             }
             chart.setVisibility(View.VISIBLE);
         } else {
@@ -136,14 +142,15 @@ public class CustomBindingAdapter {
         }
     }
 
-    private static void setBarData(BarChart chart, List<DomainAnalytics> domainAnalyticsList) {
+    private static void setBarData(BarChart chart, DomainAnalytics domainAnalytics,
+                                   ICurrentPreferences currentPreferences) {
         try {
             List<IBarDataSet> sets = new ArrayList<>();
             List<BarEntry> entries = new ArrayList<>();
 
-            for (DomainAnalytics domainAnalytics : domainAnalyticsList) {
-                int year = Integer.valueOf(domainAnalytics.getBase());
-                float value = Float.valueOf(domainAnalytics.getValue());
+            for (DomainAnalyticsItem item : domainAnalytics.getItems()) {
+                int year = Integer.valueOf(item.getBase());
+                float value = getValue(item, domainAnalytics.getItemType(), currentPreferences);
                 entries.add(new BarEntry(year, value));
             }
 
@@ -164,13 +171,15 @@ public class CustomBindingAdapter {
         }
     }
 
-    private static void setPieData(PieChart chart, List<DomainAnalytics> domainAnalyticsList) {
+    private static void setPieData(PieChart chart, DomainAnalytics domainAnalytics,
+                                   ICurrentPreferences currentPreferences) {
         try {
             List<PieEntry> entries = new ArrayList<>();
-            for (DomainAnalytics domainAnalytics : domainAnalyticsList) {
-                float value = Float.valueOf(domainAnalytics.getValue());
-                entries.add(new PieEntry(value, domainAnalytics.getBase()));
+            for (DomainAnalyticsItem item : domainAnalytics.getItems()) {
+                float value = getValue(item, domainAnalytics.getItemType(), currentPreferences);
+                entries.add(new PieEntry(value, item.getBase()));
             }
+
             PieDataSet dataSet = new PieDataSet(entries, "");
 
             ArrayList<Integer> colors = new ArrayList<>();
@@ -203,5 +212,20 @@ public class CustomBindingAdapter {
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
+    }
+
+    private static float getValue(DomainAnalyticsItem item, IAnalyticsFilter.ItemType itemType,
+                                  ICurrentPreferences currentPreferences) {
+        float value;
+        try {
+            value = Float.valueOf(item.getValue());
+            if (itemType == PAYLOAD_WEIGHT) {
+                value = currentPreferences.getWeightConverter().convertWeight(value);
+            }
+            return value;
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+        return 0f;
     }
 }

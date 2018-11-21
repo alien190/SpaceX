@@ -34,7 +34,7 @@ public class App extends Application {
         Scope scope = Toothpick.openScope("Application");
         scope.installModules(new DatabaseModule(getApplicationContext()),
                 new NetworkModule(),
-                new ApplicationModule());
+                new ApplicationModule(getApplicationContext()));
     }
 
 

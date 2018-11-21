@@ -143,7 +143,7 @@ public class LaunchRemoteRepository implements ILaunchRepository {
     }
 
     @Override
-    public Flowable<List<DomainAnalytics>> getAnalyticsLive(ISearchFilter searchFilter, IAnalyticsFilter analyticsFilter) {
+    public Flowable<DomainAnalytics> getAnalyticsLive(ISearchFilter searchFilter, IAnalyticsFilter analyticsFilter) {
         return Flowable.error(getError());
     }
 

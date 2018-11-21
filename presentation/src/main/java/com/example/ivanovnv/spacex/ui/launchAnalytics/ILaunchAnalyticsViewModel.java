@@ -3,13 +3,15 @@ package com.example.ivanovnv.spacex.ui.launchAnalytics;
 import android.arch.lifecycle.MutableLiveData;
 
 import com.example.domain.model.analytics.DomainAnalytics;
+import com.example.ivanovnv.spacex.currentPreferences.ICurrentPreferences;
 
-import java.util.List;
 
 public interface ILaunchAnalyticsViewModel {
 
-    MutableLiveData<List<DomainAnalytics>> getBarAnalytics();
+    MutableLiveData<DomainAnalytics> getBarAnalytics();
 
-    MutableLiveData<List<DomainAnalytics>> getPieAnalytics();
+    MutableLiveData<DomainAnalytics> getPieAnalytics();
+
+    ICurrentPreferences getCurrentPreferences();
 
 }

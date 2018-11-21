@@ -38,5 +38,5 @@ public interface ILaunchService {
 
     IAnalyticsFilter getAnalyticsFilter();
 
-    Flowable<List<DomainAnalytics>> getAnalyticsLive();
+    Flowable<DomainAnalytics> getAnalyticsLive();
 }
