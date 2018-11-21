@@ -65,26 +65,13 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat implements 
     }
 
     private void setSummaryFor(Preference preference) {
-        String value = "";
         if (preference instanceof ListPreference) {
             mCurrentPreferences.setIntegerValue(preference.getKey(),
                     (((ListPreference) preference).getValue()));
             preference.setSummary(((ListPreference) preference).getEntry());
         } else if (preference instanceof SwitchPreferenceCompat) {
-            value = String.valueOf(((SwitchPreferenceCompat) preference).isChecked());
+            mCurrentPreferences.setBooleanValue(preference.getKey(),
+                    ((SwitchPreferenceCompat) preference).isChecked());
         }
-
     }
-
-//    @Override
-//    public void onDisplayPreferenceDialog(Preference preference) {
-//        if (preference instanceof TrackDecorationPreference) {
-//            DialogFragment dialogFragment =
-//                    TrackDecorationPreferencesDialogFragment.newInstance(preference.getKey());
-//            dialogFragment.setTargetFragment(this, 0);
-//            dialogFragment.show(getFragmentManager(), "TrackDecorationPreferencesDialogFragment");
-//        } else {
-//            super.onDisplayPreferenceDialog(preference);
-//        }
-//    }
 }

@@ -1,17 +1,31 @@
 package com.example.ivanovnv.spacex.currentPreferences;
 
+import android.content.Context;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
+import static android.text.format.DateFormat.getDateFormat;
+import static android.text.format.DateFormat.getTimeFormat;
 import static com.example.ivanovnv.spacex.currentPreferences.ICurrentPreferences.WeightUnitType.UNITS_ENG;
 
 public class Converter implements IConverter {
     private ICurrentPreferences mCurrentPreferences;
+    private DateFormat mDateFormat;
+    private DateFormat mTimeFormat;
+    private TimeZone mLocalTimeZone;
 
     @Inject
-    public Converter() {
+    public Converter(Context context) {
+        mDateFormat = getDateFormat(context);
+        mTimeFormat = getTimeFormat(context);
+        mLocalTimeZone = mDateFormat.getTimeZone();
     }
 
     public void setCurrentPreferences(ICurrentPreferences currentPreferences) {
@@ -50,11 +64,23 @@ public class Converter implements IConverter {
 
     @Override
     public String getTimeText(String timeUTC) {
-        if (mCurrentPreferences.isUseLocalTime()) {
-
-        } else {
-
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+            if (mCurrentPreferences.isUseLocalTime()) {
+                setTimeZone(mLocalTimeZone);
+            } else {
+                setTimeZone(TimeZone.getTimeZone("UTC"));
+            }
+            Date date = formatter.parse(timeUTC);
+            return mDateFormat.format(date) + " " + mTimeFormat.format(date);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+            return timeUTC;
         }
-        return timeUTC;
+    }
+
+    private void setTimeZone(TimeZone timeZone) {
+        mDateFormat.setTimeZone(timeZone);
+        mTimeFormat.setTimeZone(timeZone);
     }
 }

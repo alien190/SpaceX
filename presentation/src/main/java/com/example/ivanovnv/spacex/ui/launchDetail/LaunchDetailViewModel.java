@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import com.example.data.utils.DbBitmapUtility;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.service.ILaunchService;
+import com.example.ivanovnv.spacex.currentPreferences.ICurrentPreferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ import timber.log.Timber;
 public class LaunchDetailViewModel extends ViewModel {
 
     private ILaunchService mLaunchService;
+    private ICurrentPreferences mCurrentPreferences;
     private Integer mFlightNumber;
     private CompositeDisposable mDisposable = new CompositeDisposable();
     private DomainLaunch mDomainLaunch = null;
@@ -39,16 +41,21 @@ public class LaunchDetailViewModel extends ViewModel {
     private MutableLiveData<Boolean> mIsLoadDone = new MutableLiveData<>();
     private MutableLiveData<String> mExternalLinkForOpen = new MutableLiveData<>();
     private MutableLiveData<Boolean> mCanPhotosShow = new MutableLiveData<>();
+    private MutableLiveData<Boolean> mCanPhotosStubShow = new MutableLiveData<>();
     private MutableLiveData<List<String>> mPhotosUrls = new MutableLiveData<>();
     private MutableLiveData<List<Bitmap>> mPhotos = new MutableLiveData<>();
     private MutableLiveData<Boolean> mIsRefreshPhotos = new MutableLiveData<>();
 
 
-    public LaunchDetailViewModel(ILaunchService launchService, Integer flightNumber) {
+    public LaunchDetailViewModel(ILaunchService launchService,
+                                 ICurrentPreferences currentPreferences,
+                                 Integer flightNumber) {
         mLaunchService = launchService;
+        mCurrentPreferences = currentPreferences;
         mFlightNumber = flightNumber;
-        mIsLoadDone.postValue(true);
-        mCanPhotosShow.postValue(false);
+        mIsLoadDone.setValue(true);
+        mCanPhotosShow.setValue(false);
+        mCanPhotosStubShow.setValue(false);
         initVisibilitySubscribers();
     }
 
@@ -66,15 +73,21 @@ public class LaunchDetailViewModel extends ViewModel {
     }
 
     private void loadPhotos(List<String> urls) {
-        if (checkListValue(urls)) {
-            mCanPhotosShow.postValue(true);
-            mDisposable.add(mLaunchService.loadImagesWithResize(urls)
-                    .observeOn(Schedulers.io())
-                    .doOnSubscribe(subscription -> mIsRefreshPhotos.postValue(true))
-                    .subscribe(this::setPhoto, throwable -> {
-                        mIsRefreshPhotos.postValue(false);
-                        Timber.d(throwable);
-                    }, () -> mIsRefreshPhotos.postValue(false)));
+        if (mCurrentPreferences.isLoadBigPictures()) {
+            mCanPhotosStubShow.postValue(false);
+            if (checkListValue(urls)) {
+                mCanPhotosShow.postValue(true);
+                mDisposable.add(mLaunchService.loadImagesWithResize(urls)
+                        .observeOn(Schedulers.io())
+                        .doOnSubscribe(subscription -> mIsRefreshPhotos.postValue(true))
+                        .subscribe(this::setPhoto, throwable -> {
+                            mIsRefreshPhotos.postValue(false);
+                            Timber.d(throwable);
+                        }, () -> mIsRefreshPhotos.postValue(false)));
+            }
+        } else {
+            mCanPhotosShow.setValue(false);
+            mCanPhotosStubShow.setValue(true);
         }
     }
 
@@ -128,7 +141,8 @@ public class LaunchDetailViewModel extends ViewModel {
             mMissionImage.postValue(DbBitmapUtility.getImage(domainLaunch.getImage()));
             mMissionName.postValue(checkStringValue(domainLaunch.getMission_name()));
             mMissionDetails.postValue(checkStringValue(domainLaunch.getDetails()));
-            mMissionDate.postValue(checkStringValue(domainLaunch.getLaunch_date_utc()));
+            String date = domainLaunch.getLaunch_date_utc();
+            mMissionDate.postValue(mCurrentPreferences.getConverter().getTimeText(date));
             mArticleLink.postValue(checkStringValue(domainLaunch.getArticle_link()));
             mYouTubeLink.postValue(checkStringValue(domainLaunch.getVideo_link()));
             mPressReleaseLink.postValue(checkStringValue(domainLaunch.getPresskit()));
@@ -241,5 +255,9 @@ public class LaunchDetailViewModel extends ViewModel {
 
     public MutableLiveData<Boolean> getIsRefreshPhotos() {
         return mIsRefreshPhotos;
+    }
+
+    public MutableLiveData<Boolean> getCanPhotosStubShow() {
+        return mCanPhotosStubShow;
     }
 }

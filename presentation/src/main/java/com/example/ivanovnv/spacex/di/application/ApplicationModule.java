@@ -16,7 +16,7 @@ public class ApplicationModule extends Module {
         bind(Context.class).toInstance(context);
         bind(ILaunchService.class).toProvider(LaunchServiceProvider.class).providesSingletonInScope();
         bind(FilterLayoutManager.class).to(FilterLayoutManager.class);
-        bind(IConverter.class).to(Converter.class).singletonInScope();
+        bind(IConverter.class).toProvider(ConverterProvider.class).singletonInScope();
         bind(ICurrentPreferences.class).toProvider(CurrentPreferencesProvider.class).providesSingletonInScope();
     }
 }

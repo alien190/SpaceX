@@ -18,9 +18,10 @@ public class CurrentPreferences implements ICurrentPreferences {
     private Map<String, String> mStringPrefs;
     private Map<String, Boolean> mBooleanPrefs;
     private Integer[] mIntKeys = {R.string.unit_key};
-    private Integer[] mBooleanKeys = {R.string.time_key};
+    private Integer[] mBooleanKeys = {R.string.time_key, R.string.pictures_key};
     private String mUnitKey;
     private String mTimeKey;
+    private String mPicturesKey;
     private List<String> mWeightUnitsSi;
     private List<String> mWeightUnitsEng;
     private IConverter mConverter;
@@ -62,6 +63,7 @@ public class CurrentPreferences implements ICurrentPreferences {
     private void initKeys(Context context) {
         mUnitKey = context.getString(R.string.unit_key);
         mTimeKey = context.getString(R.string.time_key);
+        mPicturesKey = context.getString(R.string.pictures_key);
     }
 
     private void initUnits(Context context) {
@@ -101,6 +103,11 @@ public class CurrentPreferences implements ICurrentPreferences {
     @Override
     public boolean isUseLocalTime() {
         return getBooleanValue(mTimeKey);
+    }
+
+    @Override
+    public boolean isLoadBigPictures() {
+        return getBooleanValue(mPicturesKey);
     }
 
     public List<String> getWeightUnitSymbol() {

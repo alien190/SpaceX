@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="@string/pref_title">
     <ListPreference
-        android:defaultValue="1"
+        android:defaultValue="0"
         android:dialogTitle="@string/unit_dialog_title"
         android:entries="@array/entries_unit"
         android:entryValues="@array/entryvalues_unit"
@@ -12,6 +12,12 @@
         android:defaultValue="true"
         android:key="@string/time_key"
         android:title="@string/time_title" />
+
+    <android.support.v7.preference.SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:key="@string/pictures_key"
+        android:title="@string/pictures_title" />
+
     <Preference android:title="@string/about_title">
         <intent />
     </Preference>

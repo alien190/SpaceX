@@ -20,4 +20,6 @@ public interface ICurrentPreferences {
 
     boolean isUseLocalTime();
 
+    boolean isLoadBigPictures();
+
 }
