@@ -11,12 +11,16 @@
     <android.support.v7.preference.SwitchPreferenceCompat
         android:defaultValue="true"
         android:key="@string/time_key"
-        android:title="@string/time_title" />
+        android:title="@string/time_title"
+        android:switchTextOn="@string/time_subtitle_on"
+        android:switchTextOff="@string/time_subtitle_off"/>
 
     <android.support.v7.preference.SwitchPreferenceCompat
         android:defaultValue="true"
         android:key="@string/pictures_key"
-        android:title="@string/pictures_title" />
+        android:title="@string/pictures_title"
+        android:switchTextOn="@string/pictures_subtitle_on"
+        android:switchTextOff="@string/pictures_subtitle_off"/>
 
     <Preference android:title="@string/about_title">
         <intent />

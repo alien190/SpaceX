@@ -62,6 +62,8 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat implements 
 
     private void initSummary() {
         setSummaryFor(findPreference(getString(R.string.unit_key)));
+        setSummaryFor(findPreference(getString(R.string.time_key)));
+        setSummaryFor(findPreference(getString(R.string.pictures_key)));
     }
 
     private void setSummaryFor(Preference preference) {
@@ -70,8 +72,14 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat implements 
                     (((ListPreference) preference).getValue()));
             preference.setSummary(((ListPreference) preference).getEntry());
         } else if (preference instanceof SwitchPreferenceCompat) {
-            mCurrentPreferences.setBooleanValue(preference.getKey(),
-                    ((SwitchPreferenceCompat) preference).isChecked());
+            boolean value = ((SwitchPreferenceCompat) preference).isChecked();
+            mCurrentPreferences.setBooleanValue(preference.getKey(), value);
+            if (value) {
+                preference.setSummary(((SwitchPreferenceCompat) preference).getSwitchTextOn());
+            } else {
+                preference.setSummary(((SwitchPreferenceCompat) preference).getSwitchTextOff());
+            }
+
         }
     }
 }

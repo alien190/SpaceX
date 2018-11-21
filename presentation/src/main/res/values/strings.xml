@@ -31,7 +31,11 @@
     <string name="about_title">О приложении</string>
     <string name="time_key">time_key</string>
     <string name="time_title">Локальное время</string>
+    <string name="time_subtitle_on">Все временные отметки указываются в локальном часовом поясе</string>
+    <string name="time_subtitle_off">Все временные отметки указываются в часовом поясе UTC</string>
     <string name="pictures_key">picture_key</string>
-    <string name="pictures_title">Загружать большие изображения</string>
+    <string name="pictures_title">Загружать изображения</string>
+    <string name="pictures_subtitle_on">Разрешена загрузка изображений с высоким разрешенем (может вызвать существенный сетевой трафик)</string>
+    <string name="pictures_subtitle_off">Запрещена загрузка изображений с высоким разрешенем (экономия трафика)</string>
     <string name="load_big_image_disable">Загрузка изображений отключена в настройках</string>
 </resources>
