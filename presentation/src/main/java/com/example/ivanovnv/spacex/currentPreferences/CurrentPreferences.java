@@ -15,20 +15,23 @@ import java.util.Map;
 
 public class CurrentPreferences implements ICurrentPreferences {
 
-    private Map mPrefs;
-    private Integer[] mKeys = {R.string.unit_key};
+    private Map<String, String> mStringPrefs;
+    private Map<String, Boolean> mBooleanPrefs;
+    private Integer[] mIntKeys = {R.string.unit_key};
+    private Integer[] mBooleanKeys = {R.string.time_key};
     private String mUnitKey;
+    private String mTimeKey;
     private List<String> mWeightUnitsSi;
     private List<String> mWeightUnitsEng;
-    private IWeightConverter mWeightConverter;
+    private IConverter mConverter;
 
-    public CurrentPreferences(IWeightConverter weightConverter, Context context) {
-        if (weightConverter != null) {
-            mWeightConverter = weightConverter;
-            mWeightConverter.setCurrentPreferences(this);
+    public CurrentPreferences(IConverter converter, Context context) {
+        if (converter != null) {
+            mConverter = converter;
+            mConverter.setCurrentPreferences(this);
             init(context);
         } else {
-            throw new IllegalArgumentException("weightConverter can't be null");
+            throw new IllegalArgumentException("converter  can't be null");
         }
     }
 
@@ -39,16 +42,26 @@ public class CurrentPreferences implements ICurrentPreferences {
     }
 
     private void initPreferences(Context context) {
-        mPrefs = new HashMap<String, String>();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        for (int id : mKeys) {
-            String key = context.getString(id);
-            mPrefs.put(key, sharedPreferences.getString(key, ""));
+        try {
+            mStringPrefs = new HashMap<>();
+            mBooleanPrefs = new HashMap<>();
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            for (int id : mIntKeys) {
+                String key = context.getString(id);
+                mStringPrefs.put(key, sharedPreferences.getString(key, ""));
+            }
+            for (int id : mBooleanKeys) {
+                String key = context.getString(id);
+                mBooleanPrefs.put(key, sharedPreferences.getBoolean(key, true));
+            }
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
     }
 
     private void initKeys(Context context) {
         mUnitKey = context.getString(R.string.unit_key);
+        mTimeKey = context.getString(R.string.time_key);
     }
 
     private void initUnits(Context context) {
@@ -58,13 +71,36 @@ public class CurrentPreferences implements ICurrentPreferences {
                 context.getResources().getStringArray(R.array.weightUnitsEng)));
     }
 
-    public void setValue(String key, String value) {
-        if (key != null && !key.isEmpty() && value != null) {
-            Object oldValue = mPrefs.get(key);
-            if (oldValue == null || !oldValue.toString().equals(value)) {
-                mPrefs.put(key, value);
+    public void setIntegerValue(String key, String value) {
+        try {
+            if (key != null && !key.isEmpty() && value != null && !value.isEmpty()) {
+                String oldValue = mStringPrefs.get(key);
+                if (oldValue != value) {
+                    mStringPrefs.put(key, value);
+                }
             }
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
+    }
+
+    @Override
+    public void setBooleanValue(String key, Boolean value) {
+        try {
+            if (key != null && !key.isEmpty() && value != null) {
+                boolean oldValue = mBooleanPrefs.get(key);
+                if (oldValue != value) {
+                    mBooleanPrefs.put(key, value);
+                }
+            }
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean isUseLocalTime() {
+        return getBooleanValue(mTimeKey);
     }
 
     public List<String> getWeightUnitSymbol() {
@@ -75,25 +111,31 @@ public class CurrentPreferences implements ICurrentPreferences {
     }
 
     public WeightUnitType getUnit() {
-        int value = getIntegerValue(mUnitKey);
-        return value>=0 && value<=1 ? WeightUnitType.values()[value] : WeightUnitType.UNITS_SI;
+        int value = getIntegerValueFromString(mUnitKey);
+        return value >= 0 && value <= 1 ? WeightUnitType.values()[value] : WeightUnitType.UNITS_SI;
     }
 
-    private int getIntegerValue(String key) {
-        Object value = mPrefs.get(key);
-        if (value != null) {
-            try {
-                return Integer.valueOf(value.toString());
-            } catch (Throwable throwable) {
-                throwable.printStackTrace();
-                return 0;
-            }
-        } else {
+    private int getIntegerValueFromString(String key) {
+        try {
+            return Integer.valueOf(mStringPrefs.get(key));
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
             return 0;
         }
     }
 
-    public IWeightConverter getWeightConverter() {
-        return mWeightConverter;
+    private boolean getBooleanValue(String key) {
+        try {
+            return mBooleanPrefs.get(key);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+            return false;
+        }
     }
+
+    @Override
+    public IConverter getConverter() {
+        return mConverter;
+    }
+
 }

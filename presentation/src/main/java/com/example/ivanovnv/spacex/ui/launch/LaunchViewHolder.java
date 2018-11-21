@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.example.data.utils.DbBitmapUtility;
 import com.example.domain.model.launch.DomainLaunch;
+import com.example.ivanovnv.spacex.currentPreferences.IConverter;
 import com.example.ivanovnv.spacex.customComponents.LaunchItemView;
 
 
@@ -12,35 +13,29 @@ public class LaunchViewHolder extends RecyclerView.ViewHolder {
     private View mView;
     private int mFlightNumber;
     private LaunchAdapter.OnItemClickListener mClickCallback = null;
-    //private ImageView mImageView;
-
-//    @BindView(R.id.iv_mission_icon)
-//    ImageView mIvMissionIcon;
+    private IConverter mConverter;
 
 
-    public LaunchViewHolder(View view) {
+    public LaunchViewHolder(View view, IConverter converter) {
         super(view);
         mView = view;
-        //mImageView = mView.findViewById(R.id.iv_icon);
-
-        //ButterKnife.bind(this, mView);
+        if (converter != null) {
+            mConverter = converter;
+        } else {
+            throw new IllegalArgumentException("converter can't be null");
+        }
     }
 
     public void bind(DomainLaunch launch, LaunchAdapter.OnItemClickListener clickListener) {
-        // mTvFlightNumber.setText(String.valueOf(launch.getFlight_number()));
         if (mView instanceof LaunchItemView) {
             LaunchItemView launchItemView = (LaunchItemView) mView;
             mFlightNumber = launch.getFlight_number();
             launchItemView.getAnimationHelper().setTransitionName("TransitionName" + String.valueOf(mFlightNumber));
-            //launchItemView.setMissionIconURL(launch.getMission_patch_small());
             launchItemView.setMissionIconBitmap(DbBitmapUtility.getImage(launch.getImage()));
             launchItemView.setMissionName(launch.getMission_name());
             launchItemView.setDetails(launch.getDetails());
-            launchItemView.setLaunchDate(launch.getLaunch_date_utc());
+            launchItemView.setLaunchDate(mConverter.getTimeText(launch.getLaunch_date_utc()));
             launchItemView.setTransitionName(String.valueOf(launch.getFlight_number()));
-            //launchItemView.setIconTransitionName(String.valueOf(launch.getFlight_number()));
-            //mImageView.setImageBitmap(DbBitmapUtility.getImage(launch.getImage()));
-            //mImageView.setTransitionName(String.valueOf(launch.getFlight_number()));
             mClickCallback = clickListener;
             launchItemView.setOnClickListener(mOnClickListener);
         }

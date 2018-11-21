@@ -18,7 +18,7 @@ public class LaunchFragmentModule extends Module {
         bind(ILaunchListViewModel.class).toProvider(LaunchViewModelProvider.class).providesSingletonInScope();
         bind(ILaunchSearchViewModel.class).toProvider(LaunchViewModelProvider.class).providesSingletonInScope();
         bind(FragmentActivity.class).toInstance(activity);
-        bind(LaunchAdapter.class).toInstance(new LaunchAdapter());
+        bind(LaunchAdapter.class).toProvider(LaunchAdapterProvider.class);
         bind(LaunchLayoutManager.class).toInstance(new LaunchLayoutManager());
         bind(LaunchViewModelFactory.class).toProvider(LaunchViewModelFactoryProvider.class);
         bind(SearchFilterAdapterByRocketName.class).to(SearchFilterAdapterByRocketName.class);

@@ -6,6 +6,7 @@ import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.SwitchPreferenceCompat;
 
 import com.example.ivanovnv.spacex.R;
 import com.example.ivanovnv.spacex.currentPreferences.ICurrentPreferences;
@@ -66,13 +67,13 @@ public class MainPreferenceFragment extends PreferenceFragmentCompat implements 
     private void setSummaryFor(Preference preference) {
         String value = "";
         if (preference instanceof ListPreference) {
-            value = String.valueOf(((ListPreference) preference).getValue());
+            mCurrentPreferences.setIntegerValue(preference.getKey(),
+                    (((ListPreference) preference).getValue()));
             preference.setSummary(((ListPreference) preference).getEntry());
-        } else if (preference instanceof EditTextPreference) {
-            value = String.valueOf(((EditTextPreference) preference).getText());
-            preference.setSummary(((EditTextPreference) preference).getText());
+        } else if (preference instanceof SwitchPreferenceCompat) {
+            value = String.valueOf(((SwitchPreferenceCompat) preference).isChecked());
         }
-        mCurrentPreferences.setValue(preference.getKey(), value);
+
     }
 
 //    @Override

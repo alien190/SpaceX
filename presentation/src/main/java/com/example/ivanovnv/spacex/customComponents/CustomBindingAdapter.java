@@ -220,7 +220,7 @@ public class CustomBindingAdapter {
         try {
             value = Float.valueOf(item.getValue());
             if (itemType == PAYLOAD_WEIGHT) {
-                value = currentPreferences.getWeightConverter().convertWeight(value);
+                value = currentPreferences.getConverter().convertWeight(value);
             }
             return value;
         } catch (Throwable throwable) {

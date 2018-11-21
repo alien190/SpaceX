@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.ivanovnv.spacex.R;
+import com.example.ivanovnv.spacex.currentPreferences.ICurrentPreferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,17 +20,22 @@ public class LaunchAdapter extends RecyclerView.Adapter<LaunchViewHolder> {
     private List<DomainLaunch> mLaunches = new ArrayList<>();
     private Lock mLaunchesLock = new ReentrantLock();
     private OnItemClickListener mItemClickListener;
+    private ICurrentPreferences mCurrentPreferences;
 
+    public LaunchAdapter(ICurrentPreferences currentPreferences) {
+        if (currentPreferences != null) {
+            mCurrentPreferences = currentPreferences;
+        } else {
+            throw new IllegalArgumentException("currentPreferences can't be null");
+        }
+    }
 
     @NonNull
     @Override
     public LaunchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.li_launch, parent, false);
-        return new LaunchViewHolder(view);
-//        LaunchListItemBinding launchListItemBinding = LaunchListItemBinding.inflate(layoutInflater, parent, false);
-//
-//        return new LaunchViewHolder(launchListItemBinding);
+        return new LaunchViewHolder(view, mCurrentPreferences.getConverter());
     }
 
     @Override

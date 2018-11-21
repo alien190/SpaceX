@@ -22,7 +22,6 @@ public class LaunchDetailFragmentModule extends Module {
         bind(LaunchDetailViewModel.class).toProvider(LaunchDetailViewModelProvider.class).providesSingletonInScope();
         bind(LaunchDetailViewModelFactory.class).toProvider(LaunchDetailViewModelFactoryProvider.class).providesSingletonInScope();
         bind(Fragment.class).toInstance(mFragment);
-        bind(LaunchAdapter.class).toInstance(new LaunchAdapter());
         bind(LaunchLayoutManager.class).toInstance(new LaunchLayoutManager());
         bind(Integer.class).withName(FLIGHT_NUMBER_NAME).toInstance(mFlightNumber);
         bind(GridLayoutManager.class).toInstance(new GridLayoutManager(mFragment.getContext(), 2));

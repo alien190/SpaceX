@@ -29,4 +29,6 @@
     <string name="unit_title">Единица измерения веса</string>
     <string name="unit_key">unit</string>
     <string name="about_title">О приложении</string>
+    <string name="time_key">time_key</string>
+    <string name="time_title">Локальное время</string>
 </resources>

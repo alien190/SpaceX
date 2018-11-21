@@ -8,12 +8,16 @@ public interface ICurrentPreferences {
         UNITS_ENG
     }
 
-    void setValue(String key, String value);
+    void setIntegerValue(String key, String value);
 
-    public List<String> getWeightUnitSymbol();
+    void setBooleanValue(String key, Boolean value);
 
-    IWeightConverter getWeightConverter();
+    List<String> getWeightUnitSymbol();
+
+    IConverter getConverter();
 
     WeightUnitType getUnit();
+
+    boolean isUseLocalTime();
 
 }

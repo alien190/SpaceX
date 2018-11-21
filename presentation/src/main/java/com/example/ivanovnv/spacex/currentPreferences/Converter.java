@@ -7,11 +7,11 @@ import javax.inject.Inject;
 
 import static com.example.ivanovnv.spacex.currentPreferences.ICurrentPreferences.WeightUnitType.UNITS_ENG;
 
-public class WeightConverter implements IWeightConverter {
+public class Converter implements IConverter {
     private ICurrentPreferences mCurrentPreferences;
 
     @Inject
-    public WeightConverter() {
+    public Converter() {
     }
 
     public void setCurrentPreferences(ICurrentPreferences currentPreferences) {
@@ -46,5 +46,15 @@ public class WeightConverter implements IWeightConverter {
             weight = weight / 0.45359237f;
         }
         return weight;
+    }
+
+    @Override
+    public String getTimeText(String timeUTC) {
+        if (mCurrentPreferences.isUseLocalTime()) {
+
+        } else {
+
+        }
+        return timeUTC;
     }
 }
