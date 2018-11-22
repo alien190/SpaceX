@@ -1,9 +1,8 @@
 package com.example.ivanovnv.spaceanalytix;
 
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
-import com.crashlytics.android.Crashlytics;
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spaceanalytix.di.launch.LaunchFragmentModule;
 import com.example.ivanovnv.spaceanalytix.di.launchAnalytics.LaunchAnalyticsModule;

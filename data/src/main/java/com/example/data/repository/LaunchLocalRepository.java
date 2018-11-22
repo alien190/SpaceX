@@ -1,8 +1,7 @@
 package com.example.data.repository;
 
-import android.arch.persistence.db.SimpleSQLiteQuery;
+import androidx.sqlite.db.SimpleSQLiteQuery;
 
-import com.example.data.model.DataAnalytics;
 import com.example.data.model.DataFilterItem;
 import com.example.data.utils.converter.DataToDomainConverter;
 import com.example.data.utils.converter.DomainToDataConverter;
@@ -25,7 +24,6 @@ import java.util.Set;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
-import io.reactivex.functions.Function;
 import timber.log.Timber;
 
 import static com.example.domain.model.filter.IAnalyticsFilter.ItemType.LAUNCH_COUNT;

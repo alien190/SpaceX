@@ -1,7 +1,7 @@
 package com.example.ivanovnv.spaceanalytix.ui.launch;
 
-import android.arch.lifecycle.MutableLiveData;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.lifecycle.MutableLiveData;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.domain.model.launch.DomainLaunch;
 

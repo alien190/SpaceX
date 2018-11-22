@@ -1,18 +1,16 @@
 package com.example.data.database;
 
-import android.arch.persistence.db.SupportSQLiteQuery;
-import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Insert;
-import android.arch.persistence.room.OnConflictStrategy;
-import android.arch.persistence.room.Query;
-import android.arch.persistence.room.RawQuery;
+import androidx.sqlite.db.SupportSQLiteQuery;
+import androidx.room.Dao;
+import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
+import androidx.room.Query;
+import androidx.room.RawQuery;
 
 import com.example.data.model.DataAnalytics;
 import com.example.data.model.DataFilterItem;
 import com.example.data.model.DataImage;
 import com.example.data.model.DataLaunch;
-import com.example.domain.model.analytics.DomainAnalytics;
-import com.example.domain.model.launch.DomainLaunch;
 
 import java.util.List;
 

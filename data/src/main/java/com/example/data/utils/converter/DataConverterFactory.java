@@ -1,6 +1,6 @@
 package com.example.data.utils.converter;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.example.data.model.DataLaunch;
 import com.example.data.model.ServerResponse;

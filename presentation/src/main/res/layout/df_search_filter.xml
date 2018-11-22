@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:text="@string/rocket_type" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             bind:scopeName="@{SearchByRocketNameScopeName}" />
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:text="@string/launch_year" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             bind:scopeName="@{SearchByYearScopeName}" />

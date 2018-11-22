@@ -1,6 +1,6 @@
 package com.example.data.database;
 
-import android.arch.persistence.room.ColumnInfo;
+import androidx.room.ColumnInfo;
 
 public class LaunchYearStatistic {
     @ColumnInfo(name = "launch_year")

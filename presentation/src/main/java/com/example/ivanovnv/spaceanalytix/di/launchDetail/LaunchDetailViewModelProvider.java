@@ -1,7 +1,7 @@
 package com.example.ivanovnv.spaceanalytix.di.launchDetail;
 
-import android.arch.lifecycle.ViewModelProviders;
-import android.support.v4.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.fragment.app.Fragment;
 
 import com.example.ivanovnv.spaceanalytix.ui.launchDetail.LaunchDetailViewModel;
 

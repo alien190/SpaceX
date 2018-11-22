@@ -1,6 +1,6 @@
 package com.example.ivanovnv.spaceanalytix.filterAdapter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
 
 import com.example.domain.model.filter.IAnalyticsFilterItem;

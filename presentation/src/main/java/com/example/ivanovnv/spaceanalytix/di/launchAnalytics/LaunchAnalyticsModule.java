@@ -1,6 +1,6 @@
 package com.example.ivanovnv.spaceanalytix.di.launchAnalytics;
 
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spaceanalytix.filterAdapter.AnalyticsFilterAdapterBySelected;

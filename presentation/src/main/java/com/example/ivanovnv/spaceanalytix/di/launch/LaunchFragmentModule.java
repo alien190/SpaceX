@@ -1,6 +1,6 @@
 package com.example.ivanovnv.spaceanalytix.di.launch;
 
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import com.example.ivanovnv.spaceanalytix.ui.launch.ILaunchListViewModel;
 import com.example.ivanovnv.spaceanalytix.ui.launch.LaunchAdapter;

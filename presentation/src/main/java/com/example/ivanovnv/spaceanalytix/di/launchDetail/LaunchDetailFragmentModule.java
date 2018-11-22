@@ -1,8 +1,8 @@
 package com.example.ivanovnv.spaceanalytix.di.launchDetail;
 
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.PagerSnapHelper;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
 
 import com.example.ivanovnv.spaceanalytix.ui.launchDetail.LaunchDetailViewModel;
 import com.example.ivanovnv.spaceanalytix.ui.launchDetail.photos.PhotosListAdapter;

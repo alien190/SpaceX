@@ -1,7 +1,7 @@
 package com.example.ivanovnv.spaceanalytix.filterAdapter;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.domain.model.filter.IAnalyticsFilter;
 import com.example.domain.service.ILaunchService;

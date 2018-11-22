@@ -1,7 +1,7 @@
 package com.example.ivanovnv.spaceanalytix.ui.launchDetail;
 
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 import android.graphics.Bitmap;
 
 import com.example.data.utils.DbBitmapUtility;
