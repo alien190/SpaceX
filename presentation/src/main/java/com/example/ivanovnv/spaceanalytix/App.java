@@ -2,6 +2,7 @@ package com.example.ivanovnv.spaceanalytix;
 
 import android.app.Application;
 
+import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spaceanalytix.di.application.ApplicationModule;
 import com.example.ivanovnv.spaceanalytix.di.application.DatabaseModule;
 import com.example.ivanovnv.spaceanalytix.di.application.NetworkModule;
@@ -34,6 +35,7 @@ public class App extends Application {
         scope.installModules(new DatabaseModule(getApplicationContext()),
                 new NetworkModule(),
                 new ApplicationModule(getApplicationContext()));
+        scope.getInstance(ILaunchService.class).refreshLaunches().subscribe();
     }
 
 
