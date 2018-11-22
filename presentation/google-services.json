@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "692761485488",
+    "firebase_url": "https://spaceanalytix-project-id.firebaseio.com",
+    "project_id": "spaceanalytix-project-id",
+    "storage_bucket": "spaceanalytix-project-id.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:692761485488:android:68d83dd4e8baaa73",
+        "android_client_info": {
+          "package_name": "com.example.ivanovnv.spaceanalytix"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "692761485488-senu4sk7475r1m93lnah8mf1u5mokcti.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIRy01tAI0Yej_CGsLg-Z0ZryoNJ7qZnI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

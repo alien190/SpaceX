@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SpaceX</string>
+    <string name="app_name">SpaceAnalytiX</string>
     <string name="weight">Вес полезной нагрузки, кг</string>
     <string name="launch_count">Общее количество запусков</string>
     <string name="launch_failed">Количество аварийных запусков</string>

@@ -6,7 +6,7 @@
 
         <variable
             name="vm"
-            type="com.example.ivanovnv.spacex.ui.launchAnalytics.ILaunchAnalyticsViewModel" />
+            type="com.example.ivanovnv.spaceanalytix.ui.launchAnalytics.ILaunchAnalyticsViewModel" />
     </data>
 
     <FrameLayout
@@ -16,7 +16,7 @@
 
         <fragment
             android:id="@+id/search_fragment"
-            android:name="com.example.ivanovnv.spacex.ui.launchAnalytics.AnalyticsSelectedFilterFragment"
+            android:name="com.example.ivanovnv.spaceanalytix.ui.launchAnalytics.AnalyticsSelectedFilterFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
