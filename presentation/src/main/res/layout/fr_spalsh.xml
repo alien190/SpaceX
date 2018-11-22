@@ -9,8 +9,10 @@
         android:id="@+id/lottie_animation"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:lottie_rawRes="@raw/data"
+        android:scaleType="centerCrop"
         app:lottie_autoPlay="true"
-        app:lottie_rawRes="@raw/bullseye"
-        android:scaleType="centerCrop"/>
+        app:lottie_imageAssetsFolder="img"
+        />
 
 </LinearLayout>

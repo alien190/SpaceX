@@ -1,6 +1,7 @@
 package com.example.ivanovnv.spaceanalytix.ui.splash;
 
 import android.animation.Animator;
+import android.app.Application;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
