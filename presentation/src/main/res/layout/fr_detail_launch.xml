@@ -15,15 +15,14 @@
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        style="@style/BackgroundGray"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/BackgroundGray">
+        android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            >
+            android:fitsSystemWindows="true">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collapsing_toolbar"
@@ -36,8 +35,7 @@
                 app:expandedTitleGravity="bottom|center_horizontal"
                 app:expandedTitleTextAppearance="@style/expandedToolbarText"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-                app:title="@{vm.missionName}"
-                >
+                app:title="@{vm.missionName}">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -85,8 +83,7 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            >
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -95,9 +92,9 @@
 
                 <androidx.cardview.widget.CardView
                     style="@style/LaunchDetailsCardView"
-                    android:layout_marginTop="@dimen/layout_margin"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/layout_margin">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -263,7 +260,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/load_big_image_disable"/>
+                            android:text="@string/load_big_image_disable" />
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
