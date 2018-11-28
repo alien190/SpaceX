@@ -31,6 +31,7 @@ import static com.example.domain.model.filter.IAnalyticsFilter.ItemType.PAYLOAD_
 import static com.example.domain.model.filter.IAnalyticsFilterItem.BaseType.COUNTRIES;
 import static com.example.domain.model.filter.IAnalyticsFilterItem.BaseType.MISSIONS;
 import static com.example.domain.model.filter.IAnalyticsFilterItem.BaseType.ORBITS;
+import static com.example.domain.model.filter.IAnalyticsFilterItem.BaseType.ROCKET;
 import static com.example.domain.model.filter.IAnalyticsFilterItem.BaseType.YEARS;
 import static com.example.domain.model.filter.ISearchFilter.ItemType.BY_COUNTRY;
 import static com.example.domain.model.filter.ISearchFilter.ItemType.BY_LAUNCH_YEAR;
@@ -73,10 +74,11 @@ public class LaunchLocalRepository implements ILaunchRepository {
     private static final HashMap<IAnalyticsFilterItem.BaseType, String> mGroupByBaseType =
             new HashMap<IAnalyticsFilterItem.BaseType, String>() {
                 {
-                    put(IAnalyticsFilterItem.BaseType.COUNTRIES, "nationality");
-                    put(IAnalyticsFilterItem.BaseType.MISSIONS, "mission_name");
-                    put(IAnalyticsFilterItem.BaseType.ORBITS, "orbit");
-                    put(IAnalyticsFilterItem.BaseType.YEARS, "launch_year");
+                    put(COUNTRIES, "nationality");
+                    put(MISSIONS, "mission_name");
+                    put(ORBITS, "orbit");
+                    put(YEARS, "launch_year");
+                    put(ROCKET, "rocket_name");
                 }
             };
 
@@ -282,11 +284,13 @@ public class LaunchLocalRepository implements ILaunchRepository {
             analyticsFilter.addItem("по орбитам", LAUNCH_COUNT, ORBITS);
             analyticsFilter.addItem("по миссиям", LAUNCH_COUNT, MISSIONS);
             analyticsFilter.addItem("по странам", LAUNCH_COUNT, COUNTRIES);
+            analyticsFilter.addItem("по типам рокет", LAUNCH_COUNT, ROCKET);
 
             analyticsFilter.addItem("по годам", PAYLOAD_WEIGHT, YEARS);
             analyticsFilter.addItem("по орбитам", PAYLOAD_WEIGHT, ORBITS);
             analyticsFilter.addItem("по миссиям", PAYLOAD_WEIGHT, MISSIONS);
             analyticsFilter.addItem("по странам", PAYLOAD_WEIGHT, COUNTRIES);
+            analyticsFilter.addItem("по типам рокет", PAYLOAD_WEIGHT, ROCKET);
 
             return analyticsFilter;
         });

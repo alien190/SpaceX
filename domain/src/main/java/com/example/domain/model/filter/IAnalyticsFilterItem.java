@@ -10,6 +10,7 @@ public interface IAnalyticsFilterItem extends IBaseFilterItem<IAnalyticsFilter.I
         YEARS,
         ORBITS,
         MISSIONS,
-        COUNTRIES
+        COUNTRIES,
+        ROCKET
     }
 }
