@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         app:menu="@menu/bottom_menu"
         android:layout_gravity="bottom"
-        app:labelVisibilityMode="labeled"
+        app:labelVisibilityMode="unlabeled"
         app:itemTextColor="@color/bottom_menu_selector"
         app:itemIconTint="@color/bottom_menu_selector"
         style="@style/ThemeOverlay.MaterialComponents.BottomAppBar.Primary.BottomAppBarStyle"

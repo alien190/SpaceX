@@ -11,7 +11,8 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        bind:cardBackgroundColor="@color/primaryColor">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,8 +32,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/layout_margin"
-                android:background="@color/colorWhite"
-                android:src="@drawable/ic_add_white_24dp" />
+                android:background="@color/primaryColor"
+                android:src="@drawable/ic_parameters" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

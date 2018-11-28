@@ -9,7 +9,7 @@
             type="com.example.ivanovnv.spaceanalytix.ui.launchAnalytics.ILaunchAnalyticsViewModel" />
     </data>
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -25,7 +25,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             bind:currentPreferences="@{vm.currentPreferences}"
-            bind:data="@{vm.barAnalytics}" />
+            bind:data="@{vm.barAnalytics}"
+            />
 
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/pie_chart"
@@ -34,5 +35,5 @@
             bind:currentPreferences="@{vm.currentPreferences}"
             bind:data="@{vm.pieAnalytics}" />
 
-    </FrameLayout>
+    </LinearLayout>
 </layout>

@@ -30,7 +30,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_margin="@dimen/layout_margin"
                 android:background="@color/primaryColor"
-                android:src="@drawable/ic_add_white_24dp"/>
+                android:src="@drawable/ic_filter"/>
 
         </LinearLayout>
 

@@ -1,17 +1,21 @@
 package com.example.ivanovnv.spaceanalytix.customComponents;
 
 import androidx.databinding.BindingAdapter;
+
 import android.graphics.Bitmap;
+
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.graphics.Canvas;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.example.domain.model.analytics.DomainAnalytics;
 import com.example.domain.model.analytics.DomainAnalyticsItem;
 import com.example.domain.model.filter.IAnalyticsFilter;
+import com.example.ivanovnv.spaceanalytix.R;
 import com.example.ivanovnv.spaceanalytix.currentPreferences.ICurrentPreferences;
 import com.example.ivanovnv.spaceanalytix.ui.launchDetail.photos.PhotosListAdapter;
 import com.example.ivanovnv.spaceanalytix.di.imageZoom.ImageZoomModule;
@@ -20,6 +24,7 @@ import com.example.ivanovnv.spaceanalytix.filterAdapter.BaseFilterAdapter;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -28,7 +33,9 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.renderer.DataRenderer;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
@@ -92,7 +99,7 @@ public class CustomBindingAdapter {
 
     private static void initPhotoLayoutManager(Scope scope, RecyclerView recyclerView) {
         GridLayoutManager gridLayoutManager = scope.getInstance(GridLayoutManager.class);
-        gridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        gridLayoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(gridLayoutManager);
     }
 
@@ -156,15 +163,25 @@ public class CustomBindingAdapter {
 
             BarDataSet dsCount = new BarDataSet(entries, "");
             dsCount.setAxisDependency(YAxis.AxisDependency.RIGHT);
+            dsCount.setColor(chart.getContext().getResources().getColor(R.color.secondaryDarkColor));
+            dsCount.setValueTextSize(14);
             sets.add(dsCount);
 
             XAxis xAxis = chart.getXAxis();
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
             xAxis.setDrawGridLines(true);
             xAxis.setGranularity(1f);
+            xAxis.setTextSize(14);
             xAxis.setValueFormatter((v, a) -> String.valueOf((int) v));
 
+            chart.getAxisLeft().setTextSize(14);
+            chart.getAxisRight().setEnabled(false);
+
             chart.setData(new BarData(sets));
+            chart.getDescription().setEnabled(false);
+            chart.getLegend().setEnabled(false);
+            chart.setExtraOffsets(0, 0, 0, 8);
+            chart.animateXY(500, 500);
             chart.invalidate();
         } catch (Throwable throwable) {
             throwable.printStackTrace();
@@ -181,33 +198,31 @@ public class CustomBindingAdapter {
             }
 
             PieDataSet dataSet = new PieDataSet(entries, "");
+            dataSet.setXValuePosition(PieDataSet.ValuePosition.INSIDE_SLICE);
+            dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+            dataSet.setValueLineVariableLength(true);
+            dataSet.setValueLinePart1OffsetPercentage(90f);
 
             ArrayList<Integer> colors = new ArrayList<>();
 
-            for (int c : ColorTemplate.VORDIPLOM_COLORS) {
+            for (int c : ColorTemplate.MATERIAL_COLORS) {
                 colors.add(c);
             }
-
-            for (int c : ColorTemplate.JOYFUL_COLORS) {
-                colors.add(c);
-            }
-
             for (int c : ColorTemplate.COLORFUL_COLORS) {
-                colors.add(c);
-            }
-
-            for (int c : ColorTemplate.LIBERTY_COLORS) {
-                colors.add(c);
-            }
-
-            for (int c : ColorTemplate.PASTEL_COLORS) {
                 colors.add(c);
             }
 
             colors.add(ColorTemplate.getHoloBlue());
             dataSet.setColors(colors);
+            dataSet.setValueTextSize(14);
 
             chart.setData(new PieData(dataSet));
+            chart.getDescription().setEnabled(false);
+            chart.setExtraOffsets(30, 30, 30, 30);
+
+            chart.getLegend().setEnabled(false);
+            chart.setEntryLabelColor(chart.getContext().getResources().getColor(R.color.primaryDarkColor));
+            chart.animateY(500);
             chart.invalidate();
         } catch (Throwable throwable) {
             throwable.printStackTrace();

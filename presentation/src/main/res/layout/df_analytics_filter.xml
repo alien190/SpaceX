@@ -18,12 +18,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/layout_margin">
+        android:padding="@dimen/layout_margin"
+        android:background="@color/primaryColor">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/launch_count_analytics" />
+            android:text="@string/launch_count_analytics"
+            android:textColor="@color/colorWhite"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="wrap_content"
@@ -34,7 +36,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/payload_weight_analytics" />
+            android:text="@string/payload_weight_analytics"
+            android:textColor="@color/colorWhite"
+            android:layout_marginTop="@dimen/layout_margin"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="wrap_content"
