@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">data</string>
+    <string name="search_by_year_title">по годам</string>
+    <string name="search_by_orbit_title">по орбитам</string>
+    <string name="search_by_mission_title">по миссиям</string>
+    <string name="search_by_country_title">по странам</string>
+    <string name="search_by_rocket_title">по типам ракет</string>
 </resources>

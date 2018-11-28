@@ -192,9 +192,11 @@ public class CustomBindingAdapter {
                                    ICurrentPreferences currentPreferences) {
         try {
             List<PieEntry> entries = new ArrayList<>();
+            float total = 0;
             for (DomainAnalyticsItem item : domainAnalytics.getItems()) {
                 float value = getValue(item, domainAnalytics.getItemType(), currentPreferences);
                 entries.add(new PieEntry(value, item.getBase()));
+                total += value;
             }
 
             PieDataSet dataSet = new PieDataSet(entries, "");
@@ -223,6 +225,9 @@ public class CustomBindingAdapter {
             chart.getLegend().setEnabled(false);
             chart.setEntryLabelColor(chart.getContext().getResources().getColor(R.color.primaryDarkColor));
             chart.animateY(500);
+            String centerText = chart.getContext().getString(R.string.pie_chart_total) + "\n" + String.valueOf(total);
+            chart.setCenterText(centerText);
+            chart.setCenterTextSize(20);
             chart.invalidate();
         } catch (Throwable throwable) {
             throwable.printStackTrace();

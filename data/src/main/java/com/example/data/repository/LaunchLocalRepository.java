@@ -1,7 +1,10 @@
 package com.example.data.repository;
 
+import android.content.Context;
+
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
+import com.example.data.R;
 import com.example.data.model.DataFilterItem;
 import com.example.data.utils.converter.DataToDomainConverter;
 import com.example.data.utils.converter.DomainToDataConverter;
@@ -43,6 +46,12 @@ public class LaunchLocalRepository implements ILaunchRepository {
 
     private LaunchDao mLaunchDao;
 
+    private String mSearchByYearTitle;
+    private String mSearchByOrbitTitle;
+    private String mSearchByMissionTitle;
+    private String mSearchByCountryTitle;
+    private String mSearchByRocketTitle;
+
     private static final int BY_MISSION_NAME_INDEX = 1;
     private static final int BY_ROCKET_NAME_INDEX = 2;
     private static final int BY_LAUNCH_YEAR_INDEX = 3;
@@ -82,9 +91,13 @@ public class LaunchLocalRepository implements ILaunchRepository {
                 }
             };
 
-    public LaunchLocalRepository(LaunchDao mLaunchDao) {
+    public LaunchLocalRepository(LaunchDao mLaunchDao, Context context) {
         this.mLaunchDao = mLaunchDao;
-
+        mSearchByYearTitle = context.getString(R.string.search_by_year_title);
+        mSearchByOrbitTitle = context.getString(R.string.search_by_orbit_title);
+        mSearchByMissionTitle = context.getString(R.string.search_by_mission_title);
+        mSearchByCountryTitle = context.getString(R.string.search_by_country_title);
+        mSearchByRocketTitle = context.getString(R.string.search_by_rocket_title);
     }
 
     @Override
@@ -280,20 +293,23 @@ public class LaunchLocalRepository implements ILaunchRepository {
         return Single.fromCallable(() -> {
             IAnalyticsFilter analyticsFilter = new AnalyticsFilter();
 
-            analyticsFilter.addItem("по годам", LAUNCH_COUNT, YEARS);
-            analyticsFilter.addItem("по орбитам", LAUNCH_COUNT, ORBITS);
-            analyticsFilter.addItem("по миссиям", LAUNCH_COUNT, MISSIONS);
-            analyticsFilter.addItem("по странам", LAUNCH_COUNT, COUNTRIES);
-            analyticsFilter.addItem("по типам рокет", LAUNCH_COUNT, ROCKET);
-
-            analyticsFilter.addItem("по годам", PAYLOAD_WEIGHT, YEARS);
-            analyticsFilter.addItem("по орбитам", PAYLOAD_WEIGHT, ORBITS);
-            analyticsFilter.addItem("по миссиям", PAYLOAD_WEIGHT, MISSIONS);
-            analyticsFilter.addItem("по странам", PAYLOAD_WEIGHT, COUNTRIES);
-            analyticsFilter.addItem("по типам рокет", PAYLOAD_WEIGHT, ROCKET);
+            initAnalyticsFilterByType(analyticsFilter, LAUNCH_COUNT);
+            initAnalyticsFilterByType(analyticsFilter, PAYLOAD_WEIGHT);
 
             return analyticsFilter;
         });
+    }
+
+    private void initAnalyticsFilterByType(IAnalyticsFilter analyticsFilter, IAnalyticsFilter.ItemType type) {
+        if (analyticsFilter != null && type != null) {
+            analyticsFilter.addItem(mSearchByYearTitle, type, YEARS);
+            analyticsFilter.addItem(mSearchByOrbitTitle, type, ORBITS);
+            analyticsFilter.addItem(mSearchByMissionTitle, type, MISSIONS);
+            analyticsFilter.addItem(mSearchByCountryTitle, type, COUNTRIES);
+            analyticsFilter.addItem(mSearchByRocketTitle, type, ROCKET);
+        } else {
+            throw new IllegalArgumentException("analyticsFilter and type can't be null");
+        }
     }
 
     private Throwable getError() {

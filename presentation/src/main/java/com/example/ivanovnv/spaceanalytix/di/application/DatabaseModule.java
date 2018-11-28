@@ -47,7 +47,7 @@ public class DatabaseModule extends Module {
                 })
                 .fallbackToDestructiveMigration()
                 .build();
-        mLaunchRepositoryLocal = new LaunchLocalRepository(mDataBase.getLaunchDao());
+        mLaunchRepositoryLocal = new LaunchLocalRepository(mDataBase.getLaunchDao(), context);
         bind(ILaunchRepository.class).withName(ILaunchRepository.LOCAL).toInstance(mLaunchRepositoryLocal);
     }
 }
