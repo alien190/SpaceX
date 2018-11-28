@@ -12,6 +12,10 @@
             name="SearchByYearScopeName"
             type="String" />
 
+        <variable
+            name="SearchByCountryScopeName"
+            type="String" />
+
     </data>
 
     <LinearLayout
@@ -44,6 +48,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             bind:scopeName="@{SearchByYearScopeName}" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/countryes"
+            android:textColor="@color/colorWhite"
+            android:layout_marginTop="@dimen/layout_margin"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            bind:scopeName="@{SearchByCountryScopeName}" />
     </LinearLayout>
 
 

@@ -38,4 +38,5 @@
     <string name="pictures_subtitle_on">Разрешена загрузка изображений с высоким разрешенем (может вызвать существенный сетевой трафик)</string>
     <string name="pictures_subtitle_off">Запрещена загрузка изображений с высоким разрешенем (экономия трафика)</string>
     <string name="load_big_image_disable">Загрузка изображений отключена в настройках</string>
+    <string name="countryes">Страна:</string>
 </resources>

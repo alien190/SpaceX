@@ -1,12 +1,18 @@
 package com.example.ivanovnv.spaceanalytix.ui.launchSearch;
 
 import androidx.databinding.ViewDataBinding;
+
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.example.ivanovnv.spaceanalytix.di.launchSearch.SearchByCountryModule;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +29,7 @@ public class SearchFilterChoiceDialogFragment extends BottomSheetDialogFragment 
     private static final String SCOPE_NAME_KEY = "SearchFilterChoiceDialogFragment.ScopeName";
     private static final String SEARCH_BY_ROCKET_NAME_SCOPE_NAME = "SearchByRocketNameScope";
     private static final String SEARCH_BY_YEAR_SCOPE_NAME = "SearchByYearScope";
+    private static final String SEARCH_BY_COUNTRY_SCOPE_NAME = "SearchByCountry";
 
 
     public static SearchFilterChoiceDialogFragment newInstance(String scopeName) {
@@ -55,6 +62,7 @@ public class SearchFilterChoiceDialogFragment extends BottomSheetDialogFragment 
         openScopes(scopeName);
         searchFilterBinding.setSearchByRocketNameScopeName(SEARCH_BY_ROCKET_NAME_SCOPE_NAME);
         searchFilterBinding.setSearchByYearScopeName(SEARCH_BY_YEAR_SCOPE_NAME);
+        searchFilterBinding.setSearchByCountryScopeName(SEARCH_BY_COUNTRY_SCOPE_NAME);
         return searchFilterBinding;
     }
 
@@ -81,11 +89,15 @@ public class SearchFilterChoiceDialogFragment extends BottomSheetDialogFragment 
 
         scope = Toothpick.openScopes(parentScopeName, SEARCH_BY_YEAR_SCOPE_NAME);
         scope.installModules(new SearchByYearModule(scope.getInstance(ILaunchService.class)));
+
+        scope = Toothpick.openScopes(parentScopeName, SEARCH_BY_COUNTRY_SCOPE_NAME);
+        scope.installModules(new SearchByCountryModule(scope.getInstance(ILaunchService.class)));
     }
 
     private void closeScopes() {
         Toothpick.closeScope(SEARCH_BY_ROCKET_NAME_SCOPE_NAME);
         Toothpick.closeScope(SEARCH_BY_YEAR_SCOPE_NAME);
+        Toothpick.closeScope(SEARCH_BY_COUNTRY_SCOPE_NAME);
     }
 
     @Override
