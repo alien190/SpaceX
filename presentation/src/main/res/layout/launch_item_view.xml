@@ -37,7 +37,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textAlignment="center"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/primaryDarkColor"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 tools:text="Mission 1" />

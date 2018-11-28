@@ -3,11 +3,12 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowContentTransitions">true</item>
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="colorAccent">@color/secondaryColor</item>
         <item name="actionBarStyle">@style/hideViewStyle</item>
+        <item name="colorSecondary">@color/secondaryColor</item>
+        <item name="autoCompleteTextViewStyle">@style/SearchViewWhiteText</item>
     </style>
 
     <style name="hideViewStyle">
@@ -20,7 +21,7 @@
     </style>
 
     <style name="collapsedToolbarText">
-        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textColor">@color/colorWhite</item>
         <item name="android:textSize">30sp</item>
     </style>
 
@@ -33,6 +34,19 @@
         <item name="android:layout_marginBottom">@dimen/layout_margin</item>
         <item name="android:layout_marginStart">@dimen/layout_margin</item>
         <item name="android:layout_marginEnd">@dimen/layout_margin</item>
+    </style>
+
+    <style name="SearchViewWhiteText" parent="Widget.AppCompat.Light.AutoCompleteTextView">
+        <item name="android:editTextColor">@color/colorWhite</item>
+        <item name="android:textColor">@color/colorWhite</item>
+    </style>
+
+    <style name="ThemeOverlay.MaterialComponents.BottomAppBar.Primary.BottomAppBarStyle">
+        <item name="android:backgroundTint">@color/primaryColor</item>
+    </style>
+
+    <style name="BackgroundGray">
+        <item name="android:background">@color/colorGray</item>
     </style>
 
 </resources>

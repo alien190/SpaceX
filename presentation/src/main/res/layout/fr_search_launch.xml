@@ -2,7 +2,8 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/primaryColor">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,7 +19,9 @@
                 android:id="@+id/searchView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                app:searchIcon="@drawable/ic_search_white_24dp"
+                app:closeIcon="@drawable/ic_close_white_24dp"/>
 
             <ImageButton
                 android:id="@+id/btn_add_filter"
@@ -26,8 +29,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_margin="@dimen/layout_margin"
-                android:background="@color/colorWhite"
-                android:src="@drawable/ic_add_black_24dp" />
+                android:background="@color/primaryColor"
+                android:src="@drawable/ic_add_white_24dp"/>
 
         </LinearLayout>
 

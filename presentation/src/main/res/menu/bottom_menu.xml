@@ -2,14 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/mi_launches"
-        android:title="@string/launches_menu_item" />
+        android:title="@string/launches_menu_item"
+        android:icon="@drawable/ic_rocket_ship"/>
     <item
         android:id="@+id/mi_analytics"
         android:title="@string/analytics_menu_item"
+        android:icon="@drawable/ic_analytics"
         />
     <item
         android:id="@+id/mi_settings"
         android:title="@string/settings_menu_item"
+        android:icon="@drawable/ic_settings_white_24dp"
         />
 
 </menu>
