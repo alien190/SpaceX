@@ -22,6 +22,7 @@ public interface ISearchFilter extends IBaseFilter<ISearchFilter, ISearchFilterI
         BY_ROCKET_NAME,
         BY_LAUNCH_YEAR,
         BY_COUNTRY,
+        BY_ORBIT,
         EMPTY
     }
 }

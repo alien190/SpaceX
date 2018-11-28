@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.ivanovnv.spaceanalytix.di.launchSearch.SearchByCountryModule;
+import com.example.ivanovnv.spaceanalytix.di.launchSearch.SearchByOrbitModule;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import androidx.fragment.app.Fragment;
@@ -30,6 +31,7 @@ public class SearchFilterChoiceDialogFragment extends BottomSheetDialogFragment 
     private static final String SEARCH_BY_ROCKET_NAME_SCOPE_NAME = "SearchByRocketNameScope";
     private static final String SEARCH_BY_YEAR_SCOPE_NAME = "SearchByYearScope";
     private static final String SEARCH_BY_COUNTRY_SCOPE_NAME = "SearchByCountry";
+    private static final String SEARCH_BY_ORBIT_SCOPE_NAME = "SearchByOrbit";
 
 
     public static SearchFilterChoiceDialogFragment newInstance(String scopeName) {
@@ -63,6 +65,7 @@ public class SearchFilterChoiceDialogFragment extends BottomSheetDialogFragment 
         searchFilterBinding.setSearchByRocketNameScopeName(SEARCH_BY_ROCKET_NAME_SCOPE_NAME);
         searchFilterBinding.setSearchByYearScopeName(SEARCH_BY_YEAR_SCOPE_NAME);
         searchFilterBinding.setSearchByCountryScopeName(SEARCH_BY_COUNTRY_SCOPE_NAME);
+        searchFilterBinding.setSearchByOrbitScopeName(SEARCH_BY_ORBIT_SCOPE_NAME);
         return searchFilterBinding;
     }
 
@@ -85,19 +88,24 @@ public class SearchFilterChoiceDialogFragment extends BottomSheetDialogFragment 
         Scope scope;
 
         scope = Toothpick.openScopes(parentScopeName, SEARCH_BY_ROCKET_NAME_SCOPE_NAME);
-        scope.installModules(new SearchByRocketNameModule(scope.getInstance(ILaunchService.class)));
+        ILaunchService launchService = scope.getInstance(ILaunchService.class);
+        scope.installModules(new SearchByRocketNameModule(launchService));
 
         scope = Toothpick.openScopes(parentScopeName, SEARCH_BY_YEAR_SCOPE_NAME);
-        scope.installModules(new SearchByYearModule(scope.getInstance(ILaunchService.class)));
+        scope.installModules(new SearchByYearModule(launchService));
 
         scope = Toothpick.openScopes(parentScopeName, SEARCH_BY_COUNTRY_SCOPE_NAME);
-        scope.installModules(new SearchByCountryModule(scope.getInstance(ILaunchService.class)));
+        scope.installModules(new SearchByCountryModule(launchService));
+
+        scope = Toothpick.openScopes(parentScopeName, SEARCH_BY_ORBIT_SCOPE_NAME);
+        scope.installModules(new SearchByOrbitModule(launchService));
     }
 
     private void closeScopes() {
         Toothpick.closeScope(SEARCH_BY_ROCKET_NAME_SCOPE_NAME);
         Toothpick.closeScope(SEARCH_BY_YEAR_SCOPE_NAME);
         Toothpick.closeScope(SEARCH_BY_COUNTRY_SCOPE_NAME);
+        Toothpick.closeScope(SEARCH_BY_ORBIT_SCOPE_NAME);
     }
 
     @Override

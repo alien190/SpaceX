@@ -16,6 +16,10 @@
             name="SearchByCountryScopeName"
             type="String" />
 
+        <variable
+            name="SearchByOrbitScopeName"
+            type="String" />
+
     </data>
 
     <LinearLayout
@@ -52,7 +56,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/countryes"
+            android:text="@string/country"
             android:textColor="@color/colorWhite"
             android:layout_marginTop="@dimen/layout_margin"/>
 
@@ -60,6 +64,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             bind:scopeName="@{SearchByCountryScopeName}" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/orbit"
+            android:textColor="@color/colorWhite"
+            android:layout_marginTop="@dimen/layout_margin"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            bind:scopeName="@{SearchByOrbitScopeName}" />
     </LinearLayout>
 
 

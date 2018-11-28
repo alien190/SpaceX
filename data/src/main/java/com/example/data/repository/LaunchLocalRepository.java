@@ -35,6 +35,7 @@ import static com.example.domain.model.filter.IAnalyticsFilterItem.BaseType.YEAR
 import static com.example.domain.model.filter.ISearchFilter.ItemType.BY_COUNTRY;
 import static com.example.domain.model.filter.ISearchFilter.ItemType.BY_LAUNCH_YEAR;
 import static com.example.domain.model.filter.ISearchFilter.ItemType.BY_MISSION_NAME;
+import static com.example.domain.model.filter.ISearchFilter.ItemType.BY_ORBIT;
 import static com.example.domain.model.filter.ISearchFilter.ItemType.BY_ROCKET_NAME;
 
 public class LaunchLocalRepository implements ILaunchRepository {
@@ -45,6 +46,7 @@ public class LaunchLocalRepository implements ILaunchRepository {
     private static final int BY_ROCKET_NAME_INDEX = 2;
     private static final int BY_LAUNCH_YEAR_INDEX = 3;
     private static final int BY_COUNTRY_INDEX = 4;
+    private static final int BY_ORBIT_INDEX = 5;
 
     private static final HashMap<Integer, ISearchFilter.ItemType> mItemTypeByIndex =
             new HashMap<Integer, ISearchFilter.ItemType>() {
@@ -53,6 +55,7 @@ public class LaunchLocalRepository implements ILaunchRepository {
                     put(BY_ROCKET_NAME_INDEX, BY_ROCKET_NAME);
                     put(BY_LAUNCH_YEAR_INDEX, BY_LAUNCH_YEAR);
                     put(BY_COUNTRY_INDEX, BY_COUNTRY);
+                    put(BY_ORBIT_INDEX, BY_ORBIT);
                 }
             };
 
@@ -63,6 +66,7 @@ public class LaunchLocalRepository implements ILaunchRepository {
                     put(BY_ROCKET_NAME, "rocket_name");
                     put(BY_LAUNCH_YEAR, "launch_year");
                     put(BY_COUNTRY, "nationality");
+                    put(BY_ORBIT, "orbit");
                 }
             };
 
@@ -248,7 +252,11 @@ public class LaunchLocalRepository implements ILaunchRepository {
 
     @Override
     public Flowable<ISearchFilter> getSearchFilterLive() {
-        return mLaunchDao.getFilterListItems(BY_ROCKET_NAME_INDEX, BY_LAUNCH_YEAR_INDEX, BY_COUNTRY_INDEX)
+        return mLaunchDao.getFilterListItems(
+                BY_ROCKET_NAME_INDEX,
+                BY_LAUNCH_YEAR_INDEX,
+                BY_COUNTRY_INDEX,
+                BY_ORBIT_INDEX)
                 .map(this::getSearchFilter);
     }
 

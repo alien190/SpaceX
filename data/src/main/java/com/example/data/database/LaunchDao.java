@@ -80,6 +80,10 @@ public interface LaunchDao {
 
     @Query("SELECT rocket_name as value, :rocket_name_index as type FROM DataLaunch GROUP BY rocket_name " +
             "UNION SELECT launch_year as value, :launch_year_index as type FROM DataLaunch GROUP BY launch_year " +
-            "UNION SELECT nationality as value, :country_year_index as type FROM DataLaunch GROUP BY nationality ")
-    Flowable<List<DataFilterItem>> getFilterListItems(int rocket_name_index, int launch_year_index, int country_year_index);
+            "UNION SELECT nationality as value, :country_index as type FROM DataLaunch GROUP BY nationality " +
+            "UNION SELECT orbit as value, :orbit_index as type FROM DataLaunch GROUP BY orbit")
+    Flowable<List<DataFilterItem>> getFilterListItems(int rocket_name_index,
+                                                      int launch_year_index,
+                                                      int country_index,
+                                                      int orbit_index);
 }
