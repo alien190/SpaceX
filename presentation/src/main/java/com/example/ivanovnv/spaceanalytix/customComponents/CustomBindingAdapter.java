@@ -63,7 +63,7 @@ public class CustomBindingAdapter {
         if (isVisible != null) {
             if (view.getVisibility() == View.VISIBLE && !isVisible) {
                 view.setVisibility(View.GONE);
-            } else {
+            } else if (view.getVisibility() != View.VISIBLE && isVisible) {
                 view.setVisibility(View.VISIBLE);
             }
         }

@@ -108,9 +108,9 @@ public class LaunchDetailFragment extends Fragment {
         super.onDestroy();
     }
 
-    @Override
-    public void onStop() {
-        mDetailLaunchViewModel.clearDisposable();
-        super.onStop();
-    }
+//    @Override
+//    public void onStop() {
+//        mDetailLaunchViewModel.clearDisposable();
+//        super.onStop();
+//    }
 }
