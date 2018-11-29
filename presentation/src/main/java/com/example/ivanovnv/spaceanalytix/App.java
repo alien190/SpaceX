@@ -6,7 +6,6 @@ import com.example.domain.service.ILaunchService;
 import com.example.ivanovnv.spaceanalytix.di.application.ApplicationModule;
 import com.example.ivanovnv.spaceanalytix.di.application.DatabaseModule;
 import com.example.ivanovnv.spaceanalytix.di.application.NetworkModule;
-import com.facebook.stetho.Stetho;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
@@ -30,7 +29,7 @@ public class App extends Application {
         built.setLoggingEnabled(true);
         Picasso.setSingletonInstance(built);
 
-        Stetho.initializeWithDefaults(this);
+        //Stetho.initializeWithDefaults(this);
         Scope scope = Toothpick.openScope("Application");
         scope.installModules(new DatabaseModule(getApplicationContext()),
                 new NetworkModule(),
