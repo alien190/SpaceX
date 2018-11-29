@@ -2,6 +2,7 @@ package com.example.ivanovnv.spaceanalytix.ui.launch;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,6 @@ import java.util.concurrent.locks.ReentrantLock;
 public class LaunchAdapter extends RecyclerView.Adapter<LaunchViewHolder> {
 
     private List<DomainLaunch> mLaunches = new ArrayList<>();
-    private Lock mLaunchesLock = new ReentrantLock();
     private OnItemClickListener mItemClickListener;
     private ICurrentPreferences mCurrentPreferences;
 
@@ -45,18 +45,10 @@ public class LaunchAdapter extends RecyclerView.Adapter<LaunchViewHolder> {
 
     @Override
     public int getItemCount() {
-        int size = 0;
         if (mLaunches != null) {
-            mLaunchesLock.lock();
-            try {
-                size = mLaunches.size();
-            } catch (Throwable t) {
-                t.printStackTrace();
-            } finally {
-                mLaunchesLock.unlock();
-            }
+            return mLaunches.size();
         }
-        return size;
+        return 0;
     }
 
     public void updateLaunches(List<DomainLaunch> launches) {

@@ -4,9 +4,11 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -40,13 +42,11 @@ public class ImageZoomFragment extends Fragment {
     protected ILaunchService mLaunchService;
     private ScaleGestureDetector mScaleGestureDetector;
     private GestureDetector mGestureDetector;
-    private Disposable mDisposable;
     private float mScaleFactor = 1.0f;
     @BindView(R.id.ivZoom)
     ImageView mImageView;
     @BindView(R.id.progress_bar)
     ProgressBar mProgressBar;
-    private Bitmap mBitmap;
 
     public static ImageZoomFragment newInstance() {
 
@@ -64,39 +64,11 @@ public class ImageZoomFragment extends Fragment {
         ButterKnife.bind(this, mView);
         Toothpick.inject(this, Toothpick.openScope("ImageZoom"));
         mImageView.setImageBitmap(mImage);
-        // loadImage();
         mScaleGestureDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
         mGestureDetector = new GestureDetector(getContext(), new ClickListener());
 
         return mView;
     }
-
-//    private void loadImage() {
-//        mDisposable = mLaunchService.loadImage(mImageUrl)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .doOnSubscribe(this::onSubscribe)
-//                .doFinally(this::onFinally)
-//                .subscribe(this::showImage, Timber::d);
-//    }
-
-
-//    private void onSubscribe(Disposable disposable) {
-//        mProgressBar.setVisibility(View.VISIBLE);
-//        mImageView.setImageResource(R.drawable.ic_rocket_stub);
-//    }
-//
-//    private void onFinally() {
-//        mProgressBar.setVisibility(View.GONE);
-//    }
-//
-//    private void showImage(byte[] bytes) {
-//        Bitmap bitmap = DbBitmapUtility.getImage(bytes);
-//        if (mBitmap != null && mBitmap != bitmap) {
-//            mBitmap.recycle();
-//        }
-//        mBitmap = bitmap;
-//        mImageView.setImageBitmap(mBitmap);
-//    }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -112,9 +84,6 @@ public class ImageZoomFragment extends Fragment {
     private void onBackPressed(View view) {
         Activity activity = getActivity();
         if (activity != null) {
-            if (mDisposable != null) {
-                mDisposable.dispose();
-            }
             activity.onBackPressed();
         }
     }

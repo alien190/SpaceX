@@ -1,14 +1,13 @@
 package com.example.ivanovnv.spaceanalytix.ui.splash;
 
 import android.animation.Animator;
-import android.app.Application;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.example.ivanovnv.spaceanalytix.MainActivity;
+import com.example.ivanovnv.spaceanalytix.ui.main.MainActivity;
 import com.example.ivanovnv.spaceanalytix.R;
 
 import androidx.annotation.NonNull;

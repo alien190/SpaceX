@@ -5,7 +5,7 @@ import android.content.Intent;
 import androidx.fragment.app.Fragment;
 import android.view.View;
 
-import com.example.ivanovnv.spaceanalytix.SingleFragmentActivity;
+import com.example.ivanovnv.spaceanalytix.customComponents.SingleFragmentActivity;
 
 
 public class ImageZoomActivity extends SingleFragmentActivity {

@@ -25,15 +25,13 @@ public class LaunchViewModel extends ViewModel
     private MutableLiveData<SwipeRefreshLayout.OnRefreshListener> mOnRefreshListener = new MutableLiveData<>();
     private MutableLiveData<List<DomainLaunch>> mLaunches = new MutableLiveData<>();
     private ILaunchService mLaunchService;
-    private ICurrentPreferences mCurrentPreferences;
     private ISearchFilter mSearchFilter;
     private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     private Disposable mLaunchLiveDisposable;
 
 
-    public LaunchViewModel(ILaunchService launchService, ICurrentPreferences currentPreferences) {
+    public LaunchViewModel(ILaunchService launchService) {
         mLaunchService = launchService;
-        mCurrentPreferences = currentPreferences;
         mSearchFilter = mLaunchService.getSearchFilter();
         mCompositeDisposable.add(mSearchFilter.getUpdatesLive()
                 .observeOn(AndroidSchedulers.mainThread())

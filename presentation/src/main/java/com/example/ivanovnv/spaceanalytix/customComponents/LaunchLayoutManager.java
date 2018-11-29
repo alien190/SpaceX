@@ -104,11 +104,9 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
     }
 
     private void initConstants(RecyclerView.Recycler recycler) {
-        // mOffset = 0;
         try {
             View view = recycler.getViewForPosition(0);
             mTopAndBottomMargins = getTopAndBottomMargins(view);
-            //mTopAndBottomMargins = 21;
             if (view instanceof LaunchItemView) {
                 LaunchItemView launchItemView = (LaunchItemView) view;
                 mBigViewHeight = launchItemView.getRootHeightWithMargins() + mTopAndBottomMargins;

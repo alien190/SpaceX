@@ -22,9 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.ivanovnv.spaceanalytix.ui.launchAnalytics.DetailAnalyticsActivity" />
         <activity android:name="com.example.ivanovnv.spaceanalytix.ui.imageZoom.ImageZoomActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".ui.main.MainActivity" />
     </application>
 
 </manifest>

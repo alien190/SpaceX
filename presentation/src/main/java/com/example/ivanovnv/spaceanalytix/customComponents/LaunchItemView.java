@@ -1,6 +1,5 @@
 package com.example.ivanovnv.spaceanalytix.customComponents;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import androidx.annotation.Nullable;
@@ -94,7 +93,6 @@ public class LaunchItemView extends CardView {
         setViewSize(mSivMissionIcon, iconHeight, iconHeight);
     }
 
-    @SuppressLint("CheckResult")
     public void updateContentSize(int value) {
         value -= 2 * mTopAndBottomMargins;
         mSivMissionIcon.setImageHeight(value);
@@ -139,37 +137,10 @@ public class LaunchItemView extends CardView {
         }
     }
 
-    public void setMissionIconURL(String url) {
-//        Picasso.get()
-//                .load(url)
-//                .placeholder(R.drawable.ic_rocket_stub)
-//                .error(R.drawable.ic_rocket_stub)
-//                .into(mIvMissionIcon, new Callback() {
-//                    @Override
-//                    public void onSuccess() {
-//                        Timber.d("setMissionIconURL mIvMissionIcon.isLaidOut:%b", mIvMissionIcon.isLaidOut());
-//                        updateContentSize(mIconHeight);
-//                        onRequestLayout();
-//                    }
-//
-//                    @Override
-//                    public void onError(Exception e) {
-//                        Timber.d("setMissionIconURL mIvMissionIcon.isLaidOut:%b", mIvMissionIcon.isLaidOut());
-//                        updateContentSize(mIconHeight);
-//                        onRequestLayout();
-//                    }
-//                });
-    }
-
     public void setMissionIconBitmap(Bitmap bitmap) {
         mSivMissionIcon.setBitmap(bitmap);
     }
 
-    public void setIconTransitionName(String name) {
-//        if (mIvMissionIcon != null && name != null) {
-//            mIvMissionIcon.setTransitionName(name);
-//        }
-    }
 
     public View getAnimationHelper() {
         int top = mSivMissionIcon.getTop();

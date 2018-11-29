@@ -20,8 +20,6 @@ public class DataConverterFactory extends Converter.Factory {
     @Nullable
     @Override
     public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
-
-        //final Type dataLunchType = TypeToken.get(DataLaunch.class).getType();
         final Type listDataLunchType = TypeToken.getParameterized(List.class, DataLaunch.class).getType();
         final Type responseType = TypeToken.get(ServerResponse.class).getType();
         Type launchTypeToken;
@@ -43,7 +41,6 @@ public class DataConverterFactory extends Converter.Factory {
 
                 for (ServerResponse serverResponse : serverResponseList) {
                     DataLaunch dataLaunch = new DataLaunch(serverResponse);
-                    //  dataLaunch.setMission_patch_small("bla-bla-bla-path");
                     dataLaunches.add(dataLaunch);
 
                 }

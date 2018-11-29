@@ -61,7 +61,6 @@ public class ScaledImageView extends View {
                 .observeOn(Schedulers.computation(), false, 1)
                 .map(mCreateScaledBitmap)
                 .map(mSetScaledBitmap)
-                //.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         (value) -> {
                             invalidate();
@@ -74,10 +73,7 @@ public class ScaledImageView extends View {
         if (value > mHeightSpecSize) {
             value = mHeightSpecSize;
         }
-        // if (value != mBitmapHeight) {
         return Bitmap.createScaledBitmap(mOriginalBitmap, value, value, false);
-//        }
-//        return mDrawBitmap;
     };
 
     private Function<Bitmap, Boolean> mSetScaledBitmap = new Function<Bitmap, Boolean>() {
@@ -131,7 +127,6 @@ public class ScaledImageView extends View {
             mBitmapHeight = 0;
             setImageHeight(height);
         }
-        //invalidate();
     }
 
     public void setBitmap(Bitmap bitmap, int height) {

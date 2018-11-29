@@ -18,10 +18,10 @@ import io.reactivex.schedulers.Schedulers;
 
 
 public class LaunchServiceImpl implements ILaunchService {
+    private static final int CONCURRENT_THREADS_NUMBER = 10;
 
     private ILaunchRepository mLocalRepository;
     private ILaunchRepository mRemoteRepository;
-    private static final int CONCURRENT_THREADS_NUMBER = 10;
     private ISearchFilter mSearchFilter;
     private IAnalyticsFilter mAnalyticsFilter;
     private Disposable mSearchDisposable;

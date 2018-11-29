@@ -8,16 +8,14 @@ import javax.inject.Provider;
 
 class LaunchViewModelFactoryProvider implements Provider<LaunchViewModelFactory> {
     private ILaunchService mLaunchService;
-    private ICurrentPreferences mCurrentPreferences;
 
     @Inject
-    public LaunchViewModelFactoryProvider(ILaunchService launchService, ICurrentPreferences currentPreferences) {
+    public LaunchViewModelFactoryProvider(ILaunchService launchService) {
         mLaunchService = launchService;
-        mCurrentPreferences = currentPreferences;
     }
 
     @Override
     public LaunchViewModelFactory get() {
-        return new LaunchViewModelFactory(mLaunchService, mCurrentPreferences);
+        return new LaunchViewModelFactory(mLaunchService);
     }
 }

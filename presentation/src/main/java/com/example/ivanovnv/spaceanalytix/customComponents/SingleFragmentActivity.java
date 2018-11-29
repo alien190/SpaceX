@@ -1,7 +1,10 @@
-package com.example.ivanovnv.spaceanalytix;
+package com.example.ivanovnv.spaceanalytix.customComponents;
 
 
 import android.os.Bundle;
+
+import com.example.ivanovnv.spaceanalytix.R;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;

@@ -1,4 +1,4 @@
-package com.example.ivanovnv.spaceanalytix;
+package com.example.ivanovnv.spaceanalytix.ui.main;
 
 
 import android.content.Context;
@@ -7,9 +7,9 @@ import android.content.Intent;
 import androidx.fragment.app.Fragment;
 
 import com.example.domain.service.ILaunchService;
+import com.example.ivanovnv.spaceanalytix.customComponents.SingleFragmentActivity;
 import com.example.ivanovnv.spaceanalytix.di.launch.LaunchFragmentModule;
 import com.example.ivanovnv.spaceanalytix.di.launchAnalytics.LaunchAnalyticsModule;
-import com.example.ivanovnv.spaceanalytix.ui.splash.SplashFragment;
 
 import toothpick.Scope;
 import toothpick.Toothpick;

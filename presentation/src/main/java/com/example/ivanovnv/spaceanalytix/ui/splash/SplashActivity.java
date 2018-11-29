@@ -1,6 +1,6 @@
 package com.example.ivanovnv.spaceanalytix.ui.splash;
 
-import com.example.ivanovnv.spaceanalytix.SingleFragmentActivity;
+import com.example.ivanovnv.spaceanalytix.customComponents.SingleFragmentActivity;
 
 import androidx.fragment.app.Fragment;
 

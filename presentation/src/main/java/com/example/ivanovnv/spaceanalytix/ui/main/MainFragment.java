@@ -1,8 +1,10 @@
-package com.example.ivanovnv.spaceanalytix;
+package com.example.ivanovnv.spaceanalytix.ui.main;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.example.ivanovnv.spaceanalytix.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -40,16 +42,17 @@ public class MainFragment extends Fragment {
         return view;
     }
 
+
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         mBottomNavigationView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
     }
 
     @Override
-    public void onStop() {
+    public void onPause() {
+        super.onPause();
         mBottomNavigationView.setOnNavigationItemSelectedListener(null);
-        super.onStop();
     }
 
     private boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {

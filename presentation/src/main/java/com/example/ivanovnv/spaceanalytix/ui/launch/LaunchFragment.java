@@ -33,7 +33,6 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
     @BindView(R.id.rv_main)
     RecyclerView mRecyclerView;
 
-
     @Inject
     ILaunchListViewModel mLaunchListViewModel;
     @Inject
@@ -67,19 +66,19 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
 
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         mRecyclerView.setLayoutManager(mLaunchLayoutManager);
         mAdapter.setItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
-    public void onStop() {
+    public void onPause() {
+        super.onPause();
         mRecyclerView.setLayoutManager(null);
         mAdapter.setItemClickListener(null);
         mRecyclerView.setAdapter(null);
-        super.onStop();
     }
 
     @Override

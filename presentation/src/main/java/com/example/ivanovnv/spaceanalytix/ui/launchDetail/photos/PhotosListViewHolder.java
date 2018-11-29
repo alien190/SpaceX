@@ -17,16 +17,12 @@ import toothpick.Toothpick;
 public class PhotosListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     private Bitmap mBitmap;
-    ImageView mImageView;
-    @Inject
-    protected ILaunchService mLaunchService;
+    private ImageView mImageView;
     private PhotosListAdapter.IOnItemClickListener mOnItemClickListener;
 
     PhotosListViewHolder(@NonNull View itemView, PhotosListAdapter.IOnItemClickListener listener) {
         super(itemView);
         mImageView = itemView.findViewById(R.id.iv_image);
-        Scope scope = Toothpick.openScope("Application");
-        Toothpick.inject(this, scope);
         mOnItemClickListener = listener;
         itemView.setOnClickListener(this);
     }

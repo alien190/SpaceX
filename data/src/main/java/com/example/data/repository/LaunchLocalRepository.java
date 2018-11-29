@@ -14,6 +14,7 @@ import com.example.domain.model.analytics.DomainAnalytics;
 import com.example.domain.model.filter.AnalyticsFilter;
 import com.example.domain.model.filter.IAnalyticsFilter;
 import com.example.domain.model.filter.IAnalyticsFilterItem;
+import com.example.domain.model.filter.ISearchFilterItem;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.filter.ISearchFilter;
 import com.example.domain.model.filter.IBaseFilterItem;
@@ -247,7 +248,7 @@ public class LaunchLocalRepository implements ILaunchRepository {
         StringBuilder retValueBuilder = new StringBuilder();
         ISearchFilter filter = searchFilter.getFilterByType(type).getSelectedFilter();
 
-        IBaseFilterItem item;
+        ISearchFilterItem item;
         int count = filter.getItemsCount();
         for (int i = 0; i < count; i++) {
             item = filter.getItem(i);

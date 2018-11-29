@@ -11,16 +11,14 @@ import com.example.ivanovnv.spaceanalytix.ui.launch.LaunchViewModel;
 public class LaunchViewModelFactory implements ViewModelProvider.Factory {
 
     private ILaunchService mLaunchService;
-    private ICurrentPreferences mCurrentPreferences;
 
-    public LaunchViewModelFactory(ILaunchService launchService, ICurrentPreferences currentPreferences) {
+    public LaunchViewModelFactory(ILaunchService launchService) {
         mLaunchService = launchService;
-        mCurrentPreferences = currentPreferences;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new LaunchViewModel(mLaunchService, mCurrentPreferences);
+        return (T) new LaunchViewModel(mLaunchService);
     }
 }
