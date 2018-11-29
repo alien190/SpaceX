@@ -1,13 +1,16 @@
 package com.example.ivanovnv.spaceanalytix.ui.main;
 
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.ivanovnv.spaceanalytix.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+
 import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -20,7 +23,9 @@ import com.example.ivanovnv.spaceanalytix.ui.prefs.MainPreferenceFragment;
 
 public class MainFragment extends Fragment {
 
+    private static final String SELECTED_ITEM_KEY = "MainFragment.SelectedItemKey";
     private BottomNavigationView mBottomNavigationView;
+    private int mSelectedItemId;
 
     public static MainFragment newInstance() {
 
@@ -38,10 +43,22 @@ public class MainFragment extends Fragment {
         mBottomNavigationView = view.findViewById(R.id.bottom_navigation);
         if (savedInstanceState == null) {
             replaceFragment(LaunchFragment.newInstance());
+        } else {
+            try {
+                int id = savedInstanceState.getInt(SELECTED_ITEM_KEY);
+                showSelectedFragment(id);
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
         }
         return view;
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(SELECTED_ITEM_KEY, mSelectedItemId);
+    }
 
     @Override
     public void onResume() {
@@ -56,7 +73,12 @@ public class MainFragment extends Fragment {
     }
 
     private boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
+        return showSelectedFragment(menuItem.getItemId());
+    }
+
+    private boolean showSelectedFragment(int id) {
+        mSelectedItemId = id;
+        switch (id) {
             case R.id.mi_launches: {
                 if (replaceFragment(LaunchFragment.newInstance())) {
                     setExitTransition(TransitionInflater.from(getContext()).inflateTransition(R.transition.launch_list_exit_transition));
