@@ -43,6 +43,7 @@ public class MainFragment extends Fragment {
         mBottomNavigationView = view.findViewById(R.id.bottom_navigation);
         if (savedInstanceState == null) {
             replaceFragment(LaunchFragment.newInstance());
+            mSelectedItemId = R.id.mi_launches;
         } else {
             try {
                 int id = savedInstanceState.getInt(SELECTED_ITEM_KEY);
