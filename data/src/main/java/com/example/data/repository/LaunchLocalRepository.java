@@ -6,8 +6,8 @@ import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.example.data.R;
 import com.example.data.model.DataFilterItem;
-import com.example.data.utils.converter.DataToDomainConverter;
-import com.example.data.utils.converter.DomainToDataConverter;
+import com.example.data.utils.DataToDomainConverter;
+import com.example.data.utils.DomainToDataConverter;
 import com.example.data.database.LaunchDao;
 import com.example.data.model.DataImage;
 import com.example.domain.model.analytics.DomainAnalytics;
@@ -17,7 +17,6 @@ import com.example.domain.model.filter.IAnalyticsFilterItem;
 import com.example.domain.model.filter.ISearchFilterItem;
 import com.example.domain.model.launch.DomainLaunch;
 import com.example.domain.model.filter.ISearchFilter;
-import com.example.domain.model.filter.IBaseFilterItem;
 import com.example.domain.model.filter.SearchFilter;
 import com.example.domain.repository.ILaunchRepository;
 

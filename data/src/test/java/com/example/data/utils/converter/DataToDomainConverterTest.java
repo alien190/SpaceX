@@ -2,6 +2,7 @@ package com.example.data.utils.converter;
 
 import com.example.data.model.DataAnalytics;
 import com.example.data.model.DataLaunch;
+import com.example.data.utils.DataToDomainConverter;
 import com.example.domain.model.analytics.DomainAnalytics;
 import com.example.domain.model.analytics.DomainAnalyticsItem;
 import com.example.domain.model.filter.AnalyticsFilter;

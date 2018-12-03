@@ -5,7 +5,7 @@ import androidx.room.Database;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-import com.example.data.utils.converter.StringListConverter;
+import com.example.data.utils.StringListConverter;
 import com.example.data.model.DataImage;
 import com.example.data.model.DataLaunch;
 

@@ -2,7 +2,7 @@ package com.example.ivanovnv.spaceanalytix.di.application;
 
 import com.example.data.BuildConfig;
 import com.example.data.api.SpaceXAPI;
-import com.example.data.utils.converter.DataConverterFactory;
+import com.example.data.utils.DataConverterFactory;
 import com.example.data.repository.LaunchRemoteRepository;
 import com.example.domain.repository.ILaunchRepository;
 import com.google.gson.Gson;

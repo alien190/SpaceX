@@ -1,5 +1,7 @@
 package com.example.data.utils.converter;
 
+import com.example.data.utils.StringListConverter;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

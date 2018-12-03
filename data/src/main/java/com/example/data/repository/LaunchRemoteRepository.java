@@ -3,7 +3,7 @@ package com.example.data.repository;
 import android.graphics.Bitmap;
 
 import com.example.data.api.SpaceXAPI;
-import com.example.data.utils.converter.DataToDomainConverter;
+import com.example.data.utils.DataToDomainConverter;
 import com.example.data.utils.DbBitmapUtility;
 import com.example.domain.model.analytics.DomainAnalytics;
 import com.example.domain.model.filter.IAnalyticsFilter;

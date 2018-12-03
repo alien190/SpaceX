@@ -1,4 +1,4 @@
-package com.example.data.utils.converter;
+package com.example.data.utils;
 
 import com.example.data.model.DataAnalytics;
 import com.example.data.model.DataLaunch;
