@@ -16,7 +16,7 @@ public class LaunchLocalRepositoryTest {
 
     @Before
     public void setUp() throws Exception {
-        mLaunchLocalRepository = new LaunchLocalRepository(null);
+        mLaunchLocalRepository = new LaunchLocalRepository(null, null);
         mSearchFilter = new SearchFilter();
     }
 
