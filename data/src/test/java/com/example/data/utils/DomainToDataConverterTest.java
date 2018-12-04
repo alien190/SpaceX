@@ -1,4 +1,4 @@
-package com.example.data.utils.converter;
+package com.example.data.utils;
 
 import com.example.data.model.DataLaunch;
 import com.example.data.utils.DomainToDataConverter;
