@@ -5,7 +5,7 @@
     android:elevation="@dimen/elevation"
     android:layout_margin="@dimen/layout_margin">
 
-    <com.ivanovnv.ivanovnv.spaceanalytix.customComponents.SquareImageView
+    <com.mobdev.ivanovnv.spaceanalytix.customComponents.SquareImageView
         android:id="@+id/iv_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

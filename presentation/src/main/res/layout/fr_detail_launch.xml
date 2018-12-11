@@ -8,7 +8,7 @@
 
         <variable
             name="vm"
-            type="com.ivanovnv.ivanovnv.spaceanalytix.ui.launchDetail.LaunchDetailViewModel" />
+            type="com.mobdev.ivanovnv.spaceanalytix.ui.launchDetail.LaunchDetailViewModel" />
 
         <import type="android.view.View" />
 
