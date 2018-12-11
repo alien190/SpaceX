@@ -22,7 +22,7 @@
         android:switchTextOn="@string/pictures_subtitle_on"
         android:switchTextOff="@string/pictures_subtitle_off"/>
 
-    <Preference android:title="@string/about_title">
-        <intent />
-    </Preference>
+    <!--<Preference android:title="@string/about_title">-->
+        <!--<intent />-->
+    <!--</Preference>-->
 </PreferenceScreen>

@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/search_fragment"
-        android:name="com.example.ivanovnv.spaceanalytix.ui.launchSearch.LaunchSearchFragment"
+        android:name="com.ivanovnv.ivanovnv.spaceanalytix.ui.launchSearch.LaunchSearchFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

@@ -4,7 +4,7 @@ apply plugin: 'io.fabric'
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.example.ivanovnv.spaceanalytix"
+        applicationId "com.ivanovnv.ivanovnv.spaceanalytix"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -13,7 +13,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [toothpick_registry_package_name: 'com.example.ivanovnv.spacex']
+                arguments = [toothpick_registry_package_name: 'com.ivanovnv.ivanovnv.spacex']
             }
         }
     }

@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <com.example.ivanovnv.spaceanalytix.customComponents.ScaledImageView
+    <com.ivanovnv.ivanovnv.spaceanalytix.customComponents.ScaledImageView
         android:id="@+id/siv_mission_icon"
         android:layout_width="100dp"
         android:layout_height="100dp" />
