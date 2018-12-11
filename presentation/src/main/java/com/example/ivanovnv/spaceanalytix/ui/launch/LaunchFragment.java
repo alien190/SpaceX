@@ -2,6 +2,7 @@ package com.example.ivanovnv.spaceanalytix.ui.launch;
 
 
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -9,13 +10,17 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.domain.model.launch.DomainLaunch;
 import com.example.ivanovnv.spaceanalytix.ui.launchDetail.LaunchDetailFragment;
 import com.example.ivanovnv.spaceanalytix.R;
 import com.example.ivanovnv.spaceanalytix.customComponents.LaunchLayoutManager;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -32,6 +37,8 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
     SwipeRefreshLayout mSwipeRefreshLayout;
     @BindView(R.id.rv_main)
     RecyclerView mRecyclerView;
+    @BindView(R.id.stub)
+    View mStubView;
 
     @Inject
     ILaunchListViewModel mLaunchListViewModel;
@@ -51,17 +58,28 @@ public class LaunchFragment extends Fragment implements LaunchAdapter.OnItemClic
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        Scope scope = Toothpick.openScope( "LaunchFragment");
+        Scope scope = Toothpick.openScope("LaunchFragment");
         Toothpick.inject(this, scope);
 
         View view = inflater.inflate(R.layout.fr_launches_list, container, false);
         ButterKnife.bind(this, view);
 
-        mLaunchListViewModel.getLaunches().observe(this, mAdapter::updateLaunches);
+        mLaunchListViewModel.getLaunches().observe(this, this::updateLaunches);
         mLaunchListViewModel.getOnRefreshListener().observe(this, mSwipeRefreshLayout::setOnRefreshListener);
         mLaunchListViewModel.getIsLoadInProgress().observe(this, mSwipeRefreshLayout::setRefreshing);
 
         return view;
+    }
+
+    private void updateLaunches(List<DomainLaunch> domainLaunches) {
+        if (domainLaunches != null && !domainLaunches.isEmpty()) {
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mStubView.setVisibility(View.GONE);
+        } else {
+            mRecyclerView.setVisibility(View.GONE);
+            mStubView.setVisibility(View.VISIBLE);
+        }
+        mAdapter.updateLaunches(domainLaunches);
     }
 
 

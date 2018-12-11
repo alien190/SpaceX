@@ -45,6 +45,7 @@ public class LaunchAnalyticsViewModel extends ViewModel implements ILaunchAnalyt
             mBarAnalytics.postValue(null);
             mPieAnalytics.postValue(null);
         }
+
     }
 
     @Override

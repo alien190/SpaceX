@@ -142,7 +142,11 @@ public class CustomBindingAdapter {
             } else if (chart instanceof PieChart) {
                 setPieData((PieChart) chart, domainAnalytics, currentPreferences);
             }
-            chart.setVisibility(View.VISIBLE);
+            if (domainAnalytics.getItems() != null && !domainAnalytics.getItems().isEmpty()) {
+                chart.setVisibility(View.VISIBLE);
+            } else {
+                chart.setVisibility(View.GONE);
+            }
         } else {
             chart.setData(null);
             chart.setVisibility(View.GONE);

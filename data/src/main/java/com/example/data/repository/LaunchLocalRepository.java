@@ -176,23 +176,26 @@ public class LaunchLocalRepository implements ILaunchRepository {
 
     @Override
     public Flowable<DomainAnalytics> getAnalyticsLive(ISearchFilter searchFilter, IAnalyticsFilter analyticsFilter) {
-        IAnalyticsFilter analyticsFilterSelected = analyticsFilter.getSelectedFilter();
-        if (analyticsFilterSelected.getItemsCount() == 1) {
-            String groupByColumnName = mGroupByBaseType.get(analyticsFilterSelected.getItem(0).getBaseType());
-            String query = "SELECT " +
-                    generateSqlAnalyticsValue(analyticsFilterSelected)
-                    + ", "
-                    + groupByColumnName
-                    + " as mBase FROM DataLaunch"
-                    + generateSqlFilterQuery(searchFilter, "WHERE")
-                    + "GROUP BY "
-                    + groupByColumnName;
-            Timber.d("SQL query: %s", query);
-            return mLaunchDao
-                    .getAnalyticsLive(new SimpleSQLiteQuery(query))
-                    .map(dataAnalytics -> DataToDomainConverter.convertAnalytics(dataAnalytics, analyticsFilterSelected));
+        if (searchFilter != null && analyticsFilter != null) {
+            IAnalyticsFilter analyticsFilterSelected = analyticsFilter.getSelectedFilter();
+            if (analyticsFilterSelected.getItemsCount() == 1) {
+                String groupByColumnName = mGroupByBaseType.get(analyticsFilterSelected.getItem(0).getBaseType());
+                String query = "SELECT " +
+                        generateSqlAnalyticsValue(analyticsFilterSelected)
+                        + ", "
+                        + groupByColumnName
+                        + " as mBase FROM DataLaunch"
+                        + generateSqlFilterQuery(searchFilter, "WHERE")
+                        + "GROUP BY "
+                        + groupByColumnName;
+                Timber.d("SQL query: %s", query);
+                return mLaunchDao
+                        .getAnalyticsLive(new SimpleSQLiteQuery(query))
+                        .map(dataAnalytics -> DataToDomainConverter.convertAnalytics(dataAnalytics, analyticsFilterSelected));
+            }
+            throw new IllegalArgumentException("filterSelected.getItemsCount() != 1");
         }
-        throw new IllegalArgumentException("filterSelected.getItemsCount() != 1");
+        throw new IllegalArgumentException("searchFilter and analyticsFilter can't be null");
     }
 
     private String generateSqlAnalyticsValue(IAnalyticsFilter analyticsFilterSelected) {

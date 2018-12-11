@@ -5,19 +5,32 @@
     android:orientation="vertical">
 
     <fragment
+        android:id="@+id/search_fragment"
         android:name="com.example.ivanovnv.spaceanalytix.ui.launchSearch.LaunchSearchFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/search_fragment"/>
+        android:layout_height="wrap_content" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_main"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible" />
+
+            <include
+                android:id="@+id/stub"
+                layout="@layout/fr_empty_stub"
+                android:visibility="gone" />
+        </RelativeLayout>
+
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 </LinearLayout>
