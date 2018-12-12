@@ -9,6 +9,7 @@ import com.mobdev.ivanovnv.spaceanalytix.di.application.NetworkModule;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
+import io.reactivex.plugins.RxJavaPlugins;
 import timber.log.Timber;
 import toothpick.Scope;
 import toothpick.Toothpick;
@@ -34,8 +35,10 @@ public class App extends Application {
         scope.installModules(new DatabaseModule(getApplicationContext()),
                 new NetworkModule(),
                 new ApplicationModule(getApplicationContext()));
-        scope.getInstance(ILaunchService.class).refreshLaunches().subscribe((v) -> {
-        }, Timber::d);
+
+        RxJavaPlugins.setErrorHandler(Timber::d);
+
+        scope.getInstance(ILaunchService.class).refreshLaunches().subscribe();
     }
 
 
