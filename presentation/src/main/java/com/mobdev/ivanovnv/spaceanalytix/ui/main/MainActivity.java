@@ -31,8 +31,8 @@ public class MainActivity extends SingleFragmentActivity {
 
     @Override
     protected void closeScope() {
-        Toothpick.closeScope("LaunchFragment");
-        Toothpick.closeScope("AnalyticsFragment");
+        //Toothpick.closeScope("LaunchFragment");
+        //Toothpick.closeScope("AnalyticsFragment");
     }
 
     public static void start(Context context) {
