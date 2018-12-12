@@ -2,6 +2,7 @@ package com.mobdev.ivanovnv.spaceanalytix.customComponents;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.SparseArray;
 import android.view.View;
 
@@ -64,6 +65,12 @@ public class LaunchLayoutManager extends RecyclerView.LayoutManager {
         if (mBigViewHeight != 0) {
             mMaximumOffset = (getItemCount() - 1) * mBigViewHeight;
             mFirstVisibleViewPosition = mOffset / mBigViewHeight;
+
+            if (mFirstVisibleViewPosition > getItemCount() - 1) {
+                mFirstVisibleViewPosition = 0;
+                mOffset = 0;
+            }
+
             mLastVisibleViewPosition = mFirstVisibleViewPosition;
 
             int emptyHeight = getHeight();
