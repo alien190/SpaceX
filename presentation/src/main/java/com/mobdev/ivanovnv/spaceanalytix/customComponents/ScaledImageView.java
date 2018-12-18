@@ -5,7 +5,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+
 import androidx.annotation.Nullable;
+
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -59,8 +61,9 @@ public class ScaledImageView extends View {
                         () -> Timber.d("initObserver: buffer overflow"),
                         BackpressureOverflowStrategy.DROP_OLDEST)
                 .observeOn(Schedulers.computation(), false, 1)
-                .map(mCreateScaledBitmap)
-                .map(mSetScaledBitmap)
+                //.observeOn(Schedulers.computation())
+                .map(this::mCreateScaledBitmap)
+                .map(this::mSetScaledBitmap)
                 .subscribe(
                         (value) -> {
                             invalidate();
@@ -68,31 +71,28 @@ public class ScaledImageView extends View {
                         }, Timber::d);
     }
 
-    private Function<Integer, Bitmap> mCreateScaledBitmap = (Function<Integer, Bitmap>) value -> {
-        Timber.d("initObserver value:%d", value);
+    private Bitmap mCreateScaledBitmap(Integer value) {
+        Timber.d("mCreateScaledBitmap value:%d", value);
         if (value > mHeightSpecSize) {
             value = mHeightSpecSize;
         }
         return Bitmap.createScaledBitmap(mOriginalBitmap, value, value, false);
-    };
+    }
 
-    private Function<Bitmap, Boolean> mSetScaledBitmap = new Function<Bitmap, Boolean>() {
-        @Override
-        public Boolean apply(Bitmap bitmap) throws Exception {
-            try {
-                mBitmapLock.lock();
-                if (bitmap != mDrawBitmap && mDrawBitmap != null) {
-                    mDrawBitmap.recycle();
-                }
-                mDrawBitmap = bitmap;
-                mBitmapHeight = bitmap.getHeight();
-            } catch (Throwable throwable) {
-                Timber.d(throwable);
+    private Boolean mSetScaledBitmap(Bitmap bitmap) {
+        try {
+            mBitmapLock.lock();
+            if (bitmap != mDrawBitmap && mDrawBitmap != null) {
+                mDrawBitmap.recycle();
             }
-            mBitmapLock.unlock();
-            return true;
+            mDrawBitmap = bitmap;
+            mBitmapHeight = bitmap.getHeight();
+        } catch (Throwable throwable) {
+            Timber.d(throwable);
         }
-    };
+        mBitmapLock.unlock();
+        return true;
+    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -104,17 +104,17 @@ public class ScaledImageView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mDrawBitmap != null) {
-            try {
-                mBitmapLock.lock();
+        try {
+            mBitmapLock.lock();
+            if (mDrawBitmap != null) {
                 mDstRect.right = mDrawBitmap.getWidth();
                 mDstRect.bottom = mDrawBitmap.getHeight();
                 canvas.drawBitmap(mDrawBitmap, null, mDstRect, null);
-            } catch (Throwable throwable) {
-                Timber.d(throwable);
             }
-            mBitmapLock.unlock();
+        } catch (Throwable throwable) {
+            Timber.d(throwable);
         }
+        mBitmapLock.unlock();
     }
 
     public void setBitmap(Bitmap bitmap) {
