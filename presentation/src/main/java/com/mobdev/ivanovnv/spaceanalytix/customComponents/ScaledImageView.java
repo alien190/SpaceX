@@ -11,6 +11,8 @@ import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -68,7 +70,11 @@ public class ScaledImageView extends View {
                         (value) -> {
                             invalidate();
                             Timber.d("initObserver invalidate ThreadId:%d", Thread.currentThread().getId());
-                        }, Timber::d);
+                        }, throwable -> {
+                            Timber.d(throwable);
+                            Crashlytics.logException(throwable);
+                            initObserver();
+                        });
     }
 
     private Bitmap mCreateScaledBitmap(Integer value) {
