@@ -11,13 +11,11 @@ import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.crashlytics.android.Crashlytics;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import io.reactivex.BackpressureOverflowStrategy;
-import io.reactivex.functions.Function;
 import io.reactivex.processors.PublishProcessor;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
@@ -72,7 +70,6 @@ public class ScaledImageView extends View {
                             Timber.d("initObserver invalidate ThreadId:%d", Thread.currentThread().getId());
                         }, throwable -> {
                             Timber.d(throwable);
-                            Crashlytics.logException(throwable);
                             initObserver();
                         });
     }
